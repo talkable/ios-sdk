@@ -77,7 +77,7 @@ NSString*   TKBLSiteSlug            = @"site_slug";
 
 - (void)setApiKey:(NSString*)aApiKey andSiteSlug:(NSString*)aSiteSlug server:(NSString*)aServer {
     if (!aApiKey || !aSiteSlug) {
-        [self raiseInvalidArgumentException:@"You can not use nil for apiKey and siteSlug"];
+        [self raiseException:NSInvalidArgumentException withMessage:@"You can not use nil for apiKey and siteSlug"];
     }
     
     self.apiKey     = aApiKey;
@@ -406,7 +406,7 @@ NSString*   TKBLSiteSlug            = @"site_slug";
         case TKBLEvent:
             return @"events";
         default:
-            [self raiseInvalidArgumentException:[NSString stringWithFormat:@"Unknown origin type - %lu", (unsigned long)type]];
+            [self raiseException:NSInvalidArgumentException withMessage:[NSString stringWithFormat:@"Unknown origin type - %lu", (unsigned long)type]];
             break;
     }
 }
@@ -415,7 +415,7 @@ NSString*   TKBLSiteSlug            = @"site_slug";
     NSMutableArray* items = [NSMutableArray arrayWithCapacity:[params count]];
     [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL* stop) {
         if (![key isKindOfClass:[NSString class]]) {
-            [self raiseInvalidArgumentException:[NSString stringWithFormat:@"Key %@ should be NSString class", key]];
+            [self raiseException:NSInvalidArgumentException withMessage:[NSString stringWithFormat:@"Key %@ should be NSString class", key]];
         }
         NSString* keyName = prefix ? [NSString stringWithFormat:@"%@[%@]", prefix, key] : key;
         [self addKeyName:keyName value:value toArray:items];
@@ -466,7 +466,7 @@ NSString*   TKBLSiteSlug            = @"site_slug";
     if (!self.apiKey || !self.siteSlug ||
         (self.apiKey && [self.apiKey length] == 0) ||
         (self.siteSlug && [self.siteSlug length] == 0)) {
-        [self raiseInvalidArgumentException:@"Specify correct apiKey and siteSlug"];
+        [self raiseException:TKBLConfigurationException withMessage:@"Specify correct apiKey and siteSlug"];
     }
 }
 
@@ -485,8 +485,8 @@ NSString*   TKBLSiteSlug            = @"site_slug";
         handler((NSDictionary*)response, error);
 }
 
-- (void)raiseInvalidArgumentException:(NSString*)msg {
-    [NSException raise:NSInvalidArgumentException format:@"[Talkable]: %@", msg];
+- (void)raiseException:(NSString*)name withMessage:(NSString*)msg {
+    [NSException raise:name format:@"[Talkable]: %@", msg];
 }
 
 - (void)notifyOriginDidRegister:(TKBLOriginType)type withURL:(NSURL*)url {

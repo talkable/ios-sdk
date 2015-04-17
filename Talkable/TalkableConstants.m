@@ -12,6 +12,8 @@ NSString* TKBLVersion                                   = @"1.0.0";
 
 NSString* TKBLErrorDomain                               = @"com.talkable.ios-sdk";
 
+NSString* TKBLConfigurationException                    = @"TKBLConfigurationExceptionName";
+
 NSString* TKBLOfferDidSendCloseActionNotification       = @"TKBLOfferDidSendCloseActionNotificationName";
 NSString* TKBLOfferDidSendShareActionNotification       = @"TKBLOfferDidSendShareActionNotificationName";
 
