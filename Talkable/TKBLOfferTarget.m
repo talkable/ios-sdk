@@ -7,9 +7,8 @@
 //
 
 #import "TKBLOfferTarget.h"
-#import "TKBLConstants.h"
+#import "Talkable.h"
 #import "UIViewControllerExt.h"
-#import <Social/Social.h>
 
 #ifndef TKBL_CROSS_REQUEST_SCHEMA
     #define TKBL_CROSS_REQUEST_SCHEMA @"tkbl"
@@ -42,6 +41,8 @@
             command = [[request URL] path];
         }
         if (command) {
+            TKBLLog(@"command <%@>", command);
+            
             SEL commandSelector = [self selectorFromCommand:command];
             if ([self respondsToSelector:commandSelector]) {
                 NSDictionary* params = [self parseQuery:query];
@@ -91,8 +92,10 @@
     NSDictionary* params = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingAllowFragments error:&error];
     if (!error && [params isKindOfClass:[NSDictionary class]]) {
         return params;
+    } else {
+        TKBLLog(@"Invalid params. %@", error);
+        return nil;
     }
-    return nil;
 }
 
 - (SEL)selectorFromCommand:(NSString*)command {

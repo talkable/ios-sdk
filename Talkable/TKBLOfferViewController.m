@@ -80,6 +80,7 @@
 
 - (void)webView:(UIWebView*)webView didFailLoadWithError:(NSError*)error {
     if (!_requestCompleted) {
+        TKBLLog(@"Request has failed with error - %@", error);
         [self close:webView];
     }
     _requestCompleted = YES;
