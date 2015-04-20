@@ -8,6 +8,8 @@
 
 #import "TKBLOfferTarget.h"
 #import "TKBLConstants.h"
+#import "UIViewControllerExt.h"
+#import <Social/Social.h>
 
 #ifndef TKBL_CROSS_REQUEST_SCHEMA
     #define TKBL_CROSS_REQUEST_SCHEMA @"tkbl"
@@ -106,11 +108,36 @@
 - (void)shareViaChannel:(NSString*)channel withParams:(NSDictionary*)params andSender:(id)sender {
     if (!params)
         return;
+
+    SLComposeViewController* shareController  = [self shareController:channel];
     
-    NSMutableDictionary* userInfo = [NSMutableDictionary dictionaryWithDictionary:params];
-    [userInfo setObject:channel forKey:TKBLShareChannel];
+    NSString* claimURL = [params objectForKey:TKBLOfferClaimUrlKey];
+    if (claimURL) {
+        [shareController addURL:[NSURL URLWithString:claimURL]];
+    }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:TKBLOfferDidSendShareActionNotification object:sender userInfo:userInfo];
+    NSString* title = [params objectForKey:TKBLShareTitle];
+    if (title) {
+        [shareController setInitialText:title];
+    }
+    
+    [shareController setCompletionHandler:^(SLComposeViewControllerResult result) {
+        if (result == SLComposeViewControllerResultDone) {
+            [(UIWebView*)sender stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"Talkable.shareSucceeded('%@');", channel]];
+        }
+    }];
+    
+    [[UIViewController currentViewController] presentViewController:shareController animated:YES completion:nil];
+    
+}
+
+- (SLComposeViewController*)shareController:(NSString*)channel {
+    NSString* mappedChannel = [[self channelMap] objectForKey:channel];
+    return [SLComposeViewController composeViewControllerForServiceType:mappedChannel];
+}
+
+- (NSDictionary*)channelMap {
+    return @{TKBLShareChannelTwitter: SLServiceTypeTwitter, TKBLShareChannelFacebook: SLServiceTypeFacebook};
 }
 
 @end

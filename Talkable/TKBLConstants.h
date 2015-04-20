@@ -15,7 +15,6 @@ FOUNDATION_EXPORT NSString* TKBLErrorDomain;
 FOUNDATION_EXPORT NSString* TKBLConfigurationException;
 
 FOUNDATION_EXPORT NSString* TKBLOfferDidSendCloseActionNotification;
-FOUNDATION_EXPORT NSString* TKBLOfferDidSendShareActionNotification;
 
 FOUNDATION_EXPORT NSString* TKBLOriginTypeKey;
 FOUNDATION_EXPORT NSString* TKBLOriginDataKey;

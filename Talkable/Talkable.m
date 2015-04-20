@@ -7,8 +7,10 @@
 //
 
 #import "Talkable.h"
-#import "UIViewControllerExt.h"
 #import "TKBLOfferViewController.h"
+#import "UIViewControllerExt.h"
+#import "TKBLOfferTarget.h"
+
 
 #import "AFNetworking.h"
 
@@ -57,13 +59,8 @@ NSString*   TKBLSiteSlug            = @"site_slug";
 - (id)init {
     if (self = [super init]) {
         _uuidRequests = [[NSMutableSet alloc] init];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(shareActionNotification:) name:TKBLOfferDidSendShareActionNotification object:nil];
     }
     return self;
-}
-
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 # pragma mark - [Setters and Getters]
@@ -540,23 +537,6 @@ NSString*   TKBLSiteSlug            = @"site_slug";
     if ([self.delegate respondsToSelector:@selector(didRegisterOrigin:withWebView:)]) {
         [self.delegate didRegisterOrigin:type withWebView:webView];
     }
-}
-
-#pragma mark - [Notifications]
-
-- (void)shareActionNotification:(NSNotification*)ntf {
-    SLComposeViewController* shareController = [self socialShare:ntf.userInfo];
-    
-    NSString* channel = [ntf.userInfo objectForKey:TKBLShareChannel];
-    if (channel && [[ntf object] isKindOfClass:[UIWebView class]]) {
-        [shareController setCompletionHandler:^(SLComposeViewControllerResult result) {
-            if (result == SLComposeViewControllerResultDone) {
-                [[ntf object] stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"Talkable.shareSucceeded('%@');", channel]];
-            }
-        }];
-    }
-    
-    [[UIViewController currentViewController] presentViewController:shareController animated:YES completion:nil];
 }
 
 @end
