@@ -17,15 +17,15 @@
 
 #pragma mark - [Talkable Commands]
 
-- (void)TKBLClose:(NSString*)query sender:(id)sender {
+- (void)tkblClose:(NSString*)query sender:(id)sender {
     [[NSNotificationCenter defaultCenter] postNotificationName:TKBLOfferDidSendCloseActionNotification object:sender];
 }
 
-- (void)TKBLShareViaFacebook:(NSString*)query sender:(id)sender {
+- (void)tkblShareViaFacebook:(NSString*)query sender:(id)sender {
     [self shareViaChannel:TKBLShareChannelFacebook query:query sender:sender];
 }
 
-- (void)TKBLShareViaTwitter:(NSString*)query sender:(id)sender {
+- (void)tkblShareViaTwitter:(NSString*)query sender:(id)sender {
     [self shareViaChannel:TKBLShareChannelTwitter query:query sender:sender];
 }
 
@@ -79,7 +79,7 @@
     [[command componentsSeparatedByString:@"-"] enumerateObjectsUsingBlock:^(NSString* obj, NSUInteger idx, BOOL* stop){
         [commandComponents addObject:[obj capitalizedString]];
     }];
-    SEL commandSelector = NSSelectorFromString([NSString stringWithFormat:@"TKBL%@:sender:", [commandComponents componentsJoinedByString:@""]]);
+    SEL commandSelector = NSSelectorFromString([NSString stringWithFormat:@"tkbl%@:sender:", [commandComponents componentsJoinedByString:@""]]);
     
     return commandSelector;
 }
