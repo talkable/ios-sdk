@@ -1,5 +1,5 @@
 //
-//  TalkableOfferViewController.h
+//  TKBLOfferViewController.h
 //  TalkableSDK
 //
 //  Created by Vitalik Danchenko on 07.04.15.
@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "Talkable.h"
 
-@interface TalkableOfferViewController : UIViewController<UIWebViewDelegate>
+@interface TKBLOfferViewController : UIViewController<UIWebViewDelegate>
 
 - (IBAction)close:(id)sender;
 

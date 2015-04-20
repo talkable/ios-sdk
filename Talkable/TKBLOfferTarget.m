@@ -1,19 +1,19 @@
 //
-//  TalkableOfferTarget.m
+//  TKBLOfferTarget.m
 //  TalkableSDK
 //
 //  Created by Vitalik Danchenko on 08.04.15.
 //  Copyright (c) 2015 Talkable. All rights reserved.
 //
 
-#import "TalkableOfferTarget.h"
-#import "TalkableConstants.h"
+#import "TKBLOfferTarget.h"
+#import "TKBLConstants.h"
 
 #ifndef TKBL_CROSS_REQUEST_SCHEMA
     #define TKBL_CROSS_REQUEST_SCHEMA @"tkbl"
 #endif
 
-@implementation NSObject (TalkableOfferTarget)
+@implementation NSObject (TKBLOfferTarget)
 
 #pragma mark - [Talkable Commands]
 

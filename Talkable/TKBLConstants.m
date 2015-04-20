@@ -1,12 +1,12 @@
 //
-//  TalkableConstants.m
+//  TKBLConstants.m
 //  TalkableSDK
 //
 //  Created by Vitalik Danchenko on 09.04.15.
 //  Copyright (c) 2015 Talkable. All rights reserved.
 //
 
-#import "TalkableConstants.h"
+#import "TKBLConstants.h"
 
 NSString* TKBLVersion                                   = @"1.0.0";
 

@@ -9,8 +9,8 @@
 #import <UIKit/UIKit.h>
 #import <Social/Social.h>
 #import "TalkableDelegate.h"
-#import "TalkableConstants.h"
-#import "TalkableOfferTarget.h"
+#import "TKBLConstants.h"
+#import "TKBLOfferTarget.h"
 
 #define TKBLLog(format, ...)		[[Talkable sharedInstance] debug] ? NSLog([@"[Talkable]: " stringByAppendingString:format], ##__VA_ARGS__) : nil
 

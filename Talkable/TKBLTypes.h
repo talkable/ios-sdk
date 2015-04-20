@@ -1,5 +1,5 @@
 //
-//  TalkableTypes.h
+//  TKBLTypes.h
 //  TalkableSDK
 //
 //  Created by Vitalik Danchenko on 09.04.15.

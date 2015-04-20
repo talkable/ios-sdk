@@ -8,7 +8,7 @@
 
 #import "Talkable.h"
 #import "UIViewControllerExt.h"
-#import "TalkableOfferViewController.h"
+#import "TKBLOfferViewController.h"
 
 #import "AFNetworking.h"
 
@@ -121,7 +121,7 @@ NSString*   TKBLSiteSlug            = @"site_slug";
     NSURLRequest* serverRequest = [self serverRequest:type params:talkableParams];
     [self notifyOriginDidRegister:type withURL:[serverRequest URL]];
     
-    TalkableOfferViewController* controller = [[TalkableOfferViewController alloc] init];
+    TKBLOfferViewController* controller = [[TKBLOfferViewController alloc] init];
     
     UIWebView* webView = [self buildWebView];
     [self notifyOriginDidRegister:type withWebView:webView];
@@ -362,7 +362,7 @@ NSString*   TKBLSiteSlug            = @"site_slug";
     return webView;
 }
 
-- (void)presentOfferViewController:(TalkableOfferViewController*)viewController {
+- (void)presentOfferViewController:(TKBLOfferViewController*)viewController {
     UIViewController* topViewController = nil;
     if ([self.delegate respondsToSelector:@selector(viewControllerForPresentingTalkableOfferViewController)]) {
         topViewController = [self.delegate viewControllerForPresentingTalkableOfferViewController];

@@ -7,7 +7,7 @@
 //
 
 #import <Social/Social.h>
-#import "TalkableTypes.h"
+#import "TKBLTypes.h"
 
 @protocol TalkableDelegate <NSObject>
 

@@ -1,17 +1,16 @@
 //
-//  TalkableOfferViewController.m
+//  TKBLOfferViewController.m
 //  TalkableSDK
 //
 //  Created by Vitalik Danchenko on 07.04.15.
 //  Copyright (c) 2015 Talkable. All rights reserved.
 //
 
-#import "TalkableOfferViewController.h"
+#import "TKBLOfferViewController.h"
+#import "TKBLOfferTarget.h"
 #import "UIViewControllerExt.h"
-#import "TalkableOfferTarget.h"
 
-
-@implementation TalkableOfferViewController {
+@implementation TKBLOfferViewController {
     BOOL        _requestCompleted;
     UIButton*   _closeButton;
 }
