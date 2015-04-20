@@ -82,6 +82,9 @@
 
 - (NSDictionary*)parseJSONQuery:(NSString*)query {
     NSData* jsonData = [[query stringByRemovingPercentEncoding] dataUsingEncoding:NSUTF8StringEncoding];
+    if (!jsonData)
+        return nil;
+    
     NSError __autoreleasing *error = error;
     NSDictionary* params = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingAllowFragments error:&error];
     if (!error && [params isKindOfClass:[NSDictionary class]]) {
