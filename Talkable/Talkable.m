@@ -435,12 +435,32 @@ NSString*   TKBLSiteSlug            = @"site_slug";
 }
 
 - (void)addKeyName:(NSString*)keyName value:(id)value toArray:(NSMutableArray*)items {
-    if ([value isKindOfClass:[NSString class]]) {
-        [items addObject:[NSURLQueryItem queryItemWithName: keyName value:value]];
-    } else if ([value isKindOfClass:[NSDictionary class]]) {
+    if ([value isKindOfClass:[NSDictionary class]]) {
         [items addObjectsFromArray:[self buildQueryItemsFromDictonary:value andPrefix:keyName]];
     } else if ([value isKindOfClass:[NSArray class]]) {
         [items addObjectsFromArray:[self buildQueryItemsFromArray:value andPrefix:keyName]];
+    } else {
+        [items addObject:[NSURLQueryItem queryItemWithName: keyName value:[self stringFromValue:value]]];
+    }
+}
+
+- (NSString*)stringFromValue:(id)value {
+    if ([value isKindOfClass:[NSString class]]) {
+        return value;
+    } else if ([value isKindOfClass:[NSNumber class]]) {
+        return [value stringValue];
+    } else if ([value isKindOfClass:[NSURL class]]) {
+        return [value absoluteString];
+    } else if ([value isKindOfClass:[NSDate class]]) {
+        NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
+        NSLocale* enUSPOSIXLocale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+        [dateFormatter setLocale:enUSPOSIXLocale];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
+        
+        return [dateFormatter stringFromDate:value]; // iso8601
+    } else {
+        [self raiseException:NSInvalidArgumentException withMessage:[NSString stringWithFormat:@"Invalid class %@ for parameter value.", NSStringFromClass([value class])]];
+        return nil;
     }
 }
 
