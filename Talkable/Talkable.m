@@ -170,15 +170,13 @@ NSString*   TKBLSiteSlug            = @"site_slug";
 
 - (void)retrieveRewards:(NSDictionary*)params withHandler:(TKBLCompletionHandler)handler {
     NSMutableDictionary* parameters = [self paramsForAPI:params];
-    NSMutableDictionary* data = [NSMutableDictionary dictionaryWithDictionary:[params objectForKey:@"data"]];
     
     NSString* uuid = [self visitorUUID];
-    if (![data objectForKey:TKBLVisitorUUID] && uuid) {
-        [data setObject:uuid forKey:TKBLVisitorUUID];
+    if (![parameters objectForKey:TKBLVisitorUUID] && uuid) {
+        [parameters setObject:uuid forKey:TKBLVisitorUUID];
     }
-    [parameters setObject:data forKey:@"data"];
     
-    [[self networkClient] GET:[self urlForAPI:@"/rewards"] parameters:[self paramsForAPI:params] success:^(AFHTTPRequestOperation* operation, id responseObject) {
+    [[self networkClient] GET:[self urlForAPI:@"/rewards"] parameters:parameters success:^(AFHTTPRequestOperation* operation, id responseObject) {
         [self processSuccessfulResponse:responseObject withHandler:handler];
     } failure:^(AFHTTPRequestOperation* operation, NSError* networkError) {
         [self processFailedResponse:operation.responseObject
