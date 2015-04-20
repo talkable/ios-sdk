@@ -119,9 +119,9 @@
         [shareController addURL:[NSURL URLWithString:claimURL]];
     }
     
-    NSString* title = [params objectForKey:TKBLShareTitle];
-    if (title) {
-        [shareController setInitialText:title];
+    NSString* message = [params objectForKey:TKBLShareMessage];
+    if (message) {
+        [shareController setInitialText:message];
     }
     
     [shareController setCompletionHandler:^(SLComposeViewControllerResult result) {

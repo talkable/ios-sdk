@@ -249,9 +249,9 @@ NSString*   TKBLSiteSlug            = @"site_slug";
         [controller addURL:claimURL];
     }
     
-    NSString* title = [params objectForKey:TKBLShareTitle];
-    if (title) {
-        [controller setInitialText:title];
+    NSString* message = [params objectForKey:TKBLShareMessage];
+    if (message) {
+        [controller setInitialText:message];
     }
     
     id image = [params objectForKey:TKBLShareImage];

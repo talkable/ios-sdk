@@ -68,5 +68,5 @@ NSString* TKBLShareChannel                              = @"channel";
 NSString* TKBLShareChannelFacebook                      = @"facebook";
 NSString* TKBLShareChannelTwitter                       = @"twitter";
 NSString* TKBLShareChannelOther                         = @"other";
-NSString* TKBLShareTitle                                = @"title";
+NSString* TKBLShareMessage                              = @"message";
 NSString* TKBLShareImage                                = @"image";
