@@ -12,7 +12,7 @@
 #import "TKBLConstants.h"
 #import "TKBLOfferTarget.h"
 
-#define TKBLLog(format, ...)		[[Talkable sharedInstance] debug] ? NSLog([@"[Talkable]: " stringByAppendingString:format], ##__VA_ARGS__) : nil
+#define TKBLLog(format, ...)		[[Talkable manager] debug] ? NSLog([@"[Talkable]: " stringByAppendingString:format], ##__VA_ARGS__) : nil
 
 @interface Talkable : NSObject
 
@@ -22,7 +22,7 @@
 @property (nonatomic, assign) id<TalkableDelegate>  delegate;
 @property (nonatomic, assign) BOOL                  debug;
 
-+ (Talkable*)sharedInstance;
++ (Talkable*)manager;
 
 - (void)setApiKey:(NSString*)apiKey andSiteSlug:(NSString*)siteSlug;
 - (void)setApiKey:(NSString*)apiKey andSiteSlug:(NSString*)siteSlug server:(NSString*)server;

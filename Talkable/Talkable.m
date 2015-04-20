@@ -33,16 +33,16 @@ NSString*   TKBLSiteSlug            = @"site_slug";
 
 #pragma mark - [Singleton]
 
-+ (Talkable*)sharedInstance {
-    static Talkable* _sharedInstance = nil;
-    if (_sharedInstance == nil) {
++ (Talkable*)manager {
+    static Talkable* sharedManager = nil;
+    if (sharedManager == nil) {
         @synchronized(self) {
-            if (_sharedInstance == nil) {
-                _sharedInstance = [[super allocWithZone:NULL] init];
+            if (sharedManager == nil) {
+                sharedManager = [[super allocWithZone:NULL] init];
             }
         }
     }
-    return _sharedInstance;
+    return sharedManager;
 }
 
 + (id)allocWithZone:(NSZone*)zone {
@@ -50,7 +50,7 @@ NSString*   TKBLSiteSlug            = @"site_slug";
                 format:@"[%@ %@] cannot be called; use +[%@ %@] instead",
      NSStringFromClass(self), NSStringFromSelector(_cmd),
      NSStringFromClass(self),
-     NSStringFromSelector(@selector(sharedInstance))];
+     NSStringFromSelector(@selector(manager))];
     return nil;
 }
 
@@ -545,7 +545,7 @@ NSString*   TKBLSiteSlug            = @"site_slug";
 #pragma mark - [Notifications]
 
 - (void)shareActionNotification:(NSNotification*)ntf {
-    SLComposeViewController* shareController = [[Talkable sharedInstance] socialShare:ntf.userInfo];
+    SLComposeViewController* shareController = [self socialShare:ntf.userInfo];
     
     NSString* channel = [ntf.userInfo objectForKey:TKBLShareChannel];
     if (channel && [[ntf object] isKindOfClass:[UIWebView class]]) {
