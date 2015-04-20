@@ -167,6 +167,10 @@ NSString*   TKBLSiteSlug            = @"site_slug";
     }];
 }
 
+- (void)retrieveRewardsWithHandler:(TKBLCompletionHandler)handler {
+    [self retrieveRewards:nil withHandler:handler];
+}
+
 - (void)retrieveRewards:(NSDictionary*)params withHandler:(TKBLCompletionHandler)handler {
     NSMutableDictionary* parameters = [self paramsForAPI:params];
     
@@ -186,8 +190,11 @@ NSString*   TKBLSiteSlug            = @"site_slug";
     }];
 }
 
-- (void)retrieveOffer:(NSDictionary*)params withHandler:(TKBLCompletionHandler)handler {
-    NSString* shortUrlCode = [params objectForKey:TKBLOfferShortUrlCodeKey];
+- (void)retrieveOffer:(NSString*)shortUrlCode withHandler:(TKBLCompletionHandler)handler {
+    [self retrieveOffer:shortUrlCode withParams:nil andHandler:handler];
+}
+
+- (void)retrieveOffer:(NSString*)shortUrlCode withParams:(NSDictionary*)params andHandler:(TKBLCompletionHandler)handler {
     NSString* path = [NSString stringWithFormat:@"/offers/%@", shortUrlCode];
     NSDictionary* parameters = [self paramsForAPI:params];
     
@@ -202,10 +209,14 @@ NSString*   TKBLSiteSlug            = @"site_slug";
     }];
 }
 
-- (void)createShare:(NSDictionary*)params withHandler:(TKBLCompletionHandler)handler {
-    NSString* shortUrlCode = [params objectForKey:TKBLOfferShortUrlCodeKey];
+- (void)createShare:(NSString*)shortUrlCode channel:(NSString*)channel withHandler:(TKBLCompletionHandler)handler {
+    [self createShare:shortUrlCode channel:channel withParams:nil andHandler:handler];
+}
+
+- (void)createShare:(NSString*)shortUrlCode channel:(NSString*)channel withParams:(NSDictionary *)params andHandler:(TKBLCompletionHandler)handler{
     NSString* path = [NSString stringWithFormat:@"/offers/%@/shares", shortUrlCode];
-    NSDictionary* parameters = [self paramsForAPI:params];
+    NSMutableDictionary* parameters = [self paramsForAPI:params];
+    [parameters setObject:channel forKey:TKBLShareChannel];
     
     NSString* urlString = [self urlForAPI:path];
     [self logAPIRequest:urlString withMethod:@"GET" andParameters:parameters];
@@ -257,7 +268,7 @@ NSString*   TKBLSiteSlug            = @"site_slug";
     if (offerShortUrlCode) {
         [controller setCompletionHandler:^(SLComposeViewControllerResult result){
             if (result == SLComposeViewControllerResultDone) {
-                [self createShare:@{TKBLOfferShortUrlCodeKey: offerShortUrlCode, TKBLShareChannel: channel} withHandler:nil];
+                [self createShare:offerShortUrlCode channel:channel withHandler:nil];
             }
         }];
     } else {
@@ -280,7 +291,7 @@ NSString*   TKBLSiteSlug            = @"site_slug";
     if (offerShortUrlCode) {
         [controller setCompletionWithItemsHandler:^(NSString* activityType, BOOL completed, NSArray* returnedItems, NSError*activityError) {
             if (!completed) return;
-            [self createShare:@{TKBLOfferShortUrlCodeKey: offerShortUrlCode, TKBLShareChannel: [self mapActivityType:activityType]} withHandler:nil];
+            [self createShare:offerShortUrlCode channel:[self mapActivityType:activityType] withHandler:nil];
         }];
     } else {
         TKBLLog(@"Specify %@ key or create share manually.", TKBLOfferShortUrlCodeKey);
