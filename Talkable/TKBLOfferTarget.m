@@ -17,16 +17,16 @@
 
 #pragma mark - [Talkable Commands]
 
-- (void)tkblClose:(NSString*)query sender:(id)sender {
+- (void)tkblClose:(NSDictionary*)params sender:(id)sender {
     [[NSNotificationCenter defaultCenter] postNotificationName:TKBLOfferDidSendCloseActionNotification object:sender];
 }
 
-- (void)tkblShareViaFacebook:(NSString*)query sender:(id)sender {
-    [self shareViaChannel:TKBLShareChannelFacebook query:query sender:sender];
+- (void)tkblShareViaFacebook:(NSDictionary*)params sender:(id)sender {
+    [self shareViaChannel:TKBLShareChannelFacebook withParams:params andSender:sender];
 }
 
-- (void)tkblShareViaTwitter:(NSString*)query sender:(id)sender {
-    [self shareViaChannel:TKBLShareChannelTwitter query:query sender:sender];
+- (void)tkblShareViaTwitter:(NSDictionary*)params sender:(id)sender {
+    [self shareViaChannel:TKBLShareChannelTwitter withParams:params andSender:sender];
 }
 
 #pragma mark - [UIWebViewDelegate]
@@ -42,11 +42,12 @@
         if (command) {
             SEL commandSelector = [self selectorFromCommand:command];
             if ([self respondsToSelector:commandSelector]) {
+                NSDictionary* params = [self parseQuery:query];
                 //[self performSelector:commandSelector withObject:query withObject:webView];
                 // more complex implementation to prevent warning
                 IMP imp = [self methodForSelector:commandSelector];
-                void (*func)(id, SEL, NSString*, id) = (void*)imp;
-                func(self, commandSelector, query, webView);
+                void (*func)(id, SEL, NSDictionary*, id) = (void*)imp;
+                func(self, commandSelector, params, webView);
                 
             }
         }
@@ -58,6 +59,11 @@
 #pragma mark - [Private]
 
 - (NSDictionary*)parseQuery:(NSString*)query {
+//    return [self parseHTTPQuery:query];
+    return [self parseJSONQuery:query];
+}
+
+- (NSDictionary*)parseHTTPQuery:(NSString*)query {
     NSMutableDictionary* params = [NSMutableDictionary dictionary];
     [[query componentsSeparatedByString:@"&"] enumerateObjectsUsingBlock:^(NSString* pair, NSUInteger idx, BOOL* stop){
         if (pair) {
@@ -74,6 +80,16 @@
     return [NSDictionary dictionaryWithDictionary:params];
 }
 
+- (NSDictionary*)parseJSONQuery:(NSString*)query {
+    NSData* jsonData = [[query stringByRemovingPercentEncoding] dataUsingEncoding:NSUTF8StringEncoding];
+    NSError __autoreleasing *error = error;
+    NSDictionary* params = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingAllowFragments error:&error];
+    if (!error && [params isKindOfClass:[NSDictionary class]]) {
+        return params;
+    }
+    return nil;
+}
+
 - (SEL)selectorFromCommand:(NSString*)command {
     NSMutableArray* commandComponents = [NSMutableArray array];
     [[command componentsSeparatedByString:@"-"] enumerateObjectsUsingBlock:^(NSString* obj, NSUInteger idx, BOOL* stop){
@@ -84,8 +100,11 @@
     return commandSelector;
 }
 
-- (void)shareViaChannel:(NSString*)channel query:(NSString*)query sender:(id)sender {
-    NSMutableDictionary* userInfo = [NSMutableDictionary dictionaryWithDictionary:[self parseQuery:query]];
+- (void)shareViaChannel:(NSString*)channel withParams:(NSDictionary*)params andSender:(id)sender {
+    if (!params)
+        return;
+    
+    NSMutableDictionary* userInfo = [NSMutableDictionary dictionaryWithDictionary:params];
     [userInfo setObject:channel forKey:TKBLShareChannel];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:TKBLOfferDidSendShareActionNotification object:sender userInfo:userInfo];
