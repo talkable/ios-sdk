@@ -18,15 +18,15 @@
 
 #pragma mark - [Talkable Commands]
 
-- (void)tkblClose:(NSDictionary*)params sender:(id)sender {
+- (void)tkblOfferClose:(NSDictionary*)params sender:(id)sender {
     [[NSNotificationCenter defaultCenter] postNotificationName:TKBLOfferDidSendCloseActionNotification object:sender];
 }
 
-- (void)tkblShareViaFacebook:(NSDictionary*)params sender:(id)sender {
+- (void)tkblShareOfferViaFacebook:(NSDictionary*)params sender:(id)sender {
     [self shareViaChannel:TKBLShareChannelFacebook withParams:params andSender:sender];
 }
 
-- (void)tkblShareViaTwitter:(NSDictionary*)params sender:(id)sender {
+- (void)tkblShareOfferViaTwitter:(NSDictionary*)params sender:(id)sender {
     [self shareViaChannel:TKBLShareChannelTwitter withParams:params andSender:sender];
 }
 
@@ -84,6 +84,9 @@
 }
 
 - (NSDictionary*)parseJSONQuery:(NSString*)query {
+    if (!query || [query length] == 0)
+        return nil;
+    
     NSData* jsonData = [[query stringByRemovingPercentEncoding] dataUsingEncoding:NSUTF8StringEncoding];
     if (!jsonData)
         return nil;
@@ -100,7 +103,7 @@
 
 - (SEL)selectorFromCommand:(NSString*)command {
     NSMutableArray* commandComponents = [NSMutableArray array];
-    [[command componentsSeparatedByString:@"-"] enumerateObjectsUsingBlock:^(NSString* obj, NSUInteger idx, BOOL* stop){
+    [[command componentsSeparatedByString:@"_"] enumerateObjectsUsingBlock:^(NSString* obj, NSUInteger idx, BOOL* stop){
         [commandComponents addObject:[obj capitalizedString]];
     }];
     SEL commandSelector = NSSelectorFromString([NSString stringWithFormat:@"tkbl%@:sender:", [commandComponents componentsJoinedByString:@""]]);
