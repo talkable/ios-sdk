@@ -149,7 +149,7 @@ NSString*   TKBLSiteSlug            = @"site_slug";
 
 - (void)createOrigin:(NSDictionary*)params withHandler:(TKBLCompletionHandler)handler {
     NSMutableDictionary* parameters = [self paramsForAPI:params];
-    NSMutableDictionary* data = [NSMutableDictionary dictionaryWithDictionary:[params objectForKey:@"data"]];
+    NSMutableDictionary* data = [NSMutableDictionary dictionaryWithDictionary:[params objectForKey:TKBLOriginDataKey]];
     
     NSString* uuid = [self visitorUUID];
     if (![data objectForKey:TKBLOriginUUIDKey] && uuid) {
@@ -157,7 +157,7 @@ NSString*   TKBLSiteSlug            = @"site_slug";
     }
     [data setObject:@"current" forKey:@"ip_address"];
     
-    [parameters setObject:data forKey:@"data"];
+    [parameters setObject:data forKey:TKBLOriginDataKey];
     
     [[self networkClient] POST:[self urlForAPI:@"/origins"] parameters:parameters success:^(AFHTTPRequestOperation*operation, id responseObject) {
         [self processSuccessfulResponse:responseObject withHandler:handler];
