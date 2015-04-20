@@ -159,7 +159,9 @@ NSString*   TKBLSiteSlug            = @"site_slug";
     
     [parameters setObject:data forKey:TKBLOriginDataKey];
     
-    [[self networkClient] POST:[self urlForAPI:@"/origins"] parameters:parameters success:^(AFHTTPRequestOperation*operation, id responseObject) {
+    NSString* urlString = [self urlForAPI:@"/origins"];
+    [self logAPIRequest:urlString withMethod:@"POST" andParameters:parameters];
+    [[self networkClient] POST:urlString parameters:parameters success:^(AFHTTPRequestOperation*operation, id responseObject) {
         [self processSuccessfulResponse:responseObject withHandler:handler];
     } failure:^(AFHTTPRequestOperation* operation, NSError* networkError) {
         [self processFailedResponse:operation.responseObject
@@ -176,7 +178,9 @@ NSString*   TKBLSiteSlug            = @"site_slug";
         [parameters setObject:uuid forKey:TKBLVisitorUUID];
     }
     
-    [[self networkClient] GET:[self urlForAPI:@"/rewards"] parameters:parameters success:^(AFHTTPRequestOperation* operation, id responseObject) {
+    NSString* urlString = [self urlForAPI:@"/rewards"];
+    [self logAPIRequest:urlString withMethod:@"GET" andParameters:parameters];
+    [[self networkClient] GET:urlString parameters:parameters success:^(AFHTTPRequestOperation* operation, id responseObject) {
         [self processSuccessfulResponse:responseObject withHandler:handler];
     } failure:^(AFHTTPRequestOperation* operation, NSError* networkError) {
         [self processFailedResponse:operation.responseObject
@@ -188,8 +192,11 @@ NSString*   TKBLSiteSlug            = @"site_slug";
 - (void)retrieveOffer:(NSDictionary*)params withHandler:(TKBLCompletionHandler)handler {
     NSString* shortUrlCode = [params objectForKey:TKBLOfferShortUrlCodeKey];
     NSString* path = [NSString stringWithFormat:@"/offers/%@", shortUrlCode];
+    NSDictionary* parameters = [self paramsForAPI:params];
     
-    [[self networkClient] GET:[self urlForAPI:path] parameters:[self paramsForAPI:params] success:^(AFHTTPRequestOperation* operation, id responseObject) {
+    NSString* urlString = [self urlForAPI:path];
+    [self logAPIRequest:urlString withMethod:@"GET" andParameters:parameters];
+    [[self networkClient] GET:urlString parameters:parameters success:^(AFHTTPRequestOperation* operation, id responseObject) {
         [self processSuccessfulResponse:responseObject withHandler:handler];
     } failure:^(AFHTTPRequestOperation* operation, NSError* networkError) {
         [self processFailedResponse:operation.responseObject
@@ -201,8 +208,11 @@ NSString*   TKBLSiteSlug            = @"site_slug";
 - (void)createShare:(NSDictionary*)params withHandler:(TKBLCompletionHandler)handler {
     NSString* shortUrlCode = [params objectForKey:TKBLOfferShortUrlCodeKey];
     NSString* path = [NSString stringWithFormat:@"/offers/%@/shares", shortUrlCode];
+    NSDictionary* parameters = [self paramsForAPI:params];
     
-    [[self networkClient] POST:[self urlForAPI:path] parameters:[self paramsForAPI:params] success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    NSString* urlString = [self urlForAPI:path];
+    [self logAPIRequest:urlString withMethod:@"GET" andParameters:parameters];
+    [[self networkClient] POST:[self urlForAPI:path] parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
         [self processSuccessfulResponse:responseObject withHandler:handler];
     } failure:^(AFHTTPRequestOperation* operation, NSError* networkError) {
         [self processFailedResponse:operation.responseObject
@@ -301,6 +311,10 @@ NSString*   TKBLSiteSlug            = @"site_slug";
     [paramsForAPI setValue:self.apiKey forKey:TKBLApiKey];
     [paramsForAPI setValue:self.siteSlug forKey:TKBLSiteSlug];
     return paramsForAPI;
+}
+
+- (void)logAPIRequest:(NSString*)urlString withMethod:(NSString*)method andParameters:(id)parameters {
+    TKBLLog(@"%@ request to %@ with parameters: %@", method, urlString, parameters);
 }
 
 - (NSString*)requestVisitorUUID {
