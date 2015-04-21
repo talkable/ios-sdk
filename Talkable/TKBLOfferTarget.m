@@ -110,10 +110,10 @@
 }
 
 - (void)notifyMessage:(NSString*)message withParams:(NSDictionary*)params sender:(id)sender {
-    TKBLLog(@"publish message <%@>", message)
+    TKBLLog(@"publish message <%@>", message);
     NSMutableDictionary* userInfo = [NSMutableDictionary dictionaryWithObject:message forKey:TKBLMessageNameKey];
     if (params) {
-        TKBLLog(@"message params - %@", params)
+        TKBLLog(@"message params - %@", params);
         [userInfo setValue:params forKey:TKBLMessageParamsKey];
     }
     
