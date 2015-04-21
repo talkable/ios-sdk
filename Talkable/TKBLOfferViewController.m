@@ -18,7 +18,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self setTitle: NSLocalizedString(@"Talkable Offer", nil)];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeActionNotification:) name:TKBLOfferDidSendCloseActionNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(publishMessageNotification:) name:TKBLDidPublishMessageNotification object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -28,7 +28,7 @@
 
 - (void)viewDidDisappear:(BOOL)animated {
     [[self closeBotton] removeFromSuperview];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:TKBLOfferDidSendCloseActionNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:TKBLDidPublishMessageNotification object:nil];
     [super viewDidDisappear:animated];
 }
 
@@ -89,8 +89,10 @@
 
 #pragma mark - [Notifications]
 
-- (void)closeActionNotification:(NSNotificationCenter*)ntf {
-    [self close:nil];
+- (void)publishMessageNotification:(NSNotification*)ntf {
+    if ([[[ntf userInfo] objectForKey:TKBLMessageNameKey] isEqualToString:TKBLMessageOfferClose]) {
+        [self close:nil];
+    }
 }
 
 @end

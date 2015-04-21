@@ -16,11 +16,7 @@
 
 @implementation NSObject (TKBLOfferTarget)
 
-#pragma mark - [Talkable Commands]
-
-- (void)tkblOfferClose:(NSDictionary*)params sender:(id)sender {
-    [[NSNotificationCenter defaultCenter] postNotificationName:TKBLOfferDidSendCloseActionNotification object:sender];
-}
+#pragma mark - [Talkable Messages]
 
 - (void)tkblShareOfferViaFacebook:(NSDictionary*)params sender:(id)sender {
     [self shareViaChannel:TKBLShareChannelFacebook withParams:params andSender:sender];
@@ -35,31 +31,33 @@
 - (BOOL)webView:(UIWebView*)webView shouldStartLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType {
     
     if ([[[request URL] scheme] isEqualToString:TKBL_CROSS_REQUEST_SCHEMA]) {
-        NSString* query = [[request URL] query];
-        NSString* command = [[request URL] host];
-        if (!command) {
-            command = [[request URL] path];
+        NSString* message    = [self messageFromURL:[request URL]];
+        NSDictionary* params = [self paramsFromURL:[request URL]];
+        
+        if (message) {
+            [self notifyMessage:message withParams:params sender:webView];
+            [self proccessMessage:message withParams:params sender:webView];
         }
-        if (command) {
-            TKBLLog(@"command <%@>", command);
-            
-            SEL commandSelector = [self selectorFromCommand:command];
-            if ([self respondsToSelector:commandSelector]) {
-                NSDictionary* params = [self parseQuery:query];
-                //[self performSelector:commandSelector withObject:query withObject:webView];
-                // more complex implementation to prevent warning
-                IMP imp = [self methodForSelector:commandSelector];
-                void (*func)(id, SEL, NSDictionary*, id) = (void*)imp;
-                func(self, commandSelector, params, webView);
-                
-            }
-        }
+        
         return NO;
     }
     return YES;
 }
 
 #pragma mark - [Private]
+
+- (NSString*)messageFromURL:(NSURL*)url {
+    NSString* message = [url host];
+    if (!message) {
+        message = [url path];
+    }
+    return message;
+}
+
+- (NSDictionary*)paramsFromURL:(NSURL*)url {
+    NSString* query = [url query];
+    return [self parseQuery:query];
+}
 
 - (NSDictionary*)parseQuery:(NSString*)query {
 //    return [self parseHTTPQuery:query];
@@ -101,14 +99,39 @@
     }
 }
 
-- (SEL)selectorFromCommand:(NSString*)command {
-    NSMutableArray* commandComponents = [NSMutableArray array];
-    [[command componentsSeparatedByString:@"_"] enumerateObjectsUsingBlock:^(NSString* obj, NSUInteger idx, BOOL* stop){
-        [commandComponents addObject:[obj capitalizedString]];
+- (SEL)selectorFromMessage:(NSString*)message {
+    NSMutableArray* messageComponents = [NSMutableArray array];
+    [[message componentsSeparatedByString:@"_"] enumerateObjectsUsingBlock:^(NSString* obj, NSUInteger idx, BOOL* stop){
+        [messageComponents addObject:[obj capitalizedString]];
     }];
-    SEL commandSelector = NSSelectorFromString([NSString stringWithFormat:@"tkbl%@:sender:", [commandComponents componentsJoinedByString:@""]]);
+    SEL msgSelector = NSSelectorFromString([NSString stringWithFormat:@"tkbl%@:sender:", [messageComponents componentsJoinedByString:@""]]);
     
-    return commandSelector;
+    return msgSelector;
+}
+
+- (void)notifyMessage:(NSString*)message withParams:(NSDictionary*)params sender:(id)sender {
+    TKBLLog(@"publish message <%@>", message)
+    NSMutableDictionary* userInfo = [NSMutableDictionary dictionaryWithObject:message forKey:TKBLMessageNameKey];
+    if (params) {
+        TKBLLog(@"message params - %@", params)
+        [userInfo setValue:params forKey:TKBLMessageParamsKey];
+    }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:TKBLDidPublishMessageNotification
+                                                        object:sender
+                                                      userInfo:userInfo];
+}
+
+- (void)proccessMessage:(NSString*)message withParams:(NSDictionary*)params sender:(id)sender {
+    SEL msgSelector = [self selectorFromMessage:message];
+    if ([self respondsToSelector:msgSelector]) {
+        //[self performSelector:msgSelector withObject:query withObject:webView];
+        // more complex implementation to prevent warning
+        IMP imp = [self methodForSelector:msgSelector];
+        void (*func)(id, SEL, NSDictionary*, id) = (void*)imp;
+        func(self, msgSelector, params, sender);
+        
+    }
 }
 
 - (void)shareViaChannel:(NSString*)channel withParams:(NSDictionary*)params andSender:(id)sender {

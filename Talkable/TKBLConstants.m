@@ -14,7 +14,11 @@ NSString* TKBLErrorDomain                               = @"com.talkable.ios-sdk
 
 NSString* TKBLConfigurationException                    = @"TKBLConfigurationExceptionName";
 
-NSString* TKBLOfferDidSendCloseActionNotification       = @"TKBLOfferDidSendCloseActionNotificationName";
+NSString* TKBLDidPublishMessageNotification             = @"TKBLDidPublishMessageNotificationName";
+NSString* TKBLMessageNameKey                            = @"name";
+NSString* TKBLMessageParamsKey                          = @"params";
+NSString* TKBLMessageOfferClose                         = @"offer_close";
+NSString* TKBLMessageCouponIssued                       = @"coupon_issued";
 
 NSString* TKBLOriginTypeKey                             = @"type";
 NSString* TKBLOriginDataKey                             = @"data";
