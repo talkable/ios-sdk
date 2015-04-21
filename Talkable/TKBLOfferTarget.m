@@ -27,6 +27,10 @@
     [self shareViaChannel:TKBLShareChannelTwitter withParams:params andSender:sender];
 }
 
+- (void)tkblShareOfferViaLink:(NSDictionary*)params sender:(id)sender {
+    [self shareViaLinkWithParams:params andSender:sender];
+}
+
 - (void)tkblImportContact:(NSDictionary*)params sender:(id)sender {
     [[TKBLContactsLoader loader] loadContactsWithComplitionHandler:^(NSArray* contacts) {
         NSData* data = [NSJSONSerialization dataWithJSONObject:@{@"contacts":contacts} options:0 error:nil];
@@ -170,6 +174,34 @@
     
     [[UIViewController currentViewController] presentViewController:shareController animated:YES completion:nil];
     
+}
+
+- (void)shareViaLinkWithParams:(NSDictionary*)params andSender:(id)sender {
+    NSMutableArray* activityItems = [NSMutableArray array];
+    
+    NSString* message = [params objectForKey:TKBLShareMessage];
+    if (message) {
+        [activityItems addObject:message];
+    }
+    
+    NSString* claimURL = [params objectForKey:TKBLOfferClaimUrlKey];
+    if (claimURL) {
+        [activityItems addObject:[NSURL URLWithString:claimURL]];
+    }
+    
+    if ([activityItems count] == 0) return;
+    
+    UIActivityViewController* controller = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
+    
+    [controller setCompletionWithItemsHandler:^(NSString* activityType, BOOL completed, NSArray* returnedItems, NSError*activityError) {
+        if (!completed) return;
+        [(UIWebView*)sender stringByEvaluatingJavaScriptFromString:@"Talkable.shareSucceeded('other');"];
+        
+    }];
+    
+    [controller setExcludedActivityTypes:@[UIActivityTypePostToFacebook, UIActivityTypePostToTwitter]];
+    
+    [[UIViewController currentViewController] presentViewController:controller animated:YES completion:nil];
 }
 
 - (SLComposeViewController*)shareController:(NSString*)channel {
