@@ -8,6 +8,7 @@
 
 #import "TKBLOfferTarget.h"
 #import "Talkable.h"
+#import "TKBLContactsLoader.h"
 #import "UIViewControllerExt.h"
 
 #ifndef TKBL_CROSS_REQUEST_SCHEMA
@@ -24,6 +25,17 @@
 
 - (void)tkblShareOfferViaTwitter:(NSDictionary*)params sender:(id)sender {
     [self shareViaChannel:TKBLShareChannelTwitter withParams:params andSender:sender];
+}
+
+- (void)tkblImportContact:(NSDictionary*)params sender:(id)sender {
+    [[TKBLContactsLoader loader] loadContactsWithComplitionHandler:^(NSArray* contacts) {
+        NSData* data = [NSJSONSerialization dataWithJSONObject:@{@"contacts":contacts} options:0 error:nil];
+        NSString* json =  [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        if ([json length] > 0) {
+            NSString* script = [NSString stringWithFormat:@"Talkable.publish('contacts_imported', %@)", json];
+            [(UIWebView*)sender stringByEvaluatingJavaScriptFromString:script];
+        }
+    }];
 }
 
 #pragma mark - [UIWebViewDelegate]

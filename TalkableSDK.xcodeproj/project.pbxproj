@@ -21,6 +21,9 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		7A488CDE1AE64B2A002285C9 /* TKBLContactsLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A488CDC1AE64B2A002285C9 /* TKBLContactsLoader.h */; };
+		7A488CDF1AE64B2A002285C9 /* TKBLContactsLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A488CDD1AE64B2A002285C9 /* TKBLContactsLoader.m */; };
+		7A488CE11AE64E3F002285C9 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A488CE01AE64E3F002285C9 /* AddressBook.framework */; };
 		7A7C4FEB1AD2E37000CCC1CB /* Talkable.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A7C4FEA1AD2E37000CCC1CB /* Talkable.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7A7C4FF11AD2E37000CCC1CB /* TalkableSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A7C4FE51AD2E37000CCC1CB /* TalkableSDK.framework */; };
 		7A7C4FF81AD2E37000CCC1CB /* TalkableTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A7C4FF71AD2E37000CCC1CB /* TalkableTests.m */; };
@@ -68,6 +71,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7A488CDC1AE64B2A002285C9 /* TKBLContactsLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKBLContactsLoader.h; sourceTree = "<group>"; };
+		7A488CDD1AE64B2A002285C9 /* TKBLContactsLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKBLContactsLoader.m; sourceTree = "<group>"; };
+		7A488CE01AE64E3F002285C9 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		7A7C4FE51AD2E37000CCC1CB /* TalkableSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TalkableSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A7C4FE91AD2E37000CCC1CB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7A7C4FEA1AD2E37000CCC1CB /* Talkable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Talkable.h; sourceTree = "<group>"; };
@@ -112,6 +118,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A488CE11AE64E3F002285C9 /* AddressBook.framework in Frameworks */,
 				7A7C51501AD683A100CCC1CB /* Social.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -158,6 +165,8 @@
 				7A7C513F1AD66B4A00CCC1CB /* TKBLConstants.m */,
 				7A7C51131AD5888F00CCC1CB /* TKBLOfferTarget.h */,
 				7A7C51151AD5893A00CCC1CB /* TKBLOfferTarget.m */,
+				7A488CDC1AE64B2A002285C9 /* TKBLContactsLoader.h */,
+				7A488CDD1AE64B2A002285C9 /* TKBLContactsLoader.m */,
 				7A7C50B61AD4157600CCC1CB /* TKBLOfferViewController.h */,
 				7A7C50B71AD4157600CCC1CB /* TKBLOfferViewController.m */,
 				7A7C50B21AD3F83C00CCC1CB /* UIViewControllerExt.h */,
@@ -221,6 +230,7 @@
 		7A7C51511AD683AE00CCC1CB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7A488CE01AE64E3F002285C9 /* AddressBook.framework */,
 				7A7C514F1AD683A100CCC1CB /* Social.framework */,
 			);
 			name = Frameworks;
@@ -250,6 +260,7 @@
 				7A7C50B41AD3F83C00CCC1CB /* UIViewControllerExt.h in Headers */,
 				7A7C513A1AD592C300CCC1CB /* AFURLResponseSerialization.h in Headers */,
 				7A7C512D1AD592C300CCC1CB /* AFHTTPRequestOperationManager.h in Headers */,
+				7A488CDE1AE64B2A002285C9 /* TKBLContactsLoader.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -399,6 +410,7 @@
 				7A7C51331AD592C300CCC1CB /* AFNetworkReachabilityManager.m in Sources */,
 				7A7C513B1AD592C300CCC1CB /* AFURLResponseSerialization.m in Sources */,
 				7A7C513D1AD592C300CCC1CB /* AFURLSessionManager.m in Sources */,
+				7A488CDF1AE64B2A002285C9 /* TKBLContactsLoader.m in Sources */,
 				7A7C50021AD2E3A900CCC1CB /* Talkable.m in Sources */,
 				7A7C51401AD66B4A00CCC1CB /* TKBLConstants.m in Sources */,
 			);
