@@ -58,6 +58,9 @@
 		7A7C514C1AD674E100CCC1CB /* TKBLTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A7C51411AD66C2D00CCC1CB /* TKBLTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7A7C514D1AD674EF00CCC1CB /* TKBLConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A7C513E1AD66AA100CCC1CB /* TKBLConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7A7C51501AD683A100CCC1CB /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A7C514F1AD683A100CCC1CB /* Social.framework */; };
+		7AC485E31AE7CD5D00165E04 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AC485E21AE7CD5D00165E04 /* MessageUI.framework */; };
+		7AC485E61AE7D54900165E04 /* TKBLSmsWatcher.h in Headers */ = {isa = PBXBuildFile; fileRef = 7AC485E41AE7D54900165E04 /* TKBLSmsWatcher.h */; };
+		7AC485E71AE7D54900165E04 /* TKBLSmsWatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AC485E51AE7D54900165E04 /* TKBLSmsWatcher.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -111,6 +114,9 @@
 		7A7C51411AD66C2D00CCC1CB /* TKBLTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TKBLTypes.h; sourceTree = "<group>"; };
 		7A7C51421AD66C6E00CCC1CB /* TalkableDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TalkableDelegate.h; sourceTree = "<group>"; };
 		7A7C514F1AD683A100CCC1CB /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		7AC485E21AE7CD5D00165E04 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		7AC485E41AE7D54900165E04 /* TKBLSmsWatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKBLSmsWatcher.h; sourceTree = "<group>"; };
+		7AC485E51AE7D54900165E04 /* TKBLSmsWatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKBLSmsWatcher.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +124,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7AC485E31AE7CD5D00165E04 /* MessageUI.framework in Frameworks */,
 				7A488CE11AE64E3F002285C9 /* AddressBook.framework in Frameworks */,
 				7A7C51501AD683A100CCC1CB /* Social.framework in Frameworks */,
 			);
@@ -165,6 +172,8 @@
 				7A7C513F1AD66B4A00CCC1CB /* TKBLConstants.m */,
 				7A7C51131AD5888F00CCC1CB /* TKBLOfferTarget.h */,
 				7A7C51151AD5893A00CCC1CB /* TKBLOfferTarget.m */,
+				7AC485E41AE7D54900165E04 /* TKBLSmsWatcher.h */,
+				7AC485E51AE7D54900165E04 /* TKBLSmsWatcher.m */,
 				7A488CDC1AE64B2A002285C9 /* TKBLContactsLoader.h */,
 				7A488CDD1AE64B2A002285C9 /* TKBLContactsLoader.m */,
 				7A7C50B61AD4157600CCC1CB /* TKBLOfferViewController.h */,
@@ -230,6 +239,7 @@
 		7A7C51511AD683AE00CCC1CB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7AC485E21AE7CD5D00165E04 /* MessageUI.framework */,
 				7A488CE01AE64E3F002285C9 /* AddressBook.framework */,
 				7A7C514F1AD683A100CCC1CB /* Social.framework */,
 			);
@@ -245,6 +255,7 @@
 			files = (
 				7A7C514D1AD674EF00CCC1CB /* TKBLConstants.h in Headers */,
 				7A7C514C1AD674E100CCC1CB /* TKBLTypes.h in Headers */,
+				7AC485E61AE7D54900165E04 /* TKBLSmsWatcher.h in Headers */,
 				7A7C51141AD5888F00CCC1CB /* TKBLOfferTarget.h in Headers */,
 				7A7C514B1AD6748500CCC1CB /* TalkableDelegate.h in Headers */,
 				7A7C513C1AD592C300CCC1CB /* AFURLSessionManager.h in Headers */,
@@ -400,6 +411,7 @@
 			files = (
 				7A7C50B51AD3F83C00CCC1CB /* UIViewControllerExt.m in Sources */,
 				7A7C51351AD592C300CCC1CB /* AFSecurityPolicy.m in Sources */,
+				7AC485E71AE7D54900165E04 /* TKBLSmsWatcher.m in Sources */,
 				7A7C50B91AD4157600CCC1CB /* TKBLOfferViewController.m in Sources */,
 				7A7C512E1AD592C300CCC1CB /* AFHTTPRequestOperationManager.m in Sources */,
 				7A7C51371AD592C300CCC1CB /* AFURLConnectionOperation.m in Sources */,

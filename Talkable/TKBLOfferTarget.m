@@ -6,8 +6,11 @@
 //  Copyright (c) 2015 Talkable. All rights reserved.
 //
 
+#import <MessageUI/MessageUI.h>
+
 #import "TKBLOfferTarget.h"
 #import "Talkable.h"
+#import "TKBLSmsWatcher.h"
 #import "TKBLContactsLoader.h"
 #import "UIViewControllerExt.h"
 
@@ -27,8 +30,43 @@
     [self shareViaChannel:TKBLShareChannelTwitter withParams:params andSender:sender];
 }
 
+- (void)tkblShareOfferViaSms:(NSDictionary*)params sender:(id)sender {
+    if (![MFMessageComposeViewController canSendText]) {
+        TKBLLog(@"Current device does'nt support SMS sending'", nil);
+        return;
+    }
+    
+    NSString* message = [params objectForKey:TKBLShareMessage];
+    if (!message) {
+        message = [NSString string];
+    }
+    
+    NSString* claimURL = [params objectForKey:TKBLOfferClaimUrlKey];
+    if (claimURL) {
+        message = [message stringByAppendingString:claimURL];
+    }
+    
+    MFMessageComposeViewController* controller = [[MFMessageComposeViewController alloc] init];
+    [controller setBody:message];
+    
+    TKBLSmsWatcher* watcher = [[TKBLSmsWatcher alloc] init];
+    watcher.successCompletionHandler = ^(void){
+        [(UIWebView*)sender stringByEvaluatingJavaScriptFromString:@"Talkable.shareSucceeded('native_sms');"];
+    };
+    controller.messageComposeDelegate = watcher;
+    [[UIViewController currentViewController] presentViewController:controller animated:YES completion:nil];
+}
+
 - (void)tkblShareOfferViaLink:(NSDictionary*)params sender:(id)sender {
-    [self shareViaLinkWithParams:params andSender:sender];
+    NSString* claimURL = [params objectForKey:TKBLOfferClaimUrlKey];
+    if (claimURL) {
+        UIPasteboard* pasteBoard = [UIPasteboard generalPasteboard];
+        pasteBoard.persistent = YES;
+        [pasteBoard setString:claimURL];
+        [(UIWebView*)sender stringByEvaluatingJavaScriptFromString:@"Talkable.shareSucceeded('other');"];
+    } else {
+        TKBLLog(@"Specify URL for key '%@'", TKBLOfferClaimUrlKey);
+    }
 }
 
 - (void)tkblImportContact:(NSDictionary*)params sender:(id)sender {
@@ -110,7 +148,7 @@
     if (!error && [params isKindOfClass:[NSDictionary class]]) {
         return params;
     } else {
-        TKBLLog(@"Invalid params. %@", error);
+        TKBLLog(@"Invalid params %@ Error - %@", [query stringByRemovingPercentEncoding], error);
         return nil;
     }
 }
