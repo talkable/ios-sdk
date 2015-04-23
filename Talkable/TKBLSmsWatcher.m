@@ -12,7 +12,7 @@
     __strong TKBLSmsWatcher* _retained;
 }
 
-@synthesize successCompletionHandler = _successCompletionHandler, completionHandler = _completionHandler;
+@synthesize successCompletionHandler = _successCompletionHandler;
 
 -(id)init {
     self = [super init];
