@@ -43,11 +43,24 @@
     
     NSString* claimURL = [params objectForKey:TKBLOfferClaimUrlKey];
     if (claimURL) {
-        message = [message stringByAppendingString:claimURL];
+        message = [NSString stringWithFormat:@"%@ %@", message, claimURL];
+    }
+    
+    id recipients = [params objectForKey:TKBLShareRecipients];
+    NSArray* recipientsList = nil;
+    if (recipients) {
+        if ([recipients isKindOfClass:[NSArray class]]) {
+            recipientsList = recipients;
+        } else if ([recipients isKindOfClass:[NSString class]]) {
+            recipientsList = [(NSString*)recipients componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@",;"]];
+        }
     }
     
     MFMessageComposeViewController* controller = [[MFMessageComposeViewController alloc] init];
     [controller setBody:message];
+    if (recipientsList) {
+        [controller setRecipients:recipientsList];
+    }
     
     TKBLSmsWatcher* watcher = [[TKBLSmsWatcher alloc] init];
     watcher.successCompletionHandler = ^(void){
@@ -69,7 +82,7 @@
     }
 }
 
-- (void)tkblImportContact:(NSDictionary*)params sender:(id)sender {
+- (void)tkblImportContacts:(NSDictionary*)params sender:(id)sender {
     [[TKBLContactsLoader loader] loadContactsWithComplitionHandler:^(NSArray* contacts) {
         TKBLLog(@"Imported contacts - %@", contacts);
         NSData* data = [NSJSONSerialization dataWithJSONObject:@{@"contacts":contacts} options:0 error:nil];

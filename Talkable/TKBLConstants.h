@@ -74,5 +74,6 @@ FOUNDATION_EXPORT NSString* TKBLShareChannelFacebook;
 FOUNDATION_EXPORT NSString* TKBLShareChannelTwitter;
 FOUNDATION_EXPORT NSString* TKBLShareChannelOther;
 FOUNDATION_EXPORT NSString* TKBLShareMessage;
+FOUNDATION_EXPORT NSString* TKBLShareRecipients;
 FOUNDATION_EXPORT NSString* TKBLShareImage;
 
