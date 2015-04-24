@@ -61,6 +61,10 @@
 		7AC485E31AE7CD5D00165E04 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AC485E21AE7CD5D00165E04 /* MessageUI.framework */; };
 		7AC485E61AE7D54900165E04 /* TKBLSmsWatcher.h in Headers */ = {isa = PBXBuildFile; fileRef = 7AC485E41AE7D54900165E04 /* TKBLSmsWatcher.h */; };
 		7AC485E71AE7D54900165E04 /* TKBLSmsWatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AC485E51AE7D54900165E04 /* TKBLSmsWatcher.m */; };
+		7ADC925E1AEA4E32008CB280 /* TKBLObjCChecker.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ADC925C1AEA4E32008CB280 /* TKBLObjCChecker.h */; };
+		7ADC925F1AEA4E32008CB280 /* TKBLObjCChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ADC925D1AEA4E32008CB280 /* TKBLObjCChecker.m */; };
+		7ADC92621AEA4E67008CB280 /* TKBLObjCCheckerExt.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ADC92601AEA4E67008CB280 /* TKBLObjCCheckerExt.h */; };
+		7ADC92631AEA4E67008CB280 /* TKBLObjCCheckerExt.m in Sources */ = {isa = PBXBuildFile; fileRef = 7ADC92611AEA4E67008CB280 /* TKBLObjCCheckerExt.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -117,6 +121,10 @@
 		7AC485E21AE7CD5D00165E04 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		7AC485E41AE7D54900165E04 /* TKBLSmsWatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKBLSmsWatcher.h; sourceTree = "<group>"; };
 		7AC485E51AE7D54900165E04 /* TKBLSmsWatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKBLSmsWatcher.m; sourceTree = "<group>"; };
+		7ADC925C1AEA4E32008CB280 /* TKBLObjCChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKBLObjCChecker.h; sourceTree = "<group>"; };
+		7ADC925D1AEA4E32008CB280 /* TKBLObjCChecker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKBLObjCChecker.m; sourceTree = "<group>"; };
+		7ADC92601AEA4E67008CB280 /* TKBLObjCCheckerExt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKBLObjCCheckerExt.h; sourceTree = "<group>"; };
+		7ADC92611AEA4E67008CB280 /* TKBLObjCCheckerExt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKBLObjCCheckerExt.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -178,6 +186,10 @@
 				7A488CDD1AE64B2A002285C9 /* TKBLContactsLoader.m */,
 				7A7C50B61AD4157600CCC1CB /* TKBLOfferViewController.h */,
 				7A7C50B71AD4157600CCC1CB /* TKBLOfferViewController.m */,
+				7ADC925C1AEA4E32008CB280 /* TKBLObjCChecker.h */,
+				7ADC925D1AEA4E32008CB280 /* TKBLObjCChecker.m */,
+				7ADC92601AEA4E67008CB280 /* TKBLObjCCheckerExt.h */,
+				7ADC92611AEA4E67008CB280 /* TKBLObjCCheckerExt.m */,
 				7A7C50B21AD3F83C00CCC1CB /* UIViewControllerExt.h */,
 				7A7C50B31AD3F83C00CCC1CB /* UIViewControllerExt.m */,
 				7A7C4FE81AD2E37000CCC1CB /* Supporting Files */,
@@ -264,12 +276,14 @@
 				7A7C50B81AD4157600CCC1CB /* TKBLOfferViewController.h in Headers */,
 				7A7C512B1AD592C300CCC1CB /* AFHTTPRequestOperation.h in Headers */,
 				7A7C51361AD592C300CCC1CB /* AFURLConnectionOperation.h in Headers */,
+				7ADC925E1AEA4E32008CB280 /* TKBLObjCChecker.h in Headers */,
 				7A7C51381AD592C300CCC1CB /* AFURLRequestSerialization.h in Headers */,
 				7A7C51311AD592C300CCC1CB /* AFNetworking.h in Headers */,
 				7A7C4FEB1AD2E37000CCC1CB /* Talkable.h in Headers */,
 				7A7C512F1AD592C300CCC1CB /* AFHTTPSessionManager.h in Headers */,
 				7A7C50B41AD3F83C00CCC1CB /* UIViewControllerExt.h in Headers */,
 				7A7C513A1AD592C300CCC1CB /* AFURLResponseSerialization.h in Headers */,
+				7ADC92621AEA4E67008CB280 /* TKBLObjCCheckerExt.h in Headers */,
 				7A7C512D1AD592C300CCC1CB /* AFHTTPRequestOperationManager.h in Headers */,
 				7A488CDE1AE64B2A002285C9 /* TKBLContactsLoader.h in Headers */,
 			);
@@ -321,7 +335,7 @@
 		7A7C4FDC1AD2E37000CCC1CB /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				CLASSPREFIX = TLKB;
+				CLASSPREFIX = TKBL;
 				LastUpgradeCheck = 0610;
 				ORGANIZATIONNAME = Talkable;
 				TargetAttributes = {
@@ -419,10 +433,12 @@
 				7A7C51161AD5893A00CCC1CB /* TKBLOfferTarget.m in Sources */,
 				7A7C51391AD592C300CCC1CB /* AFURLRequestSerialization.m in Sources */,
 				7A7C51301AD592C300CCC1CB /* AFHTTPSessionManager.m in Sources */,
+				7ADC92631AEA4E67008CB280 /* TKBLObjCCheckerExt.m in Sources */,
 				7A7C51331AD592C300CCC1CB /* AFNetworkReachabilityManager.m in Sources */,
 				7A7C513B1AD592C300CCC1CB /* AFURLResponseSerialization.m in Sources */,
 				7A7C513D1AD592C300CCC1CB /* AFURLSessionManager.m in Sources */,
 				7A488CDF1AE64B2A002285C9 /* TKBLContactsLoader.m in Sources */,
+				7ADC925F1AEA4E32008CB280 /* TKBLObjCChecker.m in Sources */,
 				7A7C50021AD2E3A900CCC1CB /* Talkable.m in Sources */,
 				7A7C51401AD66B4A00CCC1CB /* TKBLConstants.m in Sources */,
 			);
@@ -450,6 +466,7 @@
 		7A488CD11AE0F5C9002285C9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				MACH_O_TYPE = staticlib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALID_ARCHS = "arm64 armv7 armv7s";
 			};
@@ -458,6 +475,7 @@
 		7A488CD21AE0F5C9002285C9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				MACH_O_TYPE = staticlib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALID_ARCHS = "arm64 armv7 armv7s";
 			};
@@ -498,7 +516,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MACH_O_TYPE = staticlib;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = NO;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(PROJECT_NAME)/Headers";
@@ -538,7 +557,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MACH_O_TYPE = staticlib;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(PROJECT_NAME)/Headers";
 				SDKROOT = iphoneos;
@@ -564,9 +584,8 @@
 				GENERATE_PKGINFO_FILE = NO;
 				INFOPLIST_FILE = Talkable/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				OTHER_LDFLAGS = "-v";
+				MACH_O_TYPE = staticlib;
 				PRODUCT_NAME = TalkableSDK;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
 				SKIP_INSTALL = YES;
@@ -589,9 +608,8 @@
 				GENERATE_PKGINFO_FILE = NO;
 				INFOPLIST_FILE = Talkable/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				OTHER_LDFLAGS = "-v";
+				MACH_O_TYPE = staticlib;
 				PRODUCT_NAME = TalkableSDK;
 				PUBLIC_HEADERS_FOLDER_PATH = "$(CONTENTS_FOLDER_PATH)/Headers";
 				SKIP_INSTALL = YES;

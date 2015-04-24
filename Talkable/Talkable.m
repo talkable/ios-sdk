@@ -10,7 +10,7 @@
 #import "TKBLOfferViewController.h"
 #import "UIViewControllerExt.h"
 #import "TKBLOfferTarget.h"
-
+#import "TKBLObjCChecker.h"
 
 #import "AFNetworking.h"
 
@@ -36,6 +36,8 @@ NSString*   TKBLSiteSlug            = @"site_slug";
 #pragma mark - [Singleton]
 
 + (Talkable*)manager {
+    if (![self talkableSupported]) return nil;
+    
     static Talkable* sharedManager = nil;
     if (sharedManager == nil) {
         @synchronized(self) {
@@ -45,6 +47,19 @@ NSString*   TKBLSiteSlug            = @"site_slug";
         }
     }
     return sharedManager;
+}
+
++ (BOOL)talkableSupported {
+    if (NSFoundationVersionNumber < NSFoundationVersionNumber_iOS_7_0) {
+        NSLog(@"TalkableSDK suports iOS7.0 and later.");
+        return NO;
+    }
+    TKBLObjCChecker* checker = [[TKBLObjCChecker alloc] init];
+    if (![checker flagExist]) {
+        NSLog(@"Add -ObjC to Other Linker Flags to use TalkableSDK. More details at https://developer.apple.com/library/ios/qa/qa1490/_index.html");
+        return NO;
+    }
+    return YES;
 }
 
 + (id)allocWithZone:(NSZone*)zone {
@@ -394,7 +409,8 @@ NSString*   TKBLSiteSlug            = @"site_slug";
         action = @"new";
     }
     components.path = [NSString stringWithFormat:@"/public/%@/%@/%@", self.siteSlug, [self pathForType:type], action] ;
-    components.queryItems = [self buildQueryItemsFromDictonary:params andPrefix:nil];
+    components.query = [self buildQueryFromDictonary:params andPrefix:nil];
+
     
     NSURL* url = components.URL;
     
@@ -440,7 +456,7 @@ NSString*   TKBLSiteSlug            = @"site_slug";
     }
 }
 
-- (NSArray*)buildQueryItemsFromDictonary:(NSDictionary*)params andPrefix:(NSString*)prefix {
+- (NSString*)buildQueryFromDictonary:(NSDictionary*)params andPrefix:(NSString*)prefix {
     NSMutableArray* items = [NSMutableArray arrayWithCapacity:[params count]];
     [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL* stop) {
         if (![key isKindOfClass:[NSString class]]) {
@@ -449,10 +465,10 @@ NSString*   TKBLSiteSlug            = @"site_slug";
         NSString* keyName = prefix ? [NSString stringWithFormat:@"%@[%@]", prefix, key] : key;
         [self addKeyName:keyName value:value toArray:items];
     }];
-    return [NSArray arrayWithArray:items];
+    return [items componentsJoinedByString:@"&"];
 }
 
-- (NSArray*)buildQueryItemsFromArray:(NSArray*)params andPrefix:(NSString*)prefix {
+- (NSString*)buildQueryFromArray:(NSArray*)params andPrefix:(NSString*)prefix {
     NSMutableArray* items = [NSMutableArray arrayWithCapacity:[params count]];
     [params enumerateObjectsUsingBlock:^(id value, NSUInteger idx, BOOL* stop) {
         NSString* keyName = prefix ?
@@ -460,37 +476,38 @@ NSString*   TKBLSiteSlug            = @"site_slug";
         [NSString stringWithFormat:@"%lu", (unsigned long)idx];
         [self addKeyName:keyName value:value toArray:items];
     }];
-    return [NSArray arrayWithArray:items];
+    return [items componentsJoinedByString:@"&"];
 }
 
 - (void)addKeyName:(NSString*)keyName value:(id)value toArray:(NSMutableArray*)items {
     if ([value isKindOfClass:[NSDictionary class]]) {
-        [items addObjectsFromArray:[self buildQueryItemsFromDictonary:value andPrefix:keyName]];
+        [items addObject:[self buildQueryFromDictonary:value andPrefix:keyName]];
     } else if ([value isKindOfClass:[NSArray class]]) {
-        [items addObjectsFromArray:[self buildQueryItemsFromArray:value andPrefix:keyName]];
+        [items addObject:[self buildQueryFromArray:value andPrefix:keyName]];
     } else {
-        [items addObject:[NSURLQueryItem queryItemWithName: keyName value:[self stringFromValue:value]]];
+        [items addObject:[NSString stringWithFormat:@"%@=%@", keyName, [self stringFromValue:value]]];
     }
 }
 
 - (NSString*)stringFromValue:(id)value {
+    NSString* stringValue = nil;
     if ([value isKindOfClass:[NSString class]]) {
-        return value;
+        stringValue = value;
     } else if ([value isKindOfClass:[NSNumber class]]) {
-        return [value stringValue];
+        stringValue = [value stringValue];
     } else if ([value isKindOfClass:[NSURL class]]) {
-        return [value absoluteString];
+        stringValue = [value absoluteString];
     } else if ([value isKindOfClass:[NSDate class]]) {
         NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
         NSLocale* enUSPOSIXLocale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
         [dateFormatter setLocale:enUSPOSIXLocale];
         [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
         
-        return [dateFormatter stringFromDate:value]; // iso8601
+        stringValue = [dateFormatter stringFromDate:value]; // iso8601
     } else {
         [self raiseException:NSInvalidArgumentException withMessage:[NSString stringWithFormat:@"Invalid class %@ for parameter value.", NSStringFromClass([value class])]];
-        return nil;
     }
+    return [stringValue stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 }
 
 - (NSDictionary*)channelMap {
