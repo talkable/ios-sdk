@@ -409,9 +409,12 @@ NSString*   TKBLSiteSlug            = @"site_slug";
         action = @"new";
     }
     components.path = [NSString stringWithFormat:@"/public/%@/%@/%@", self.siteSlug, [self pathForType:type], action] ;
-    components.query = [self buildQueryFromDictonary:params andPrefix:nil];
-
     
+    NSString* query = [self buildQueryFromDictonary:params andPrefix:nil];
+    NSString* percentEncodedQuery = [[query stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]
+stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
+    components.percentEncodedQuery = percentEncodedQuery;
+
     NSURL* url = components.URL;
     
     return [NSURLRequest requestWithURL: url];
@@ -507,7 +510,7 @@ NSString*   TKBLSiteSlug            = @"site_slug";
     } else {
         [self raiseException:NSInvalidArgumentException withMessage:[NSString stringWithFormat:@"Invalid class %@ for parameter value.", NSStringFromClass([value class])]];
     }
-    return [stringValue stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    return stringValue;
 }
 
 - (NSDictionary*)channelMap {
