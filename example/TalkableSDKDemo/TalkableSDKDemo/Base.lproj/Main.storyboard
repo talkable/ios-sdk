@@ -78,7 +78,7 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="vitalik.danchenko+fr@talkable.com" borderStyle="roundedRect" minimumFontSize="17" id="YhK-uC-Qg8">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="customer@example.com" borderStyle="roundedRect" minimumFontSize="17" id="YhK-uC-Qg8">
                                 <rect key="frame" x="155" y="80" width="149" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
