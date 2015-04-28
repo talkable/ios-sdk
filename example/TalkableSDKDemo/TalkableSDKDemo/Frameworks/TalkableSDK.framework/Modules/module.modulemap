@@ -1,0 +1,6 @@
+framework module TalkableSDK {
+  umbrella header "TalkableSDK.h"
+
+  export *
+  module * { export * }
+}
