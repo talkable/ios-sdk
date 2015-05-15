@@ -29,6 +29,13 @@
 
 - (NSString*)visitorUUID;
 
+- (void)registerCoupon:(NSString*)coupon;
+- (NSString*)coupon;
+
+#pragma make - [Handlers]
+
+- (BOOL)handleOpenURL:(NSURL*)url;
+
 #pragma mark - [Integration]
 
 - (void)registerOrigin:(TKBLOriginType)type params:(NSDictionary*)params;

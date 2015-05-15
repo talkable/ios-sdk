@@ -41,23 +41,29 @@
     }
     [self.orderNumberField setText:orderNumber];
     
-    NSString* coupon = [[NSUserDefaults standardUserDefaults] objectForKey:@"tmp-coupon-code"];
-    if (coupon) [self.couponField setText:coupon];
+    [self updateCoupon];
     
     [[Talkable manager] setDelegate:self];
     NSLog(@"UUID = %@", [[Talkable manager] visitorUUID]);
     
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(couponReceived:) name:@"COUPONCODE_RECEIVED" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(couponReceived:) name:TKBLDidReceiveCouponCode object:nil];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"COUPONCODE_RECEIVED" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:TKBLDidReceiveCouponCode object:nil];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - [Private]
+
+- (void)updateCoupon {
+    NSString* coupon = [[Talkable manager] coupon];
+    if (coupon) [self.couponField setText:coupon];
 }
 
 #pragma mark - [IBActions]
@@ -216,8 +222,7 @@
 #pragma mark - [Notifications]
 
 -(void)couponReceived:(NSNotification*)ntf {
-    NSString* coupon = [[NSUserDefaults standardUserDefaults] objectForKey:@"tmp-coupon-code"];
-    if (coupon) [self.couponField setText:coupon];
+    [self updateCoupon];
 }
 
 @end

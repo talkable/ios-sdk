@@ -50,21 +50,7 @@
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL*)url sourceApplication:(NSString*)sourceApplication annotation:(id)annotation {
     
-    NSLog(@"handle open with URL: %@", url.absoluteString);
-    
-    [[url.query componentsSeparatedByString:@"&"] enumerateObjectsUsingBlock:^(NSString* pair, NSUInteger idx, BOOL* stop){
-        if (pair) {
-            NSArray* pairComponents = [pair componentsSeparatedByString:@"="];
-            NSString* name = [[pairComponents firstObject] stringByRemovingPercentEncoding];
-            NSString* value = [[pairComponents lastObject] stringByRemovingPercentEncoding];
-            if ([name isEqualToString:@"coupon"]) {
-                NSLog(@"COUPON: %@", value);
-                [[NSUserDefaults standardUserDefaults] setObject:value forKey:@"tmp-coupon-code"];
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"COUPONCODE_RECEIVED" object:nil];
-            }
-        }
-    }];
-     
+    [[Talkable manager] handleOpenURL:url];
     
     return YES;
 }
