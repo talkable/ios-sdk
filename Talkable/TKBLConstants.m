@@ -20,6 +20,8 @@ NSString* TKBLMessageParamsKey                          = @"params";
 NSString* TKBLMessageOfferClose                         = @"offer_close";
 NSString* TKBLMessageCouponIssued                       = @"coupon_issued";
 
+NSString* TKBLDidReceiveCouponCode                      = @"TKBLDidReceiveCouponCodeNotificationName";
+
 NSString* TKBLOriginTypeKey                             = @"type";
 NSString* TKBLOriginDataKey                             = @"data";
 NSString* TKBLOriginUUIDKey                             = @"uuid";

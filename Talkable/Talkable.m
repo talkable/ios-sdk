@@ -24,11 +24,14 @@
 
 NSString*   TKBLApiKey              = @"api_key";
 NSString*   TKBLSiteSlug            = @"site_slug";
+NSString*   TKBLVisitorOfferKey     = @"visitor_offer_id";
+NSString*   TKBLCouponKey           = @"coupon";
 
 @implementation Talkable {
     AFHTTPRequestOperationManager*  _networkClient;
     NSString*                       _originalUserAgent;
     NSMutableSet*                   _uuidRequests;
+    NSArray* __strong               _couponCodeParams;
 }
 
 @synthesize apiKey, siteSlug, delegate, server = _server, debug;
@@ -117,6 +120,30 @@ NSString*   TKBLSiteSlug            = @"site_slug";
     }
     
     return uuid;
+}
+
+- (void)registerCoupon:(NSString*)coupon {
+    [self storeObject:coupon forKey:TKBLCouponKey];
+    [[NSNotificationCenter defaultCenter] postNotificationName:TKBLDidReceiveCouponCode object:self];
+}
+
+- (NSString*)coupon {
+    return [self storedObjectForKey:TKBLCouponKey];
+}
+
+#pragma make - [Handlers]
+
+- (BOOL)handleOpenURL:(NSURL*)url {
+    __block BOOL handled = NO;
+    [[url.query componentsSeparatedByString:@"&"] enumerateObjectsUsingBlock:^(NSString* pair, NSUInteger idx, BOOL* stop){
+        if (pair) {
+            NSArray* pairComponents = [pair componentsSeparatedByString:@"="];
+            NSString* name = [[pairComponents firstObject] stringByRemovingPercentEncoding];
+            NSString* value = [[pairComponents lastObject] stringByRemovingPercentEncoding];
+            handled = handled || [self handleUrlParam:name withValue:value];
+        }
+    }];
+    return handled;
 }
 
 #pragma mark - [Integration]
@@ -245,7 +272,6 @@ NSString*   TKBLSiteSlug            = @"site_slug";
 }
 
 #pragma mark - [Sharing]
-
 
 - (SLComposeViewController*)socialShare:(NSDictionary*)params {
     NSString* channel = [self mapChanel:[params objectForKey:TKBLShareChannel]];
@@ -537,6 +563,54 @@ stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
         (self.siteSlug && [self.siteSlug length] == 0)) {
         [self raiseException:TKBLConfigurationException withMessage:@"Specify correct apiKey and siteSlug"];
     }
+}
+
+- (BOOL)handleUrlParam:(NSString*)param withValue:(NSString*)value {
+    BOOL handled = NO;
+    
+    // Visitor Offer
+    if ([[param lowercaseString] isEqualToString:TKBLVisitorOfferKey]) {
+        [self storeObject:value forKey:TKBLVisitorOfferKey];
+        handled = YES;
+    }
+    
+    // Coupon
+    NSCharacterSet* charactersToRemove = [[NSCharacterSet alphanumericCharacterSet] invertedSet];
+    NSString* trimedParam = [[param componentsSeparatedByCharactersInSet:charactersToRemove] componentsJoinedByString:@""];
+    if ([[self couponCodeParams] indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+        return (BOOL)([obj caseInsensitiveCompare:trimedParam] == NSOrderedSame);
+    }] != NSNotFound) {
+        [self registerCoupon:value];
+        handled = YES;
+    }
+    
+    return handled;
+}
+
+- (NSArray*)couponCodeParams {
+    if (!_couponCodeParams) {
+        _couponCodeParams = @[@"coupon", @"couponcode", @"discount"];
+    }
+    return _couponCodeParams;
+}
+
+- (void)storeObject:(id)anObject forKey:(id<NSCopying>)key {
+    NSString* prefKey = [self buildPreferenceKey:key];
+    if (anObject) {
+        [[NSUserDefaults standardUserDefaults] setObject:anObject forKey:prefKey];
+    } else {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:prefKey];
+    }
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (id)storedObjectForKey:(id<NSCopying>)key {
+    NSString* prefKey = [self buildPreferenceKey:key];
+    return [[NSUserDefaults standardUserDefaults] objectForKey:prefKey];
+}
+
+- (NSString*)buildPreferenceKey:(id<NSCopying>)key {
+    return [NSString stringWithFormat:@"%@-%@", self.siteSlug, key];
 }
 
 - (void)processSuccessfulResponse:(id)response withHandler:(TKBLCompletionHandler)handler {

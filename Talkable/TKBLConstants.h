@@ -17,9 +17,10 @@ FOUNDATION_EXPORT NSString* TKBLConfigurationException;
 FOUNDATION_EXPORT NSString* TKBLDidPublishMessageNotification;
 FOUNDATION_EXPORT NSString* TKBLMessageNameKey;
 FOUNDATION_EXPORT NSString* TKBLMessageParamsKey;
-
 FOUNDATION_EXPORT NSString* TKBLMessageOfferClose;
 FOUNDATION_EXPORT NSString* TKBLMessageCouponIssued;
+
+FOUNDATION_EXPORT NSString* TKBLDidReceiveCouponCode;
 
 FOUNDATION_EXPORT NSString* TKBLOriginTypeKey;
 FOUNDATION_EXPORT NSString* TKBLOriginDataKey;
