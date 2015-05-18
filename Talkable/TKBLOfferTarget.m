@@ -76,7 +76,6 @@
         UIPasteboard* pasteBoard = [UIPasteboard generalPasteboard];
         pasteBoard.persistent = YES;
         [pasteBoard setString:text];
-        [(UIWebView*)sender stringByEvaluatingJavaScriptFromString:@"Talkable.shareSucceeded('other');"];
     } else {
         TKBLLog(@"Specify URL for key '%@'", TKBLClipboardText);
     }
