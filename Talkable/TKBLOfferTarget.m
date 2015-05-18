@@ -70,15 +70,15 @@
     [[UIViewController currentViewController] presentViewController:controller animated:YES completion:nil];
 }
 
-- (void)tkblShareOfferViaLink:(NSDictionary*)params sender:(id)sender {
-    NSString* claimURL = [params objectForKey:TKBLOfferClaimUrlKey];
-    if (claimURL) {
+- (void)tkblPutToClipboard:(NSDictionary*)params sender:(id)sender {
+    NSString* text = [params objectForKey:TKBLClipboardText];
+    if (text) {
         UIPasteboard* pasteBoard = [UIPasteboard generalPasteboard];
         pasteBoard.persistent = YES;
-        [pasteBoard setString:claimURL];
+        [pasteBoard setString:text];
         [(UIWebView*)sender stringByEvaluatingJavaScriptFromString:@"Talkable.shareSucceeded('other');"];
     } else {
-        TKBLLog(@"Specify URL for key '%@'", TKBLOfferClaimUrlKey);
+        TKBLLog(@"Specify URL for key '%@'", TKBLClipboardText);
     }
 }
 
