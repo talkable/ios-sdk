@@ -71,13 +71,13 @@
 }
 
 - (void)tkblPutToClipboard:(NSDictionary*)params sender:(id)sender {
-    NSString* text = [params objectForKey:TKBLClipboardText];
+    NSString* text = [params objectForKey:TKBLClipboardTextKey];
     if (text) {
         UIPasteboard* pasteBoard = [UIPasteboard generalPasteboard];
         pasteBoard.persistent = YES;
         [pasteBoard setString:text];
     } else {
-        TKBLLog(@"Specify URL for key '%@'", TKBLClipboardText);
+        TKBLLog(@"Specify URL for key '%@'", TKBLClipboardTextKey);
     }
 }
 

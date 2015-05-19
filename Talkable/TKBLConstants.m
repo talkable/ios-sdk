@@ -67,7 +67,7 @@ NSString* TKBLEventNumberKey                            = @"event_number";
 NSString* TKBLOfferKey                                  = @"offer";
 NSString* TKBLOfferShortUrlCodeKey                      = @"short_url_code";
 NSString* TKBLOfferClaimUrlKey                          = @"claim_url";
-NSString* TKBLClipboardText                             = @"text";
+NSString* TKBLClipboardTextKey                             = @"text";
 
 NSString* TKBLVisitorUUID                               = @"visitor_uuid";
 
