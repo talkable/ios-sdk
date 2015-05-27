@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "TalkableServerConfig.h"
 #import <TalkableSDK/Talkable.h>
 
 @interface AppDelegate ()
@@ -19,10 +20,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     [Talkable manager].debug = YES;
-    //[[Talkable manager] setApiKey:@"8L6Kcf9DEIGQQHLDf8i" andSiteSlug:@"demo-ios-integration"];
-    [[Talkable manager] setApiKey:@"8L6Kcf9DEIGQQHLDf8i" andSiteSlug:@"talkable-ios-demo"]; // shopify
-    //[[Talkable manager] setApiKey:@"FOuTgIbxpbOGP4LeDS6F" andSiteSlug:@"demo-ios-integration" server:@"http://10.0.1.4:3000"];
-    //[[Talkable manager] setApiKey:@"WCHpvYrQK8ABhBpA8JnN" andSiteSlug:@"demo-ios-integration" server:@"http://10.0.1.2:3000"];
+    [[Talkable manager] setApiKey:TALKABLE_API_KEY andSiteSlug:TALKABLE_SITE_SLUG server:TALKABLE_SERVER];
     return YES;
 }
 

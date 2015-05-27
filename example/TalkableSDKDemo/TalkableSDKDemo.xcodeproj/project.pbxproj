@@ -52,6 +52,7 @@
 		7A4FFCF31AEA91AB00995DF0 /* TalkableSDKDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TalkableSDKDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A4FFCF81AEA91AB00995DF0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7A4FFCF91AEA91AB00995DF0 /* TalkableSDKDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TalkableSDKDemoTests.m; sourceTree = "<group>"; };
+		7A90F0D01B16005B001AB964 /* TalkableServerConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TalkableServerConfig.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +115,7 @@
 		7A4FFCDC1AEA91AB00995DF0 /* TalkableSDKDemo */ = {
 			isa = PBXGroup;
 			children = (
+				7A90F0D01B16005B001AB964 /* TalkableServerConfig.h */,
 				7A4FFCE11AEA91AB00995DF0 /* AppDelegate.h */,
 				7A4FFCE21AEA91AB00995DF0 /* AppDelegate.m */,
 				7A4FFCE41AEA91AB00995DF0 /* ViewController.h */,
