@@ -76,7 +76,7 @@
     NSDictionary* params =
     @{
         TKBLAffiliateMemberKey: @{
-            TKBLAffiliateMemberEmailKey: @"customer@example.com",
+            TKBLAffiliateMemberEmailKey: self.emailField.text,
             TKBLAffiliateMemberFirstNameKey: @"John",
             TKBLAffiliateMemberLastNameKey: @"Smith",
             TKBLAffiliateMemberPersonCustomPropertiesKey: @{
