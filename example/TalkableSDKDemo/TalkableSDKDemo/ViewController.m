@@ -113,7 +113,7 @@
 - (IBAction)testEvent:(id)sender {
     NSDictionary* params = @{TKBLEventKey:@{
         TKBLEventCategoryKey: @"sample",
-        TKBLEventNumberKey: @"0001",
+        TKBLEventNumberKey: self.orderNumberField.text,
         }
     };
     [[Talkable manager] registerOrigin:TKBLEvent params:params];
