@@ -59,6 +59,8 @@
 		7A7C514C1AD674E100CCC1CB /* TKBLTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A7C51411AD66C2D00CCC1CB /* TKBLTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7A7C514D1AD674EF00CCC1CB /* TKBLConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A7C513E1AD66AA100CCC1CB /* TKBLConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7A7C51501AD683A100CCC1CB /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A7C514F1AD683A100CCC1CB /* Social.framework */; };
+		7A90F1601B39C3B1001AB964 /* NamespacedDependencies.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A90F15F1B39C3B1001AB964 /* NamespacedDependencies.h */; };
+		7A90F1621B39C67C001AB964 /* TalkableSDK-Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 7A90F1611B39C67C001AB964 /* TalkableSDK-Prefix.pch */; };
 		7AC485E31AE7CD5D00165E04 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AC485E21AE7CD5D00165E04 /* MessageUI.framework */; };
 		7AC485E61AE7D54900165E04 /* TKBLSmsWatcher.h in Headers */ = {isa = PBXBuildFile; fileRef = 7AC485E41AE7D54900165E04 /* TKBLSmsWatcher.h */; };
 		7AC485E71AE7D54900165E04 /* TKBLSmsWatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AC485E51AE7D54900165E04 /* TKBLSmsWatcher.m */; };
@@ -120,6 +122,8 @@
 		7A7C51411AD66C2D00CCC1CB /* TKBLTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TKBLTypes.h; sourceTree = "<group>"; };
 		7A7C51421AD66C6E00CCC1CB /* TalkableDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TalkableDelegate.h; sourceTree = "<group>"; };
 		7A7C514F1AD683A100CCC1CB /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		7A90F15F1B39C3B1001AB964 /* NamespacedDependencies.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NamespacedDependencies.h; sourceTree = "<group>"; };
+		7A90F1611B39C67C001AB964 /* TalkableSDK-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TalkableSDK-Prefix.pch"; sourceTree = "<group>"; };
 		7AC485E21AE7CD5D00165E04 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		7AC485E41AE7D54900165E04 /* TKBLSmsWatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKBLSmsWatcher.h; sourceTree = "<group>"; };
 		7AC485E51AE7D54900165E04 /* TKBLSmsWatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKBLSmsWatcher.m; sourceTree = "<group>"; };
@@ -195,6 +199,7 @@
 				7ADC92611AEA4E67008CB280 /* TKBLObjCCheckerExt.m */,
 				7A7C50B21AD3F83C00CCC1CB /* UIViewControllerExt.h */,
 				7A7C50B31AD3F83C00CCC1CB /* UIViewControllerExt.m */,
+				7A90F15F1B39C3B1001AB964 /* NamespacedDependencies.h */,
 				7A7C4FE81AD2E37000CCC1CB /* Supporting Files */,
 			);
 			path = Talkable;
@@ -204,6 +209,7 @@
 			isa = PBXGroup;
 			children = (
 				7A7C4FE91AD2E37000CCC1CB /* Info.plist */,
+				7A90F1611B39C67C001AB964 /* TalkableSDK-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -273,6 +279,7 @@
 				7A7C514C1AD674E100CCC1CB /* TKBLTypes.h in Headers */,
 				7AC485E61AE7D54900165E04 /* TKBLSmsWatcher.h in Headers */,
 				7A7C51141AD5888F00CCC1CB /* TKBLOfferTarget.h in Headers */,
+				7A90F1601B39C3B1001AB964 /* NamespacedDependencies.h in Headers */,
 				7A7C514B1AD6748500CCC1CB /* TalkableDelegate.h in Headers */,
 				7A7C513C1AD592C300CCC1CB /* AFURLSessionManager.h in Headers */,
 				7A7C51321AD592C300CCC1CB /* AFNetworkReachabilityManager.h in Headers */,
@@ -287,6 +294,7 @@
 				7A7C512F1AD592C300CCC1CB /* AFHTTPSessionManager.h in Headers */,
 				7A7C50B41AD3F83C00CCC1CB /* UIViewControllerExt.h in Headers */,
 				7A7C513A1AD592C300CCC1CB /* AFURLResponseSerialization.h in Headers */,
+				7A90F1621B39C67C001AB964 /* TalkableSDK-Prefix.pch in Headers */,
 				7ADC92621AEA4E67008CB280 /* TKBLObjCCheckerExt.h in Headers */,
 				7A7C512D1AD592C300CCC1CB /* AFHTTPRequestOperationManager.h in Headers */,
 				7A488CDE1AE64B2A002285C9 /* TKBLContactsLoader.h in Headers */,
@@ -585,6 +593,8 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/Talkable/TalkableSDK-Prefix.pch";
 				GENERATE_PKGINFO_FILE = NO;
 				INFOPLIST_FILE = Talkable/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -609,6 +619,8 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/Talkable/TalkableSDK-Prefix.pch";
 				GENERATE_PKGINFO_FILE = NO;
 				INFOPLIST_FILE = Talkable/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
