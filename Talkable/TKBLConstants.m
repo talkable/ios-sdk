@@ -17,6 +17,7 @@ NSString* TKBLConfigurationException                    = @"TKBLConfigurationExc
 NSString* TKBLDidPublishMessageNotification             = @"TKBLDidPublishMessageNotificationName";
 NSString* TKBLMessageNameKey                            = @"name";
 NSString* TKBLMessageParamsKey                          = @"params";
+NSString* TKBLMessageOfferLoaded                        = @"offer_loaded";
 NSString* TKBLMessageOfferClose                         = @"offer_close";
 NSString* TKBLMessageCouponIssued                       = @"coupon_issued";
 

@@ -18,5 +18,6 @@
 
 - (BOOL)shouldPresentTalkableOfferViewController:(UIViewController*)controller;
 - (UIViewController*)viewControllerForPresentingTalkableOfferViewController;
+- (NSString*)titleForTalkableOfferViewController:(UIViewController*)controller;
 
 @end

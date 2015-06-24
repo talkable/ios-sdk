@@ -16,7 +16,9 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self setTitle: NSLocalizedString(@"Talkable Offer", nil)];
+    if ([[Talkable manager].delegate respondsToSelector:@selector(titleForTalkableOfferViewController:)]) {
+        [self setTitle: [[Talkable manager].delegate titleForTalkableOfferViewController:self]];
+    }
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(publishMessageNotification:) name:TKBLDidPublishMessageNotification object:nil];
 }
 
@@ -74,6 +76,15 @@
 - (void)publishMessageNotification:(NSNotification*)ntf {
     if ([[[ntf userInfo] objectForKey:TKBLMessageNameKey] isEqualToString:TKBLMessageOfferClose]) {
         [self close:nil];
+    }
+    if ([[[ntf userInfo] objectForKey:TKBLMessageNameKey] isEqualToString:TKBLMessageOfferLoaded]) {
+        if ([[Talkable manager].delegate respondsToSelector:@selector(titleForTalkableOfferViewController:)]) {
+            [self setTitle: [[Talkable manager].delegate titleForTalkableOfferViewController:self]];
+        } else {
+            UIWebView* webView = (UIWebView*)ntf.object;
+            NSString* title = [webView stringByEvaluatingJavaScriptFromString:@"Talkable.configuration('page_title');"];
+            [self setTitle: title];
+        }
     }
 }
 
