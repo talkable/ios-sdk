@@ -23,7 +23,6 @@
 /* Begin PBXBuildFile section */
 		7A488CDE1AE64B2A002285C9 /* TKBLContactsLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A488CDC1AE64B2A002285C9 /* TKBLContactsLoader.h */; };
 		7A488CDF1AE64B2A002285C9 /* TKBLContactsLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A488CDD1AE64B2A002285C9 /* TKBLContactsLoader.m */; };
-		7A488CE11AE64E3F002285C9 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A488CE01AE64E3F002285C9 /* AddressBook.framework */; };
 		7A793AA81AEE96D400ED2E5E /* TalkableSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A793AA71AEE96D400ED2E5E /* TalkableSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7A7C4FEB1AD2E37000CCC1CB /* Talkable.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A7C4FEA1AD2E37000CCC1CB /* Talkable.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7A7C4FF11AD2E37000CCC1CB /* TalkableSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A7C4FE51AD2E37000CCC1CB /* TalkableSDK.framework */; };
@@ -58,10 +57,8 @@
 		7A7C514B1AD6748500CCC1CB /* TalkableDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A7C51421AD66C6E00CCC1CB /* TalkableDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7A7C514C1AD674E100CCC1CB /* TKBLTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A7C51411AD66C2D00CCC1CB /* TKBLTypes.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7A7C514D1AD674EF00CCC1CB /* TKBLConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A7C513E1AD66AA100CCC1CB /* TKBLConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7A7C51501AD683A100CCC1CB /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A7C514F1AD683A100CCC1CB /* Social.framework */; };
 		7A90F1601B39C3B1001AB964 /* NamespacedDependencies.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A90F15F1B39C3B1001AB964 /* NamespacedDependencies.h */; };
 		7A90F1621B39C67C001AB964 /* TalkableSDK-Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 7A90F1611B39C67C001AB964 /* TalkableSDK-Prefix.pch */; };
-		7AC485E31AE7CD5D00165E04 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AC485E21AE7CD5D00165E04 /* MessageUI.framework */; };
 		7AC485E61AE7D54900165E04 /* TKBLSmsWatcher.h in Headers */ = {isa = PBXBuildFile; fileRef = 7AC485E41AE7D54900165E04 /* TKBLSmsWatcher.h */; };
 		7AC485E71AE7D54900165E04 /* TKBLSmsWatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AC485E51AE7D54900165E04 /* TKBLSmsWatcher.m */; };
 		7ADC925E1AEA4E32008CB280 /* TKBLObjCChecker.h in Headers */ = {isa = PBXBuildFile; fileRef = 7ADC925C1AEA4E32008CB280 /* TKBLObjCChecker.h */; };
@@ -83,7 +80,6 @@
 /* Begin PBXFileReference section */
 		7A488CDC1AE64B2A002285C9 /* TKBLContactsLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKBLContactsLoader.h; sourceTree = "<group>"; };
 		7A488CDD1AE64B2A002285C9 /* TKBLContactsLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKBLContactsLoader.m; sourceTree = "<group>"; };
-		7A488CE01AE64E3F002285C9 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		7A793AA71AEE96D400ED2E5E /* TalkableSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TalkableSDK.h; sourceTree = "<group>"; };
 		7A7C4FE51AD2E37000CCC1CB /* TalkableSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TalkableSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A7C4FE91AD2E37000CCC1CB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -121,10 +117,8 @@
 		7A7C513F1AD66B4A00CCC1CB /* TKBLConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKBLConstants.m; sourceTree = "<group>"; };
 		7A7C51411AD66C2D00CCC1CB /* TKBLTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TKBLTypes.h; sourceTree = "<group>"; };
 		7A7C51421AD66C6E00CCC1CB /* TalkableDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TalkableDelegate.h; sourceTree = "<group>"; };
-		7A7C514F1AD683A100CCC1CB /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		7A90F15F1B39C3B1001AB964 /* NamespacedDependencies.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NamespacedDependencies.h; sourceTree = "<group>"; };
 		7A90F1611B39C67C001AB964 /* TalkableSDK-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TalkableSDK-Prefix.pch"; sourceTree = "<group>"; };
-		7AC485E21AE7CD5D00165E04 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		7AC485E41AE7D54900165E04 /* TKBLSmsWatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKBLSmsWatcher.h; sourceTree = "<group>"; };
 		7AC485E51AE7D54900165E04 /* TKBLSmsWatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKBLSmsWatcher.m; sourceTree = "<group>"; };
 		7ADC925C1AEA4E32008CB280 /* TKBLObjCChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKBLObjCChecker.h; sourceTree = "<group>"; };
@@ -138,9 +132,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7AC485E31AE7CD5D00165E04 /* MessageUI.framework in Frameworks */,
-				7A488CE11AE64E3F002285C9 /* AddressBook.framework in Frameworks */,
-				7A7C51501AD683A100CCC1CB /* Social.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -159,7 +150,6 @@
 			isa = PBXGroup;
 			children = (
 				7A7C4FE71AD2E37000CCC1CB /* Talkable */,
-				7A7C51511AD683AE00CCC1CB /* Frameworks */,
 				7A7C51171AD592C300CCC1CB /* AFNetworking */,
 				7A7C4FF41AD2E37000CCC1CB /* TalkableTests */,
 				7A7C4FE61AD2E37000CCC1CB /* Products */,
@@ -255,16 +245,6 @@
 				7A7C512A1AD592C300CCC1CB /* AFURLSessionManager.m */,
 			);
 			path = AFNetworking;
-			sourceTree = "<group>";
-		};
-		7A7C51511AD683AE00CCC1CB /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				7AC485E21AE7CD5D00165E04 /* MessageUI.framework */,
-				7A488CE01AE64E3F002285C9 /* AddressBook.framework */,
-				7A7C514F1AD683A100CCC1CB /* Social.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
