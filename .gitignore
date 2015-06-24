@@ -5,4 +5,4 @@ project.xcworkspace
 Intermediates
 .DS_Store
 
-example/TalkableSDKDemo/TalkableSDKDemo/TalkableServerConfig.h
+#example/TalkableSDKDemo/TalkableSDKDemo/TalkableServerConfig.h
