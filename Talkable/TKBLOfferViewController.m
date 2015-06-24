@@ -12,7 +12,6 @@
 
 @implementation TKBLOfferViewController {
     BOOL        _requestCompleted;
-    UIButton*   _closeButton;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -23,11 +22,9 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [self.view addSubview:[self closeBotton]];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
-    [[self closeBotton] removeFromSuperview];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:TKBLDidPublishMessageNotification object:nil];
     [super viewDidDisappear:animated];
 }
@@ -46,21 +43,6 @@
 
 - (BOOL)needsFullViewActivity {
     return !_requestCompleted;
-}
-
-- (UIButton*)closeBotton {
-    if (!_closeButton) {
-        _closeButton = [UIButton buttonWithType:UIButtonTypeSystem];
-        [_closeButton setTitle:@"Dismiss Offer" forState:UIControlStateNormal];
-        [_closeButton addTarget:self action:@selector(close:) forControlEvents:UIControlEventTouchUpInside];
-        
-        [_closeButton sizeToFit];
-        CGRect frame = _closeButton.frame;
-        frame.origin = CGPointMake(self.view.bounds.size.width - frame.size.width - 12, 12);
-        _closeButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin;
-        _closeButton.frame = frame;
-    }
-    return _closeButton;
 }
 
 #pragma mark - [UIWebViewDelegate]
