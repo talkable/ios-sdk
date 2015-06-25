@@ -33,6 +33,7 @@
 - (void)tkblShareOfferViaSms:(NSDictionary*)params sender:(id)sender {
     if (![MFMessageComposeViewController canSendText]) {
         TKBLLog(@"Current device does'nt support SMS sending'", nil);
+        [self publishSMSSupportStatus:sender];
         return;
     }
     
@@ -91,6 +92,10 @@
             [(UIWebView*)sender stringByEvaluatingJavaScriptFromString:script];
         }
     }];
+}
+
+- (void)tkblGetSmsSupportStatus:(NSDictionary*)params sender:(id)sender {
+    [self publishSMSSupportStatus:sender];
 }
 
 #pragma mark - [UIWebViewDelegate]
@@ -231,6 +236,14 @@
     
     [[UIViewController currentViewController] presentViewController:shareController animated:YES completion:nil];
     
+}
+
+- (void)publishSMSSupportStatus:(id)recipient {
+    BOOL status = [MFMessageComposeViewController canSendText];
+    NSData* data = [NSJSONSerialization dataWithJSONObject:@{@"status":[NSNumber numberWithBool:status]} options:0 error:nil];
+    NSString* json =  [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSString* script = [NSString stringWithFormat:@"Talkable.publish('native_sms_support', %@)", json];
+    [(UIWebView*)recipient stringByEvaluatingJavaScriptFromString:script];
 }
 
 - (void)shareViaLinkWithParams:(NSDictionary*)params andSender:(id)sender {
