@@ -103,13 +103,20 @@
 - (BOOL)webView:(UIWebView*)webView shouldStartLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType {
     
     if ([[[request URL] scheme] isEqualToString:TKBL_CROSS_REQUEST_SCHEMA]) {
-        NSString* message    = [self messageFromURL:[request URL]];
-        NSDictionary* params = [self paramsFromURL:[request URL]];
+        NSString* jsonQueue = [webView stringByEvaluatingJavaScriptFromString:@"Talkable.popNativeMobileEvents();"];
         
-        if (message) {
-            [self notifyMessage:message withParams:params sender:webView];
-            [self proccessMessage:message withParams:params sender:webView];
-        }
+        NSArray* events = [self parseEventsQueue:jsonQueue];
+        [events enumerateObjectsUsingBlock:^(id event, NSUInteger idx, BOOL *stop) {
+            if ([event isKindOfClass:[NSDictionary class]]) {
+                NSString* message       = [event objectForKey:TKBLMessageNameKey];
+                NSDictionary* params    = [event objectForKey:TKBLMessageDataKey];
+                if (message) {
+                    [self notifyMessage:message withParams:params sender:webView];
+                    [self proccessMessage:message withParams:params sender:webView];
+                }
+            }
+
+        }];
         
         return NO;
     }
@@ -124,55 +131,20 @@
 
 #pragma mark - [Private]
 
-- (NSString*)messageFromURL:(NSURL*)url {
-    NSString* message = [url host];
-    if (!message) {
-        message = [url path];
-    }
-    return message;
-}
-
-- (NSDictionary*)paramsFromURL:(NSURL*)url {
-    NSString* query = [url query];
-    return [self parseQuery:query];
-}
-
-- (NSDictionary*)parseQuery:(NSString*)query {
-//    return [self parseHTTPQuery:query];
-    return [self parseJSONQuery:query];
-}
-
-- (NSDictionary*)parseHTTPQuery:(NSString*)query {
-    NSMutableDictionary* params = [NSMutableDictionary dictionary];
-    [[query componentsSeparatedByString:@"&"] enumerateObjectsUsingBlock:^(NSString* pair, NSUInteger idx, BOOL* stop){
-        if (pair) {
-            NSArray* pairComponents = [pair componentsSeparatedByString:@"="];
-            NSString* name = [[pairComponents firstObject] stringByRemovingPercentEncoding];
-            NSString* value = [[pairComponents lastObject] stringByRemovingPercentEncoding];
-            if ([pairComponents count] > 0) {
-                [params setObject:value forKey:name];
-            } else {
-                [params setObject:@"" forKey:name];
-            }
-        }
-    }];
-    return [NSDictionary dictionaryWithDictionary:params];
-}
-
-- (NSDictionary*)parseJSONQuery:(NSString*)query {
-    if (!query || [query length] == 0)
+- (NSArray*)parseEventsQueue:(NSString*)jsonString {
+    if (!jsonString || [jsonString length] == 0)
         return nil;
     
-    NSData* jsonData = [[query stringByRemovingPercentEncoding] dataUsingEncoding:NSUTF8StringEncoding];
+    NSData* jsonData = [[jsonString stringByRemovingPercentEncoding] dataUsingEncoding:NSUTF8StringEncoding];
     if (!jsonData)
         return nil;
     
     NSError __autoreleasing *error = error;
-    NSDictionary* params = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingAllowFragments error:&error];
-    if (!error && [params isKindOfClass:[NSDictionary class]]) {
-        return params;
+    NSArray* queue = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingAllowFragments error:&error];
+    if (!error && [queue isKindOfClass:[NSArray class]]) {
+        return queue;
     } else {
-        TKBLLog(@"Invalid params %@ Error - %@", [query stringByRemovingPercentEncoding], error);
+        TKBLLog(@"Invalid events queue %@ Error - %@", [jsonString stringByRemovingPercentEncoding], error);
         return nil;
     }
 }

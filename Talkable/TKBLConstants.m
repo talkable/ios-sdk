@@ -8,7 +8,7 @@
 
 #import "TKBLConstants.h"
 
-NSString* TKBLVersion                                   = @"1.0.0";
+NSString* TKBLVersion                                   = @"1.1.0";
 
 NSString* TKBLErrorDomain                               = @"com.talkable.ios-sdk";
 
@@ -17,6 +17,7 @@ NSString* TKBLConfigurationException                    = @"TKBLConfigurationExc
 NSString* TKBLDidPublishMessageNotification             = @"TKBLDidPublishMessageNotificationName";
 NSString* TKBLMessageNameKey                            = @"name";
 NSString* TKBLMessageParamsKey                          = @"params";
+NSString* TKBLMessageDataKey                            = @"data";
 NSString* TKBLMessageOfferLoaded                        = @"offer_loaded";
 NSString* TKBLMessageOfferClose                         = @"offer_close";
 NSString* TKBLMessageCouponIssued                       = @"coupon_issued";
