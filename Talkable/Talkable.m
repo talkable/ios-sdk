@@ -111,6 +111,7 @@ NSString*   TKBLCouponKey           = @"coupon";
     if (uuid)
         return uuid;
     
+    //Request uuid from server to prevent appearance of duplicates
     uuid = [self requestVisitorUUID];
     if (uuid) {
         NSMutableDictionary* _uuids = [NSMutableDictionary dictionaryWithDictionary:uuids];
