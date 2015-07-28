@@ -13,6 +13,7 @@
 #import "TKBLObjCChecker.h"
 
 #import "AFNetworking.h"
+#import "KeychainItemWrapper.h"
 
 #ifndef TKBL_API_VERSION
     #define TKBL_API_VERSION    @"v2"
@@ -32,6 +33,7 @@ NSString*   TKBLCouponKey           = @"coupon";
     NSString*                       _originalUserAgent;
     NSMutableSet*                   _uuidRequests;
     NSArray* __strong               _couponCodeParams;
+    KeychainItemWrapper*            _uuidStorage;
 }
 
 @synthesize apiKey, siteSlug, delegate, server = _server, debug;
@@ -105,20 +107,15 @@ NSString*   TKBLCouponKey           = @"coupon";
 }
 
 - (NSString*)visitorUUID {
-    NSDictionary* uuids = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"talkable-visitor-uuids"];
-    NSString* uuid = [uuids objectForKey:self.server];
+    NSString* uuid = [self loadVisitorUUID];
     
     if (uuid)
         return uuid;
     
     //Request uuid from server to prevent appearance of duplicates
     uuid = [self requestVisitorUUID];
-    if (uuid) {
-        NSMutableDictionary* _uuids = [NSMutableDictionary dictionaryWithDictionary:uuids];
-        [_uuids setObject:uuid forKey:self.server];
-        [[NSUserDefaults standardUserDefaults] setValue:_uuids forKey:@"talkable-visitor-uuids"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
+    if (uuid)
+        [self storeVisitorUUID:uuid];
     
     return uuid;
 }
@@ -391,16 +388,33 @@ NSString*   TKBLCouponKey           = @"coupon";
 
     [[self networkClient] POST:[self urlForAPI:@"/visitors"] parameters:[self paramsForAPI:nil] success:
      ^(AFHTTPRequestOperation* operation, id responseObject) {
-         NSMutableDictionary* uuids = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"talkable-visitor-uuids"]];
          NSString* uuid = [[(NSDictionary*)responseObject valueForKey:@"result"] objectForKey:@"uuid"];
-         [uuids setObject:uuid forKey:self.server];
-         [[NSUserDefaults standardUserDefaults] setValue:uuids forKey:@"talkable-visitor-uuids"];
-         [[NSUserDefaults standardUserDefaults] synchronize];
+         [self storeVisitorUUID:uuid];
          [_uuidRequests removeObject:self.server];
      } failure:
      ^(AFHTTPRequestOperation* operation, NSError* error) {
          [_uuidRequests removeObject:self.server];
      }];
+}
+
+- (KeychainItemWrapper*)uuidStorage {
+    if (!_uuidStorage) {
+        _uuidStorage = [[KeychainItemWrapper alloc] initWithIdentifier:[self uuidStorageIdentifier] accessGroup:nil];
+    }
+    return _uuidStorage;
+}
+
+- (NSString*)uuidStorageIdentifier {
+    return [NSString stringWithFormat:@"tkbl_uuid@%@", self.server];
+}
+
+- (void)storeVisitorUUID:(NSString*)uuid {
+    [[self uuidStorage] setObject:uuid forKey:(__bridge id)kSecValueData];
+}
+
+- (NSString*)loadVisitorUUID {
+    NSString* uuid = [[self uuidStorage] objectForKey:(__bridge id)kSecValueData];
+    return [uuid length] > 0 ? uuid : nil;
 }
 
 - (UIWebView*)buildWebView {

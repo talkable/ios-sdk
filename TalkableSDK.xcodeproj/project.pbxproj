@@ -24,6 +24,8 @@
 		7A488CDE1AE64B2A002285C9 /* TKBLContactsLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A488CDC1AE64B2A002285C9 /* TKBLContactsLoader.h */; };
 		7A488CDF1AE64B2A002285C9 /* TKBLContactsLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A488CDD1AE64B2A002285C9 /* TKBLContactsLoader.m */; };
 		7A793AA81AEE96D400ED2E5E /* TalkableSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A793AA71AEE96D400ED2E5E /* TalkableSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7A7A85C51B67E1D300DC3661 /* KeychainItemWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A7A85C31B67E1D300DC3661 /* KeychainItemWrapper.h */; };
+		7A7A85C61B67E1D300DC3661 /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A7A85C41B67E1D300DC3661 /* KeychainItemWrapper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		7A7C4FEB1AD2E37000CCC1CB /* Talkable.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A7C4FEA1AD2E37000CCC1CB /* Talkable.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7A7C4FF11AD2E37000CCC1CB /* TalkableSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A7C4FE51AD2E37000CCC1CB /* TalkableSDK.framework */; };
 		7A7C4FF81AD2E37000CCC1CB /* TalkableTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A7C4FF71AD2E37000CCC1CB /* TalkableTests.m */; };
@@ -81,6 +83,8 @@
 		7A488CDC1AE64B2A002285C9 /* TKBLContactsLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKBLContactsLoader.h; sourceTree = "<group>"; };
 		7A488CDD1AE64B2A002285C9 /* TKBLContactsLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKBLContactsLoader.m; sourceTree = "<group>"; };
 		7A793AA71AEE96D400ED2E5E /* TalkableSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TalkableSDK.h; sourceTree = "<group>"; };
+		7A7A85C31B67E1D300DC3661 /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
+		7A7A85C41B67E1D300DC3661 /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
 		7A7C4FE51AD2E37000CCC1CB /* TalkableSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TalkableSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A7C4FE91AD2E37000CCC1CB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7A7C4FEA1AD2E37000CCC1CB /* Talkable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Talkable.h; sourceTree = "<group>"; };
@@ -189,6 +193,8 @@
 				7ADC92611AEA4E67008CB280 /* TKBLObjCCheckerExt.m */,
 				7A7C50B21AD3F83C00CCC1CB /* UIViewControllerExt.h */,
 				7A7C50B31AD3F83C00CCC1CB /* UIViewControllerExt.m */,
+				7A7A85C31B67E1D300DC3661 /* KeychainItemWrapper.h */,
+				7A7A85C41B67E1D300DC3661 /* KeychainItemWrapper.m */,
 				7A90F15F1B39C3B1001AB964 /* NamespacedDependencies.h */,
 				7A7C4FE81AD2E37000CCC1CB /* Supporting Files */,
 			);
@@ -267,6 +273,7 @@
 				7A7C50B81AD4157600CCC1CB /* TKBLOfferViewController.h in Headers */,
 				7A7C512B1AD592C300CCC1CB /* AFHTTPRequestOperation.h in Headers */,
 				7A7C51361AD592C300CCC1CB /* AFURLConnectionOperation.h in Headers */,
+				7A7A85C51B67E1D300DC3661 /* KeychainItemWrapper.h in Headers */,
 				7ADC925E1AEA4E32008CB280 /* TKBLObjCChecker.h in Headers */,
 				7A7C51381AD592C300CCC1CB /* AFURLRequestSerialization.h in Headers */,
 				7A7C51311AD592C300CCC1CB /* AFNetworking.h in Headers */,
@@ -420,6 +427,7 @@
 				7AC485E71AE7D54900165E04 /* TKBLSmsWatcher.m in Sources */,
 				7A7C50B91AD4157600CCC1CB /* TKBLOfferViewController.m in Sources */,
 				7A7C512E1AD592C300CCC1CB /* AFHTTPRequestOperationManager.m in Sources */,
+				7A7A85C61B67E1D300DC3661 /* KeychainItemWrapper.m in Sources */,
 				7A7C51371AD592C300CCC1CB /* AFURLConnectionOperation.m in Sources */,
 				7A7C512C1AD592C300CCC1CB /* AFHTTPRequestOperation.m in Sources */,
 				7A7C51161AD5893A00CCC1CB /* TKBLOfferTarget.m in Sources */,

@@ -10,6 +10,10 @@
 
 
 // Classes
+#ifndef KeychainItemWrapper
+#define KeychainItemWrapper __NS_SYMBOL(KeychainItemWrapper)
+#endif
+
 #ifndef AFCompoundResponseSerializer
 #define AFCompoundResponseSerializer __NS_SYMBOL(AFCompoundResponseSerializer)
 #endif
