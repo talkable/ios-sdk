@@ -13,7 +13,6 @@
 #import "TKBLObjCChecker.h"
 
 #import "AFNetworking.h"
-#import "KeychainItemWrapper.h"
 
 #ifndef TKBL_API_VERSION
     #define TKBL_API_VERSION    @"v2"
@@ -31,9 +30,8 @@ NSString*   TKBLCouponKey           = @"coupon";
 @implementation Talkable {
     AFHTTPRequestOperationManager*  _networkClient;
     NSString*                       _originalUserAgent;
-    NSMutableSet*                   _uuidRequests;
     NSArray* __strong               _couponCodeParams;
-    KeychainItemWrapper*            _uuidStorage;
+    NSString*                       _uuid;
 }
 
 @synthesize apiKey, siteSlug, delegate, server = _server, debug;
@@ -78,7 +76,7 @@ NSString*   TKBLCouponKey           = @"coupon";
 
 - (id)init {
     if (self = [super init]) {
-        _uuidRequests = [[NSMutableSet alloc] init];
+        //init here
     }
     return self;
 }
@@ -107,17 +105,14 @@ NSString*   TKBLCouponKey           = @"coupon";
 }
 
 - (NSString*)visitorUUID {
-    NSString* uuid = [self loadVisitorUUID];
+    if (_uuid) return _uuid;
     
-    if (uuid)
-        return uuid;
+    if (!_uuid) _uuid = [self uuidFromKeychain];
+    if (!_uuid) _uuid = [self uuidFromPref];
+    if (!_uuid) _uuid = [self uuidFromServer];
+    if (_uuid) [self syncUUID:_uuid];
     
-    //Request uuid from server to prevent appearance of duplicates
-    uuid = [self requestVisitorUUID];
-    if (uuid)
-        [self storeVisitorUUID:uuid];
-    
-    return uuid;
+    return _uuid;
 }
 
 - (void)registerCoupon:(NSString*)coupon {
@@ -339,6 +334,60 @@ NSString*   TKBLCouponKey           = @"coupon";
     return controller;
 }
 
+#pragma mark - [UUID]
+
+- (void)syncUUID:(NSString*)uuid {
+    [self storeUUIDToKeychain:uuid];
+    [self storeUUIDToPref:uuid];
+}
+
+- (void)storeUUIDToKeychain:(NSString*)uuid {
+    NSMutableDictionary* keychainItem = [self keychainItem];
+    SecItemDelete((__bridge CFDictionaryRef)keychainItem);
+    keychainItem[(__bridge id)kSecValueData] = [uuid dataUsingEncoding:NSUTF8StringEncoding];
+    SecItemAdd((__bridge CFDictionaryRef)keychainItem, NULL);
+}
+
+- (NSString*)uuidFromKeychain {
+    OSStatus status;
+    NSMutableDictionary* keychainQueryItem = [self keychainItem];
+    keychainQueryItem[(__bridge id)kSecMatchLimit] = (__bridge id)kSecMatchLimitOne;
+    keychainQueryItem[(__bridge id)kSecReturnData] = (__bridge id)kCFBooleanTrue;
+    keychainQueryItem[(__bridge id)kSecReturnAttributes] = (__bridge id)kCFBooleanTrue;
+    CFDictionaryRef resultItem = nil;
+    status = SecItemCopyMatching((__bridge CFDictionaryRef)keychainQueryItem, (CFTypeRef*)&resultItem);
+    if (status != noErr) {
+        return nil;
+    }
+    NSDictionary* resultDict = (__bridge_transfer NSDictionary*)resultItem;
+    NSData* data = resultDict[(__bridge id)kSecValueData];
+    if (!data) {
+        return nil;
+    }
+    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+}
+
+- (NSMutableDictionary*)keychainItem {
+    NSMutableDictionary* keychainItem = [[NSMutableDictionary alloc] init];
+    keychainItem[(__bridge id)kSecClass] = (__bridge id)kSecClassGenericPassword;
+    keychainItem[(__bridge id)kSecAttrAccessible] = (__bridge id)kSecAttrAccessibleAlways;
+    keychainItem[(__bridge id)kSecAttrAccount] = @"tkbl_uuid";
+    keychainItem[(__bridge id)kSecAttrService] = self.server;
+    return keychainItem;
+}
+
+- (void)storeUUIDToPref:(NSString*)uuid {
+    NSMutableDictionary* uuids = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"tkbl_uuids"] mutableCopy];
+    [uuids setObject:uuid forKey:self.server];
+    [[NSUserDefaults standardUserDefaults] setValue:uuids forKey:@"tkbl_uuids"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+}
+
+- (NSString*)uuidFromPref {
+    return [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"tkbl_uuids"] objectForKey:self.server];
+}
+
 #pragma mark - [Private]
 
 - (AFHTTPRequestOperationManager*)networkClient {
@@ -364,7 +413,7 @@ NSString*   TKBLCouponKey           = @"coupon";
     TKBLLog(@"%@ request to %@ with parameters: %@", method, urlString, parameters);
 }
 
-- (NSString*)requestVisitorUUID {
+- (NSString*)uuidFromServer {
     NSString* params = [NSString stringWithFormat:@"%@=%@&%@=%@", TKBLApiKey, self.apiKey, TKBLSiteSlug, self.siteSlug];
     NSString* path = [NSString stringWithFormat:@"/visitors?%@", params];
     
@@ -378,43 +427,6 @@ NSString*   TKBLCouponKey           = @"coupon";
     NSDictionary* response = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:nil];
     
     return [[response objectForKey:@"result"] objectForKey:@"uuid"];
-}
-
-- (void)requestVisitorUUIDAsync {
-    if ([_uuidRequests containsObject:self.server])
-        return;
-
-    [_uuidRequests addObject:self.server];
-
-    [[self networkClient] POST:[self urlForAPI:@"/visitors"] parameters:[self paramsForAPI:nil] success:
-     ^(AFHTTPRequestOperation* operation, id responseObject) {
-         NSString* uuid = [[(NSDictionary*)responseObject valueForKey:@"result"] objectForKey:@"uuid"];
-         [self storeVisitorUUID:uuid];
-         [_uuidRequests removeObject:self.server];
-     } failure:
-     ^(AFHTTPRequestOperation* operation, NSError* error) {
-         [_uuidRequests removeObject:self.server];
-     }];
-}
-
-- (KeychainItemWrapper*)uuidStorage {
-    if (!_uuidStorage) {
-        _uuidStorage = [[KeychainItemWrapper alloc] initWithIdentifier:[self uuidStorageIdentifier] accessGroup:nil];
-    }
-    return _uuidStorage;
-}
-
-- (NSString*)uuidStorageIdentifier {
-    return [NSString stringWithFormat:@"tkbl_uuid@%@", self.server];
-}
-
-- (void)storeVisitorUUID:(NSString*)uuid {
-    [[self uuidStorage] setObject:uuid forKey:(__bridge id)kSecValueData];
-}
-
-- (NSString*)loadVisitorUUID {
-    NSString* uuid = [[self uuidStorage] objectForKey:(__bridge id)kSecValueData];
-    return [uuid length] > 0 ? uuid : nil;
 }
 
 - (UIWebView*)buildWebView {
