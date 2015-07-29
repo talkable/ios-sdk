@@ -131,7 +131,6 @@ Keychain API expects as a validly constructed container class.
         
         if (! SecItemCopyMatching((CFDictionaryRef)tempQuery, (CFTypeRef *)&outDictionary) == noErr)
         {
-            NSLog(@"nothing found");
             // Stick these default values into keychain item if nothing found.
             [self resetKeychainItem];
 			
@@ -156,7 +155,6 @@ Keychain API expects as a validly constructed container class.
         else
         {
             // load the saved data from Keychain.
-            NSLog(@"saved data %@", outDictionary);
             self.keychainItemData = [self secItemFormatToDictionary:outDictionary];
         }
        
