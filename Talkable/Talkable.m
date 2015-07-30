@@ -11,6 +11,7 @@
 #import "UIViewControllerExt.h"
 #import "TKBLOfferTarget.h"
 #import "TKBLObjCChecker.h"
+#import "TKBLHelper.h"
 
 #import "AFNetworking.h"
 
@@ -76,7 +77,10 @@ NSString*   TKBLCouponKey           = @"coupon";
 
 - (id)init {
     if (self = [super init]) {
-        //init here
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(applicationDidBecomeActive:)
+                                                     name:UIApplicationDidBecomeActiveNotification
+                                                   object:nil];
     }
     return self;
 }
@@ -98,6 +102,8 @@ NSString*   TKBLCouponKey           = @"coupon";
     self.apiKey     = aApiKey;
     self.siteSlug   = aSiteSlug;
     self.server     = aServer ? aServer : TKBL_DEFAULT_SERVER;
+    
+    [self registerInstallIfNeeded];
 }
 
 - (void)setApiKey:(NSString*)aApiKey andSiteSlug:(NSString*)aSiteSlug {
@@ -388,6 +394,26 @@ NSString*   TKBLCouponKey           = @"coupon";
     return [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"tkbl_uuids"] objectForKey:self.server];
 }
 
+#pragma mark - [Installed Event]
+
+- (void)registerInstallIfNeeded {
+    if ([TKBLHelper installRegistered]) return;
+    if ([TKBLHelper wasAppUpdated]) return;
+    if (![self visitorUUID]) return;
+    
+    NSDictionary* originParams = @{
+        TKBLOriginTypeKey: TKBLOriginTypeEvent,
+        TKBLOriginDataKey: @{
+            TKBLEventCategoryKey: @"app_installed",
+            TKBLEventNumberKey: [self visitorUUID]
+        }
+    };
+    
+    [self createOrigin:originParams withHandler:^(NSDictionary* response, NSError* error) {
+        if (!error) [TKBLHelper registerInstall];
+    }];
+}
+
 #pragma mark - [Private]
 
 - (AFHTTPRequestOperationManager*)networkClient {
@@ -669,6 +695,12 @@ stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
     if ([self.delegate respondsToSelector:@selector(didRegisterOrigin:withWebView:)]) {
         [self.delegate didRegisterOrigin:type withWebView:webView];
     }
+}
+
+// Temporary solution to resend app_installed event
+// if previous request was failed (network issues, etc)
+- (void)applicationDidBecomeActive:(NSNotification*)ntf {
+    [self registerInstallIfNeeded];
 }
 
 @end
