@@ -21,6 +21,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		7A47DE1B1B69246E00BD1E6A /* TKBLHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A47DE191B69246E00BD1E6A /* TKBLHelper.h */; };
+		7A47DE1C1B69246E00BD1E6A /* TKBLHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A47DE1A1B69246E00BD1E6A /* TKBLHelper.m */; };
 		7A488CDE1AE64B2A002285C9 /* TKBLContactsLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A488CDC1AE64B2A002285C9 /* TKBLContactsLoader.h */; };
 		7A488CDF1AE64B2A002285C9 /* TKBLContactsLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A488CDD1AE64B2A002285C9 /* TKBLContactsLoader.m */; };
 		7A793AA81AEE96D400ED2E5E /* TalkableSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A793AA71AEE96D400ED2E5E /* TalkableSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -78,6 +80,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7A47DE191B69246E00BD1E6A /* TKBLHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKBLHelper.h; sourceTree = "<group>"; };
+		7A47DE1A1B69246E00BD1E6A /* TKBLHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKBLHelper.m; sourceTree = "<group>"; };
 		7A488CDC1AE64B2A002285C9 /* TKBLContactsLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKBLContactsLoader.h; sourceTree = "<group>"; };
 		7A488CDD1AE64B2A002285C9 /* TKBLContactsLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKBLContactsLoader.m; sourceTree = "<group>"; };
 		7A793AA71AEE96D400ED2E5E /* TalkableSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TalkableSDK.h; sourceTree = "<group>"; };
@@ -221,6 +225,8 @@
 				7ADC925D1AEA4E32008CB280 /* TKBLObjCChecker.m */,
 				7ADC92601AEA4E67008CB280 /* TKBLObjCCheckerExt.h */,
 				7ADC92611AEA4E67008CB280 /* TKBLObjCCheckerExt.m */,
+				7A47DE191B69246E00BD1E6A /* TKBLHelper.h */,
+				7A47DE1A1B69246E00BD1E6A /* TKBLHelper.m */,
 				7A7C50B21AD3F83C00CCC1CB /* UIViewControllerExt.h */,
 				7A7C50B31AD3F83C00CCC1CB /* UIViewControllerExt.m */,
 				7A90F15F1B39C3B1001AB964 /* NamespacedDependencies.h */,
@@ -271,6 +277,7 @@
 				7A7A85FB1B68CFEE00DC3661 /* AFHTTPRequestOperation.h in Headers */,
 				7A7C514C1AD674E100CCC1CB /* TKBLTypes.h in Headers */,
 				7AC485E61AE7D54900165E04 /* TKBLSmsWatcher.h in Headers */,
+				7A47DE1B1B69246E00BD1E6A /* TKBLHelper.h in Headers */,
 				7A7C51141AD5888F00CCC1CB /* TKBLOfferTarget.h in Headers */,
 				7A90F1601B39C3B1001AB964 /* NamespacedDependencies.h in Headers */,
 				7A7C514B1AD6748500CCC1CB /* TalkableDelegate.h in Headers */,
@@ -433,6 +440,7 @@
 				7A7A86091B68CFEE00DC3661 /* AFURLRequestSerialization.m in Sources */,
 				7A7C50B91AD4157600CCC1CB /* TKBLOfferViewController.m in Sources */,
 				7A7A860D1B68CFEE00DC3661 /* AFURLSessionManager.m in Sources */,
+				7A47DE1C1B69246E00BD1E6A /* TKBLHelper.m in Sources */,
 				7A7C51161AD5893A00CCC1CB /* TKBLOfferTarget.m in Sources */,
 				7A7A85FE1B68CFEE00DC3661 /* AFHTTPRequestOperationManager.m in Sources */,
 				7ADC92631AEA4E67008CB280 /* TKBLObjCCheckerExt.m in Sources */,
@@ -500,7 +508,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1.1.0;
+				CURRENT_PROJECT_VERSION = 1.2.0;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -547,7 +555,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 1.1.0;
+				CURRENT_PROJECT_VERSION = 1.2.0;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
