@@ -30,6 +30,7 @@ NSString*   TKBLCouponKey           = @"coupon";
 
 @implementation Talkable {
     AFHTTPRequestOperationManager*  _networkClient;
+    NSString*                       _userAgent;
     NSString*                       _originalUserAgent;
     NSArray* __strong               _couponCodeParams;
     NSString*                       _uuid;
@@ -179,7 +180,6 @@ NSString*   TKBLCouponKey           = @"coupon";
     }
     
     [webView loadRequest: serverRequest];
-    [self restoreUserAgent];
 }
 
 
@@ -461,6 +461,7 @@ NSString*   TKBLCouponKey           = @"coupon";
     webView.scalesPageToFit = YES;
     webView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin;
     webView.delegate = self;
+    [self restoreOriginalUserAgent];
     return webView;
 }
 
@@ -499,20 +500,18 @@ stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
     return [NSURLRequest requestWithURL: url];
 }
 
-- (void)registerCustomUserAgent {
+- (NSString*)originalUserAgent {
     if (!_originalUserAgent) {
         _originalUserAgent = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserAgent"];
     }
-    NSString* userAgent = _originalUserAgent;
-    if (!userAgent) {
-        UIWebView*  webView = [[UIWebView alloc] init];
-        userAgent = [webView stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
-    }
-    
-    [[NSUserDefaults standardUserDefaults] registerDefaults:@{@"UserAgent": [NSString stringWithFormat:@"%@;%@", userAgent, [self userAgent]]}];
+    return _originalUserAgent;
 }
 
-- (void)restoreUserAgent {
+- (void)registerCustomUserAgent {
+    [[NSUserDefaults standardUserDefaults] registerDefaults:@{@"UserAgent": [self userAgent]}];
+}
+
+- (void)restoreOriginalUserAgent {
     if (_originalUserAgent) {
         [[NSUserDefaults standardUserDefaults] registerDefaults:@{@"UserAgent": _originalUserAgent}];
     } else {
@@ -521,7 +520,16 @@ stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
 }
 
 - (NSString*)userAgent {
-    return [NSString stringWithFormat:@"Talkable iOS/%@", TKBLVersion];
+    if (!_userAgent) {
+        NSString* userAgent = [self originalUserAgent];
+        if (!userAgent) {
+            UIWebView*  webView = [[UIWebView alloc] init];
+            userAgent = [webView stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
+        }
+        NSString* userAgentSufix = [NSString stringWithFormat:@"Talkable iOS/%@", TKBLVersion];
+        _userAgent = [NSString stringWithFormat:@"%@;%@", userAgent, userAgentSufix];
+    }
+    return _userAgent;
 }
 
 - (NSString*)pathForType:(TKBLOriginType)type {
