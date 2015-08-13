@@ -157,8 +157,20 @@ NSString*   TKBLCouponKey           = @"coupon";
         [talkableParams setObject:uuid forKey:@"current_visitor_uuid"];
     }
     
-    NSURLRequest* serverRequest = [self serverRequest:type params:talkableParams];
-    [self notifyOriginDidRegister:type withURL:[serverRequest URL]];
+    NSURL* requestURL = [self requestURL:type params:talkableParams];
+    if (![self shouldRegisterOrigin:type withURL:requestURL]) return;
+    
+    NSMutableURLRequest* request = [self serverRequest:requestURL];
+    
+    NSHTTPURLResponse* response = nil;
+    NSError* error = nil;
+    NSData* responseData = [NSURLConnection sendSynchronousRequest:request
+                                                 returningResponse:&response
+                                                             error:&error];
+    if (error || response.statusCode != 200) {
+        [self notifyRegisterOrigin:type didFailWithError:error];
+        return;
+    }
     
     TKBLOfferViewController* controller = [[TKBLOfferViewController alloc] init];
     
@@ -179,7 +191,7 @@ NSString*   TKBLCouponKey           = @"coupon";
         [self presentOfferViewController:controller];
     }
     
-    [webView loadRequest: serverRequest];
+    [webView loadData:responseData MIMEType:response.MIMEType textEncodingName:response.textEncodingName baseURL:requestURL];
 }
 
 
@@ -443,8 +455,8 @@ NSString*   TKBLCouponKey           = @"coupon";
     NSString* params = [NSString stringWithFormat:@"%@=%@&%@=%@", TKBLApiKey, self.apiKey, TKBLSiteSlug, self.siteSlug];
     NSString* path = [NSString stringWithFormat:@"/visitors?%@", params];
     
-    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[self urlForAPI:path]]];
-    [request setHTTPMethod:@"POST"];
+    
+    NSMutableURLRequest* request = [self serverRequest:[NSURL URLWithString:[self urlForAPI:path]] withHttpMethod:@"POST"];
     
     NSData* responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
     if (!responseData)
@@ -482,7 +494,7 @@ NSString*   TKBLCouponKey           = @"coupon";
     }
 }
 
-- (NSURLRequest*)serverRequest:(TKBLOriginType)type params:(NSDictionary*)params {
+- (NSURL*)requestURL:(TKBLOriginType)type params:(NSDictionary*)params {
     NSURLComponents* components = [NSURLComponents componentsWithString:self.server];
     NSString* action = @"create";
     if (type == TKBLAffiliateMember && (![params objectForKey:@"affiliate_member"] || ![[params objectForKey:@"affiliate_member"] objectForKey:@"email"])) {
@@ -495,9 +507,18 @@ NSString*   TKBLCouponKey           = @"coupon";
 stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
     components.percentEncodedQuery = percentEncodedQuery;
 
-    NSURL* url = components.URL;
-    
-    return [NSURLRequest requestWithURL: url];
+    return components.URL;
+}
+
+- (NSMutableURLRequest*)serverRequest:(NSURL*)url {
+    return [self serverRequest:url withHttpMethod:@"GET"];
+}
+
+- (NSMutableURLRequest*)serverRequest:(NSURL*)url withHttpMethod:(NSString*)httpMethod {
+    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:url];
+    [request setHTTPMethod:httpMethod];
+    [request setValue:[self userAgent] forHTTPHeaderField:@"User-Agent"];
+    return request;
 }
 
 - (NSString*)originalUserAgent {
@@ -693,15 +714,22 @@ stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
     [NSException raise:name format:@"[Talkable]: %@", msg];
 }
 
-- (void)notifyOriginDidRegister:(TKBLOriginType)type withURL:(NSURL*)url {
-    if ([self.delegate respondsToSelector:@selector(didRegisterOrigin:withURL:)]) {
-        [self.delegate didRegisterOrigin:type withURL:url];
+- (BOOL)shouldRegisterOrigin:(TKBLOriginType)type withURL:(NSURL*)url {
+    if ([self.delegate respondsToSelector:@selector(shouldRegisterOrigin:withURL:)]) {
+        return [self.delegate shouldRegisterOrigin:type withURL:url];
     }
+    return YES;
 }
 
 - (void)notifyOriginDidRegister:(TKBLOriginType)type withWebView:(UIWebView*)webView {
     if ([self.delegate respondsToSelector:@selector(didRegisterOrigin:withWebView:)]) {
         [self.delegate didRegisterOrigin:type withWebView:webView];
+    }
+}
+
+- (void)notifyRegisterOrigin:(TKBLOriginType)type didFailWithError:(NSError*)error {
+    if ([self.delegate respondsToSelector:@selector(registerOrigin:didFailWithError:)]) {
+        [self.delegate registerOrigin:type didFailWithError:error];
     }
 }
 

@@ -13,8 +13,9 @@
 
 @optional
 
-- (void)didRegisterOrigin:(TKBLOriginType)type withURL:(NSURL*)url;
+- (BOOL)shouldRegisterOrigin:(TKBLOriginType)type withURL:(NSURL*)url;
 - (void)didRegisterOrigin:(TKBLOriginType)type withWebView:(UIWebView*)webView;
+- (void)registerOrigin:(TKBLOriginType)type didFailWithError:(NSError*)error;
 
 - (BOOL)shouldPresentTalkableOfferViewController:(UIViewController*)controller;
 - (UIViewController*)viewControllerForPresentingTalkableOfferViewController;
