@@ -104,7 +104,7 @@ NSString*   TKBLCouponKey           = @"coupon";
     self.siteSlug   = aSiteSlug;
     self.server     = aServer ? aServer : TKBL_DEFAULT_SERVER;
     
-    [self registerInstallIfNeeded];
+    [self sheduleRegisterInstall:0];
 }
 
 - (void)setApiKey:(NSString*)aApiKey andSiteSlug:(NSString*)aSiteSlug {
@@ -431,7 +431,10 @@ NSString*   TKBLCouponKey           = @"coupon";
 - (void)registerInstallIfNeeded {
     if ([TKBLHelper installRegistered]) return;
     if ([TKBLHelper wasAppUpdated]) return;
-    if (![self visitorUUID]) return;
+    if (![self visitorUUID]) {
+        [self retryRegisterInstall];
+        return;
+    }
     
     NSDictionary* originParams = @{
         TKBLOriginTypeKey: TKBLOriginTypeEvent,
@@ -442,8 +445,21 @@ NSString*   TKBLCouponKey           = @"coupon";
     };
     
     [self createOrigin:originParams withHandler:^(NSDictionary* response, NSError* error) {
-        if (!error) [TKBLHelper registerInstall];
+        if (error) {
+            [self retryRegisterInstall];
+        } else {
+            [TKBLHelper registerInstall];
+        }
     }];
+}
+
+- (void)retryRegisterInstall {
+    [self sheduleRegisterInstall:180];
+}
+
+- (void)sheduleRegisterInstall:(NSTimeInterval)delay {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(registerInstallIfNeeded) object:nil];
+    [self performSelector:@selector(registerInstallIfNeeded) withObject:nil afterDelay:delay];
 }
 
 #pragma mark - [Private]
@@ -753,10 +769,8 @@ stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
     }
 }
 
-// Temporary solution to resend app_installed event
-// if previous request was failed (network issues, etc)
 - (void)applicationDidBecomeActive:(NSNotification*)ntf {
-    [self registerInstallIfNeeded];
+    [self sheduleRegisterInstall:0];
 }
 
 @end
