@@ -162,36 +162,56 @@ NSString*   TKBLCouponKey           = @"coupon";
     
     NSMutableURLRequest* request = [self serverRequest:requestURL];
     
-    NSHTTPURLResponse* response = nil;
-    NSError* error = nil;
-    NSData* responseData = [NSURLConnection sendSynchronousRequest:request
-                                                 returningResponse:&response
-                                                             error:&error];
-    if (error || response.statusCode != 200) {
-        [self notifyRegisterOrigin:type didFailWithError:error];
-        return;
-    }
-    
-    TKBLOfferViewController* controller = [[TKBLOfferViewController alloc] init];
-    
-    UIWebView* webView = [self buildWebView];
-    [self notifyOriginDidRegister:type withWebView:webView];
-    
-    BOOL shouldPresent = YES;
-    if ([self.delegate respondsToSelector:@selector(shouldPresentTalkableOfferViewController:)]) {
-        shouldPresent = [self.delegate shouldPresentTalkableOfferViewController:controller];
-    }
-    
-    if (shouldPresent) {
-        [webView setDelegate:controller];
-        CGRect frame = webView.frame;
-        frame = controller.view.bounds;
-        webView.frame = frame;
-        [controller.view addSubview:webView];
-        [self presentOfferViewController:controller];
-    }
-    
-    [webView loadData:responseData MIMEType:response.MIMEType textEncodingName:response.textEncodingName baseURL:requestURL];
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:
+     ^(NSURLResponse* response, NSData* responseData, NSError* networkError) {
+         NSInteger errorCode = 0;
+         NSString* errorLocalizedDescription = nil;
+         if (networkError || ![response isKindOfClass: [NSHTTPURLResponse class]]) {
+             errorCode = TKBLNetworkError;
+             errorLocalizedDescription = networkError ? networkError.localizedDescription : @"Invalid Response";
+         } else {
+             NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
+             if (httpResponse.statusCode >= 500) {
+                 errorCode = TKBLApiError;
+                 errorLocalizedDescription = NSLocalizedString(@"Trouble reaching Talkable servers, please try again later", nil);
+             } else if (httpResponse.statusCode >= 400) {
+                 errorCode = TKBLRequestError;
+                 errorLocalizedDescription = NSLocalizedString(@"Request can't be processed", nil);
+             }
+         }
+         
+         if (errorLocalizedDescription) {
+             TKBLLog(@"%@", errorLocalizedDescription);
+             NSError* error = [NSError errorWithDomain:TKBLErrorDomain
+                                                  code:errorCode
+                                              userInfo:@{NSLocalizedDescriptionKey: errorLocalizedDescription}];
+             [self notifyRegisterOrigin:type didFailWithError:error];
+             return;
+         }
+         
+         TKBLOfferViewController* controller = [[TKBLOfferViewController alloc] init];
+         
+         UIWebView* webView = [self buildWebView];
+         [self notifyOriginDidRegister:type withWebView:webView];
+         
+         BOOL shouldPresent = YES;
+         if ([self.delegate respondsToSelector:@selector(shouldPresentTalkableOfferViewController:)]) {
+             shouldPresent = [self.delegate shouldPresentTalkableOfferViewController:controller];
+         }
+         
+         if (shouldPresent) {
+             [webView setDelegate:controller];
+             CGRect frame = webView.frame;
+             frame = controller.view.bounds;
+             webView.frame = frame;
+             [controller.view addSubview:webView];
+             [self presentOfferViewController:controller];
+         }
+         
+         [webView loadData:responseData MIMEType:response.MIMEType textEncodingName:response.textEncodingName baseURL:requestURL];
+     }];
 }
 
 
