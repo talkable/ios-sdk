@@ -33,8 +33,8 @@
     [self.subtotalField setText: [NSString stringWithFormat:@"%.02f", subtotal]];
     
     NSString* alphabet  = @"0123456789";
-    NSMutableString* orderNumber = [NSMutableString stringWithString:@"102"];
-    for (int i = 0; i < 3; i++) {
+    NSMutableString* orderNumber = [NSMutableString stringWithString:@"121-"];
+    for (int i = 0; i < 5; i++) {
         u_int32_t idx = arc4random() % [alphabet length];
         unichar c = [alphabet characterAtIndex:idx];
         [orderNumber appendFormat:@"%C", c];
@@ -207,12 +207,17 @@
 
 #pragma mark - [TalkableDelegate]
 
-- (void)didRegisterOrigin:(TKBLOriginType)type withURL:(NSURL*)url {
+- (BOOL)shouldRegisterOrigin:(TKBLOriginType)type withURL:(NSURL*)url {
     NSLog(@"URL: %@", url);
+    return YES;
 }
 
 - (void)didRegisterOrigin:(TKBLOriginType)type withWebView:(UIWebView*)webView {
+    NSLog(@"didRegisterOrigin");
+}
 
+- (void)registerOrigin:(TKBLOriginType)type didFailWithError:(NSError*)error {
+    NSLog(@"registerOrigindidFailWithError - %@", [error localizedDescription]);
 }
 
 - (UIViewController*)viewControllerForPresentingTalkableOfferViewController {
