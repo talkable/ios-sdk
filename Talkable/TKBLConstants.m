@@ -8,7 +8,7 @@
 
 #import "TKBLConstants.h"
 
-NSString* TKBLVersion                                   = @"1.2.1";
+NSString* TKBLVersion                                   = @"1.2.2";
 
 NSString* TKBLErrorDomain                               = @"com.talkable.ios-sdk";
 
