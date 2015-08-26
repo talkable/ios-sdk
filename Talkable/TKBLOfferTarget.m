@@ -121,7 +121,8 @@
         return NO;
     }
     
-    if (navigationType == UIWebViewNavigationTypeLinkClicked) {
+    if (navigationType == UIWebViewNavigationTypeLinkClicked &&
+        ![self isAnchorNavigation:webView.request.URL to:request.URL]) {
         [[UIApplication sharedApplication] openURL:[request URL]];
         return NO;
     }
@@ -130,6 +131,15 @@
 }
 
 #pragma mark - [Private]
+
+- (BOOL)isAnchorNavigation:(NSURL*)currentURL to:(NSURL*)requestedURL {
+    return [[self urlStringWithoutAnchor:currentURL] isEqualToString:[self urlStringWithoutAnchor:requestedURL]];
+}
+
+- (NSString*)urlStringWithoutAnchor:(NSURL*)url {
+    NSString* anchor = [NSString stringWithFormat:@"#%@", url.fragment];
+    return [url.absoluteString stringByReplacingOccurrencesOfString:anchor withString:@""];
+}
 
 - (NSArray*)parseEventsQueue:(NSString*)jsonString {
     if (!jsonString || [jsonString length] == 0)
