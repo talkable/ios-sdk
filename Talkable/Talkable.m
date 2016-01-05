@@ -157,6 +157,12 @@ NSString*   TKBLCouponKey           = @"coupon";
         [talkableParams setObject:uuid forKey:@"current_visitor_uuid"];
     }
     
+    if (TKBLAffiliateMember == type) {
+        [talkableParams setObject:@"invite" forKey:@"campaign_tags[]"];
+    } else if (TKBLPurchase == type) {
+        [talkableParams setObject:@"post-purchase" forKey:@"campaign_tags[]"];
+    }
+    
     NSURL* requestURL = [self requestURL:type params:talkableParams];
     if (![self shouldRegisterOrigin:type withURL:requestURL]) return;
     
