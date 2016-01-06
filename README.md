@@ -5,7 +5,9 @@ Talkable Integration and API for iOS devices
 - [ ] Direct SMS Sharing
 - [ ] CocoaPod
 - [ ] Safari View Controller
-  - [ ] Special Mobile Tracking method
+- [ ] Special Mobile Tracking method
+  - [ ] Altenative Cookie
+  - [ ] Explicitly specified visitor id
 - [ ] Pair Device's idfa and Visitor UUID 
 - [ ] Fraud detection
 - [X] Network Queue and Offline
