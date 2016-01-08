@@ -24,6 +24,7 @@ NSString* TKBLMessageCouponIssued                       = @"coupon_issued";
 
 NSString* TKBLDidReceiveCouponCode                      = @"TKBLDidReceiveCouponCodeNotificationName";
 
+NSString* TKBLOriginKey                                 = @"o";
 NSString* TKBLOriginTypeKey                             = @"type";
 NSString* TKBLOriginDataKey                             = @"data";
 NSString* TKBLOriginUUIDKey                             = @"uuid";

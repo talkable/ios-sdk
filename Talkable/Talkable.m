@@ -165,7 +165,20 @@ NSString*   TKBLCouponKey           = @"coupon";
     
     NSString* webUUID = [self webUUID];
     if (webUUID) {
-        [talkableParams setObject:webUUID forKey:@"alternative_visitor_uuid"];
+        NSArray* originKeys = @[TKBLOriginKey, TKBLAffiliateMemberKey, TKBLPurchaseKey, TKBLEventKey];
+        NSArray* filtered = [talkableParams objectsForKeys:originKeys notFoundMarker:[NSNull null]];
+        NSUInteger idx = [filtered indexOfObjectPassingTest:^BOOL(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            return [obj isKindOfClass:[NSDictionary class]];
+        }];
+        NSMutableDictionary* originParams = nil;
+        if (idx != NSNotFound) {
+            originParams = [NSMutableDictionary dictionaryWithDictionary:[filtered objectAtIndex:idx]];
+            [originParams setObject:webUUID forKey:@"alternative_visitor_uuid"];
+            [talkableParams setObject:originParams forKey:[originKeys objectAtIndex:idx]];
+        } else {
+            originParams = [NSMutableDictionary dictionaryWithObject:webUUID forKey:@"alternative_visitor_uuid"];
+            [talkableParams setObject:originParams forKey:TKBLOriginKey];
+        }
     }
     
     if (TKBLAffiliateMember == type) {
