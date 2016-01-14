@@ -14,5 +14,5 @@ Talkable Integration and API for iOS devices
 - [ ] Bugsnag integration
 - [ ] Update AFNetworking
 - [ ] WKWebView
-
+- [ ] Unify origin URL parameter key to use only one name aka purchase, affiliate_member, event => origin
 
