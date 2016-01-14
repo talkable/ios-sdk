@@ -27,7 +27,7 @@
 NSString*   TKBLApiKey              = @"api_key";
 NSString*   TKBLSiteSlug            = @"site_slug";
 NSString*   TKBLVisitorOfferKey     = @"visitor_offer_id";
-NSString*   TKBLVisitorWebUUIDKey   = @"visitor_uuid";
+NSString*   TKBLVisitorWebUUIDKey   = @"current_visitor_uuid";
 NSString*   TKBLCouponKey           = @"coupon";
 
 @implementation Talkable {
@@ -550,9 +550,9 @@ NSString*   TKBLCouponKey           = @"coupon";
 }
 
 - (void)extractWebUUID {
-    if ([SFSafariViewController class] != nil && _appURLSchema && self.server) {
+    if ([SFSafariViewController class] != nil && _appURLSchema && self.server && self.siteSlug) {
         if (UIApplicationStateActive == [[UIApplication sharedApplication] applicationState]) {
-            [[TKBLUUIDExtractor extractor] extractFromServer:self.server withAppSchema:_appURLSchema];
+            [[TKBLUUIDExtractor extractor] extractFromServer:self.server withSiteSlug:self.siteSlug andAppSchema:_appURLSchema];
         }
     }
 }

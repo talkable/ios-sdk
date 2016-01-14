@@ -19,7 +19,7 @@ NSTimeInterval const TKBLUUIDExtractorIntervalThreshold = 60.0;
     return [[self alloc] init];
 }
 
-- (void)extractFromServer:(NSString*)server withAppSchema:(NSString*)appSchema {
+- (void)extractFromServer:(NSString*)server withSiteSlug:(NSString*)siteSlug andAppSchema:(NSString*)appSchema {
     // This method just makes initial request
     // uuid will be handled by [Talkable handleOpenURL:]
     
@@ -28,7 +28,7 @@ NSTimeInterval const TKBLUUIDExtractorIntervalThreshold = 60.0;
     if (now - lastExtrated < TKBLUUIDExtractorIntervalThreshold) return;
     lastExtrated = now;
     
-    NSString* path = [NSString stringWithFormat:@"%@/public/extract_uuid/%@", server, appSchema];
+    NSString* path = [NSString stringWithFormat:@"%@/public/%@/extract_uuid/%@.html", server, siteSlug, appSchema];
     NSURL* url = [NSURL URLWithString:path];
     
     SFSafariViewController* safariVC = [[SFSafariViewController alloc] initWithURL:url];

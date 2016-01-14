@@ -13,6 +13,6 @@
 
 + (instancetype)extractor;
 
-- (void)extractFromServer:(NSString*)server withAppSchema:(NSString*)string;
+- (void)extractFromServer:(NSString*)server withSiteSlug:(NSString*)siteSlug andAppSchema:(NSString*)appSchema;
 
 @end
