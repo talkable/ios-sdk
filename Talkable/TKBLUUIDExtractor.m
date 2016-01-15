@@ -33,12 +33,16 @@ NSTimeInterval const TKBLUUIDExtractorIntervalThreshold = 60.0;
     
     SFSafariViewController* safariVC = [[SFSafariViewController alloc] initWithURL:url];
     safariVC.delegate = self;
-    safariVC.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+    safariVC.view.userInteractionEnabled = NO;
     safariVC.view.alpha = 0.0;
     
     [self incRetain]; // make object as delegate be alive unless safariVC dismissed
     dispatch_async(dispatch_get_main_queue(), ^{
-        [[UIViewController currentViewController] presentViewController:safariVC animated:NO completion:nil];
+        UIViewController* currentController = [UIViewController currentViewController];
+        [currentController addChildViewController: safariVC];
+        [currentController.view addSubview: safariVC.view];
+        [safariVC didMoveToParentViewController:currentController];
+        safariVC.view.frame = CGRectZero;
     });
 }
 
@@ -61,7 +65,9 @@ NSTimeInterval const TKBLUUIDExtractorIntervalThreshold = 60.0;
 }
 
 - (void)dismissSafariViewController:(SFSafariViewController*)safariVC {
-    [safariVC dismissViewControllerAnimated:NO completion:nil];
+    [safariVC willMoveToParentViewController: nil];
+    [safariVC.view removeFromSuperview];
+    [safariVC removeFromParentViewController];
     [self decRetain];
 }
 
