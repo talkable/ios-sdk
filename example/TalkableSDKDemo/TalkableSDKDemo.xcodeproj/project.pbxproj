@@ -20,6 +20,7 @@
 		7A4FFCEB1AEA91AB00995DF0 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7A4FFCEA1AEA91AB00995DF0 /* Images.xcassets */; };
 		7A4FFCEE1AEA91AB00995DF0 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7A4FFCEC1AEA91AB00995DF0 /* LaunchScreen.xib */; };
 		7A4FFCFA1AEA91AB00995DF0 /* TalkableSDKDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A4FFCF91AEA91AB00995DF0 /* TalkableSDKDemoTests.m */; };
+		7A6DD7C91C3FC13900C5E71D /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A6DD7C81C3FC13900C5E71D /* SafariServices.framework */; };
 		7A83196C1B3AF54300EF6445 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A83196B1B3AF54300EF6445 /* AddressBook.framework */; };
 		7A83196E1B3AF54A00EF6445 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A83196D1B3AF54A00EF6445 /* MessageUI.framework */; };
 /* End PBXBuildFile section */
@@ -54,6 +55,7 @@
 		7A4FFCF31AEA91AB00995DF0 /* TalkableSDKDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TalkableSDKDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A4FFCF81AEA91AB00995DF0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7A4FFCF91AEA91AB00995DF0 /* TalkableSDKDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TalkableSDKDemoTests.m; sourceTree = "<group>"; };
+		7A6DD7C81C3FC13900C5E71D /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
 		7A83196B1B3AF54300EF6445 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		7A83196D1B3AF54A00EF6445 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		7A90F0D01B16005B001AB964 /* TalkableServerConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TalkableServerConfig.h; sourceTree = "<group>"; };
@@ -64,6 +66,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A6DD7C91C3FC13900C5E71D /* SafariServices.framework in Frameworks */,
 				7A83196E1B3AF54A00EF6445 /* MessageUI.framework in Frameworks */,
 				7A83196C1B3AF54300EF6445 /* AddressBook.framework in Frameworks */,
 				7A1F6A921AEA94D100B099A2 /* Social.framework in Frameworks */,
@@ -88,6 +91,7 @@
 		7A1F6A861AEA947300B099A2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7A6DD7C81C3FC13900C5E71D /* SafariServices.framework */,
 				7A83196D1B3AF54A00EF6445 /* MessageUI.framework */,
 				7A83196B1B3AF54300EF6445 /* AddressBook.framework */,
 				7A1F6A911AEA94D100B099A2 /* Social.framework */,

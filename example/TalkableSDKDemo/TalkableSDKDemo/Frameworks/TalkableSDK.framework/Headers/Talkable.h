@@ -32,6 +32,8 @@
 - (void)registerCoupon:(NSString*)coupon;
 - (NSString*)coupon;
 
+- (void)registerURLScheme:(NSString*)urlScheme;
+
 #pragma make - [Handlers]
 
 - (BOOL)handleOpenURL:(NSURL*)url;
