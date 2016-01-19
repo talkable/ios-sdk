@@ -9,6 +9,7 @@
 #import "Talkable.h"
 #import "TKBLOfferViewController.h"
 #import "UIViewControllerExt.h"
+#import "TKBLUUIDExtractor.h"
 #import "TKBLOfferTarget.h"
 #import "TKBLObjCChecker.h"
 #import "TKBLHelper.h"
@@ -26,6 +27,7 @@
 NSString*   TKBLApiKey              = @"api_key";
 NSString*   TKBLSiteSlug            = @"site_slug";
 NSString*   TKBLVisitorOfferKey     = @"visitor_offer_id";
+NSString*   TKBLVisitorWebUUIDKey   = @"current_visitor_uuid";
 NSString*   TKBLCouponKey           = @"coupon";
 
 @implementation Talkable {
@@ -34,6 +36,7 @@ NSString*   TKBLCouponKey           = @"coupon";
     NSString*                       _originalUserAgent;
     NSArray* __strong               _couponCodeParams;
     NSString*                       _uuid;
+    NSString*                       _appURLSchema;
 }
 
 @synthesize apiKey, siteSlug, delegate, server = _server, debug;
@@ -103,8 +106,6 @@ NSString*   TKBLCouponKey           = @"coupon";
     self.apiKey     = aApiKey;
     self.siteSlug   = aSiteSlug;
     self.server     = aServer ? aServer : TKBL_DEFAULT_SERVER;
-    
-    [self sheduleRegisterInstall:0];
 }
 
 - (void)setApiKey:(NSString*)aApiKey andSiteSlug:(NSString*)aSiteSlug {
@@ -131,6 +132,11 @@ NSString*   TKBLCouponKey           = @"coupon";
     return [self storedObjectForKey:TKBLCouponKey];
 }
 
+- (void)registerURLScheme:(NSString*)urlScheme {
+    _appURLSchema = urlScheme;
+    [self extractWebUUID];
+}
+
 #pragma make - [Handlers]
 
 - (BOOL)handleOpenURL:(NSURL*)url {
@@ -155,6 +161,24 @@ NSString*   TKBLCouponKey           = @"coupon";
     NSString* uuid = [self visitorUUID];
     if (uuid) {
         [talkableParams setObject:uuid forKey:@"current_visitor_uuid"];
+    }
+    
+    NSString* webUUID = [self webUUID];
+    if (webUUID) {
+        NSArray* originKeys = @[TKBLOriginKey, TKBLAffiliateMemberKey, TKBLPurchaseKey, TKBLEventKey];
+        NSArray* filtered = [talkableParams objectsForKeys:originKeys notFoundMarker:[NSNull null]];
+        NSUInteger idx = [filtered indexOfObjectPassingTest:^BOOL(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            return [obj isKindOfClass:[NSDictionary class]];
+        }];
+        NSMutableDictionary* originParams = nil;
+        if (idx != NSNotFound) {
+            originParams = [NSMutableDictionary dictionaryWithDictionary:[filtered objectAtIndex:idx]];
+            [originParams setObject:webUUID forKey:@"alternative_visitor_uuid"];
+            [talkableParams setObject:originParams forKey:[originKeys objectAtIndex:idx]];
+        } else {
+            originParams = [NSMutableDictionary dictionaryWithObject:webUUID forKey:@"alternative_visitor_uuid"];
+            [talkableParams setObject:originParams forKey:TKBLOriginKey];
+        }
     }
     
     if (TKBLAffiliateMember == type) {
@@ -231,6 +255,12 @@ NSString*   TKBLCouponKey           = @"coupon";
     if (![data objectForKey:TKBLOriginUUIDKey] && uuid) {
         [data setObject:uuid forKey:TKBLOriginUUIDKey];
     }
+    
+    NSString* webUUID = [self webUUID];
+    if (webUUID) {
+        [data setObject:webUUID forKey:@"alternative_visitor_uuid"];
+    }
+    
     [data setObject:@"current" forKey:@"ip_address"];
     
     [parameters setObject:data forKey:TKBLOriginDataKey];
@@ -432,6 +462,16 @@ NSString*   TKBLCouponKey           = @"coupon";
     return [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"tkbl_uuids"] objectForKey:self.server];
 }
 
+- (void)storeWebUUID:(NSString*)uuid {
+    TKBLLog(@"Web UUID: %@", uuid);
+    [[NSUserDefaults standardUserDefaults] setValue:uuid forKey:@"tkbl_web_uuid"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (NSString*)webUUID {
+    return [[NSUserDefaults standardUserDefaults] stringForKey:@"tkbl_web_uuid"];
+}
+
 #pragma mark - [Installed Event]
 
 - (void)registerInstallIfNeeded {
@@ -507,6 +547,14 @@ NSString*   TKBLCouponKey           = @"coupon";
     NSDictionary* response = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:nil];
     
     return [[response objectForKey:@"result"] objectForKey:@"uuid"];
+}
+
+- (void)extractWebUUID {
+    if ([SFSafariViewController class] != nil && _appURLSchema && self.server && self.siteSlug) {
+        if (UIApplicationStateActive == [[UIApplication sharedApplication] applicationState]) {
+            [[TKBLUUIDExtractor extractor] extractFromServer:self.server withSiteSlug:self.siteSlug andAppSchema:_appURLSchema];
+        }
+    }
 }
 
 - (UIWebView*)buildWebView {
@@ -698,6 +746,12 @@ stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
         handled = YES;
     }
     
+    // Visitor Web UUID
+    if ([[param lowercaseString] isEqualToString:TKBLVisitorWebUUIDKey]) {
+        [self storeWebUUID:value];
+        handled = YES;
+    }
+    
     // Coupon
     NSCharacterSet* charactersToRemove = [[NSCharacterSet alphanumericCharacterSet] invertedSet];
     NSString* trimedParam = [[param componentsSeparatedByCharactersInSet:charactersToRemove] componentsJoinedByString:@""];
@@ -776,7 +830,8 @@ stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
 }
 
 - (void)applicationDidBecomeActive:(NSNotification*)ntf {
-    [self sheduleRegisterInstall:0];
+    [self extractWebUUID];
+    [self sheduleRegisterInstall:2.0]; // 2 seconds delay to make sure Web UUID will be extracted
 }
 
 @end
