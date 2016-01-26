@@ -23,6 +23,7 @@ FOUNDATION_EXPORT NSString* TKBLMessageOfferClose;
 FOUNDATION_EXPORT NSString* TKBLMessageCouponIssued;
 
 FOUNDATION_EXPORT NSString* TKBLDidReceiveCouponCode;
+FOUNDATION_EXPORT NSString* TKBLDidReceiveReward;
 
 FOUNDATION_EXPORT NSString* TKBLOriginKey;
 FOUNDATION_EXPORT NSString* TKBLOriginTypeKey;
