@@ -125,7 +125,9 @@ NSString*   TKBLCouponKey           = @"coupon";
 
 - (void)registerCoupon:(NSString*)coupon {
     [self storeObject:coupon forKey:TKBLCouponKey];
-    [[NSNotificationCenter defaultCenter] postNotificationName:TKBLDidReceiveCouponCode object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:TKBLDidReceiveCouponCode object:self userInfo:@{
+        TKBLCouponKey: coupon
+    }];
 }
 
 - (NSString*)coupon {
@@ -341,14 +343,16 @@ NSString*   TKBLCouponKey           = @"coupon";
 #pragma mark - [Sharing]
 
 - (SLComposeViewController*)socialShare:(NSDictionary*)params {
-    NSString* channel = [self mapChanel:[params objectForKey:TKBLShareChannel]];
+    NSString* channel = [params objectForKey:TKBLShareChannel];
+    NSString* serviceType = [self mapChanel:channel];
     
-    if (!channel) {
+    if (!serviceType) {
         TKBLLog(@"Using default chanel - %@", TKBLShareChannelFacebook);
-        channel = SLServiceTypeFacebook;
+        serviceType = SLServiceTypeFacebook,
+        channel = TKBLShareChannelFacebook;
     }
     
-    SLComposeViewController* controller = [SLComposeViewController composeViewControllerForServiceType:channel];
+    SLComposeViewController* controller = [SLComposeViewController composeViewControllerForServiceType:serviceType];
     
     id claimURL = [params objectForKey:TKBLOfferClaimUrlKey];
     if ([claimURL isKindOfClass:[NSString class]]) {
@@ -387,8 +391,15 @@ NSString*   TKBLCouponKey           = @"coupon";
 }
 
 - (UIActivityViewController*)nativeShare:(NSDictionary*)params {
+    NSURL* url;
     id claimURL = [params objectForKey:TKBLOfferClaimUrlKey];
-    if (!claimURL || ![claimURL isKindOfClass:[NSURL class]]) {
+    if ([claimURL isKindOfClass:[NSString class]]) {
+        url = [NSURL URLWithString:claimURL];
+    } else if ([claimURL isKindOfClass:[NSURL class]]) {
+        url = claimURL;
+    }
+    
+    if (!url) {
         TKBLLog(@"Specify %@ key as NSURL object", TKBLOfferClaimUrlKey);
         return nil;
     }
@@ -477,7 +488,7 @@ NSString*   TKBLCouponKey           = @"coupon";
 - (void)registerInstallIfNeeded {
     if ([TKBLHelper installRegistered]) return;
     if ([TKBLHelper wasAppUpdated]) return;
-    if (![self visitorUUID]) {
+    if (![self visitorUUID] || ![self webUUID]) {
         [self retryRegisterInstall];
         return;
     }
@@ -485,8 +496,8 @@ NSString*   TKBLCouponKey           = @"coupon";
     NSDictionary* originParams = @{
         TKBLOriginTypeKey: TKBLOriginTypeEvent,
         TKBLOriginDataKey: @{
-            TKBLEventCategoryKey: @"app_installed",
-            TKBLEventNumberKey: [self visitorUUID]
+            TKBLEventCategoryKey: @"app-installed",
+            TKBLEventNumberKey: [[[[UIDevice currentDevice] identifierForVendor] UUIDString] lowercaseString]
         }
     };
     
@@ -500,10 +511,10 @@ NSString*   TKBLCouponKey           = @"coupon";
 }
 
 - (void)retryRegisterInstall {
-    [self sheduleRegisterInstall:180];
+    [self scheduleRegisterInstall:30];
 }
 
-- (void)sheduleRegisterInstall:(NSTimeInterval)delay {
+- (void)scheduleRegisterInstall:(NSTimeInterval)delay {
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(registerInstallIfNeeded) object:nil];
     [self performSelector:@selector(registerInstallIfNeeded) withObject:nil afterDelay:delay];
 }
@@ -722,7 +733,7 @@ stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
 - (NSString*)mapActivityType:(NSString*)activityType {
     if ([activityType isEqualToString:UIActivityTypePostToFacebook]) {
         return TKBLShareChannelFacebook;
-    } else if (UIActivityTypePostToTwitter) {
+    } else if ([activityType isEqualToString:UIActivityTypePostToTwitter]) {
         return TKBLShareChannelTwitter;
     } else {
         return TKBLShareChannelOther;
@@ -750,6 +761,7 @@ stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
     if ([[param lowercaseString] isEqualToString:TKBLVisitorWebUUIDKey]) {
         [self storeWebUUID:value];
         handled = YES;
+        [self scheduleRegisterInstall:0.0];
     }
     
     // Coupon
@@ -831,7 +843,7 @@ stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
 
 - (void)applicationDidBecomeActive:(NSNotification*)ntf {
     [self extractWebUUID];
-    [self sheduleRegisterInstall:2.0]; // 2 seconds delay to make sure Web UUID will be extracted
+    [self scheduleRegisterInstall:0.0];
 }
 
 @end
