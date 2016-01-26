@@ -506,6 +506,7 @@ NSString*   TKBLCouponKey           = @"coupon";
             [self retryRegisterInstall];
         } else {
             [TKBLHelper registerInstall];
+            [self scheduleRetrieveRewards:0.0];
         }
     }];
 }
@@ -517,6 +518,28 @@ NSString*   TKBLCouponKey           = @"coupon";
 - (void)scheduleRegisterInstall:(NSTimeInterval)delay {
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(registerInstallIfNeeded) object:nil];
     [self performSelector:@selector(registerInstallIfNeeded) withObject:nil afterDelay:delay];
+}
+
+#pragma mark - [Retrieve Rewards]
+
+- (void)retrieveRewardsIfNeeded {
+    [self retrieveRewardsWithHandler:^(NSDictionary* response, NSError* error) {
+        if (error) {
+            TKBLLog(@"%@", error.localizedDescription);
+        } else {
+            NSArray *rewards = (NSArray *)[response objectForKey:@"rewards"];
+            if ([rewards count] > 0) {
+                [rewards enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:TKBLDidReceiveReward object:self userInfo:(NSDictionary*)obj];
+                }];
+            }
+        }
+    }];
+}
+
+- (void)scheduleRetrieveRewards:(NSTimeInterval)delay {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(retrieveRewardsIfNeeded) object:nil];
+    [self performSelector:@selector(retrieveRewardsIfNeeded) withObject:nil afterDelay:delay];
 }
 
 #pragma mark - [Private]
@@ -844,6 +867,7 @@ stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
 - (void)applicationDidBecomeActive:(NSNotification*)ntf {
     [self extractWebUUID];
     [self scheduleRegisterInstall:0.0];
+    [self scheduleRetrieveRewards:0.0];
 }
 
 @end
