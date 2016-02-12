@@ -1,5 +1,5 @@
 # talkable-ios-sdk
-Talkable Integration and API for iOS devices
+Talkable Integration and API for iOS devices.
 
 ## TODO
 - [ ] Direct SMS Sharing
