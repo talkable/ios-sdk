@@ -9,6 +9,7 @@
 #import "Talkable.h"
 #import "TKBLOfferViewController.h"
 #import "UIViewControllerExt.h"
+#import "TKBLKeychainHelper.h"
 #import "TKBLUUIDExtractor.h"
 #import "TKBLOfferChecker.h"
 #import "TKBLOfferTarget.h"
@@ -37,8 +38,10 @@ NSString*   TKBLCouponKey           = @"coupon";
     NSString*                       _originalUserAgent;
     NSArray* __strong               _couponCodeParams;
     NSString*                       _uuid;
+    NSString*                       _deviceIdentifier;
     NSString*                       _appURLSchema;
     TKBLOfferChecker*               _offerChecker;
+    TKBLKeychainHelper*             _keychain;
 }
 
 @synthesize apiKey, siteSlug, delegate, server = _server, debug;
@@ -117,12 +120,23 @@ NSString*   TKBLCouponKey           = @"coupon";
 - (NSString*)visitorUUID {
     if (_uuid) return _uuid;
     
-    if (!_uuid) _uuid = [self uuidFromKeychain];
-    if (!_uuid) _uuid = [self uuidFromPref];
+    if (!_uuid) _uuid = [self uuidFromKeychain:@"tkbl_uuid"];
+    if (!_uuid) _uuid = [self uuidFromPref:@"tkbl_uuid"];
     if (!_uuid) _uuid = [self uuidFromServer];
-    if (_uuid) [self syncUUID:_uuid];
+    if (_uuid) [self syncUUID:_uuid forKey:@"tkbl_uuid"];
     
     return _uuid;
+}
+
+- (NSString*)deviceIdentifier {
+    if (_deviceIdentifier) return _deviceIdentifier;
+    
+    if (!_deviceIdentifier) _deviceIdentifier = [self uuidFromKeychain:@"tkbl_device_id"];
+    if (!_deviceIdentifier) _deviceIdentifier = [self uuidFromPref:@"tkbl_device_id"];
+    if (!_deviceIdentifier) _deviceIdentifier = [self generateUUID];
+    if (_deviceIdentifier) [self syncUUID:_deviceIdentifier forKey:@"tkbl_device_id"];
+    
+    return _deviceIdentifier;
 }
 
 - (void)registerCoupon:(NSString*)coupon {
@@ -435,56 +449,35 @@ NSString*   TKBLCouponKey           = @"coupon";
 
 #pragma mark - [UUID]
 
-- (void)syncUUID:(NSString*)uuid {
-    [self storeUUIDToKeychain:uuid];
-    [self storeUUIDToPref:uuid];
+- (NSString*)generateUUID {
+    return [[[NSUUID UUID] UUIDString] lowercaseString];
 }
 
-- (void)storeUUIDToKeychain:(NSString*)uuid {
-    NSMutableDictionary* keychainItem = [self keychainItem];
-    SecItemDelete((__bridge CFDictionaryRef)keychainItem);
-    keychainItem[(__bridge id)kSecValueData] = [uuid dataUsingEncoding:NSUTF8StringEncoding];
-    SecItemAdd((__bridge CFDictionaryRef)keychainItem, NULL);
+- (void)syncUUID:(NSString*)uuid forKey:(NSString*)key {
+    [self storeUUID:uuid toKeychain:key];
+    [self storeUUID:uuid toPref:key];
 }
 
-- (NSString*)uuidFromKeychain {
-    OSStatus status;
-    NSMutableDictionary* keychainQueryItem = [self keychainItem];
-    keychainQueryItem[(__bridge id)kSecMatchLimit] = (__bridge id)kSecMatchLimitOne;
-    keychainQueryItem[(__bridge id)kSecReturnData] = (__bridge id)kCFBooleanTrue;
-    keychainQueryItem[(__bridge id)kSecReturnAttributes] = (__bridge id)kCFBooleanTrue;
-    CFDictionaryRef resultItem = nil;
-    status = SecItemCopyMatching((__bridge CFDictionaryRef)keychainQueryItem, (CFTypeRef*)&resultItem);
-    if (status != noErr) {
-        return nil;
-    }
-    NSDictionary* resultDict = (__bridge_transfer NSDictionary*)resultItem;
-    NSData* data = resultDict[(__bridge id)kSecValueData];
-    if (!data) {
-        return nil;
-    }
-    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+- (void)storeUUID:(NSString*)uuid toKeychain:(NSString*)key {
+    NSData* data = [uuid dataUsingEncoding:NSUTF8StringEncoding];
+    [[self keychain] storeData:data forKey:key];
 }
 
-- (NSMutableDictionary*)keychainItem {
-    NSMutableDictionary* keychainItem = [[NSMutableDictionary alloc] init];
-    keychainItem[(__bridge id)kSecClass] = (__bridge id)kSecClassGenericPassword;
-    keychainItem[(__bridge id)kSecAttrAccessible] = (__bridge id)kSecAttrAccessibleAlways;
-    keychainItem[(__bridge id)kSecAttrAccount] = @"tkbl_uuid";
-    keychainItem[(__bridge id)kSecAttrService] = self.server;
-    return keychainItem;
+- (NSString*)uuidFromKeychain:(NSString*)key; {
+    NSData* data = [[self keychain] dataForKey:key];
+    return data ? [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] : nil;
 }
 
-- (void)storeUUIDToPref:(NSString*)uuid {
-    NSMutableDictionary* uuids = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"tkbl_uuids"] mutableCopy];
+- (void)storeUUID:(NSString*)uuid toPref:(NSString*)key {
+    NSMutableDictionary* uuids = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:key] mutableCopy];
     [uuids setObject:uuid forKey:self.server];
-    [[NSUserDefaults standardUserDefaults] setValue:uuids forKey:@"tkbl_uuids"];
+    [[NSUserDefaults standardUserDefaults] setValue:uuids forKey:key];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
 }
 
-- (NSString*)uuidFromPref {
-    return [[[NSUserDefaults standardUserDefaults] dictionaryForKey:@"tkbl_uuids"] objectForKey:self.server];
+- (NSString*)uuidFromPref:(NSString*)key {
+    return [[[NSUserDefaults standardUserDefaults] dictionaryForKey:key] objectForKey:self.server];
 }
 
 - (void)storeWebUUID:(NSString*)uuid {
@@ -511,7 +504,7 @@ NSString*   TKBLCouponKey           = @"coupon";
         TKBLOriginTypeKey: TKBLOriginTypeEvent,
         TKBLOriginDataKey: @{
             TKBLEventCategoryKey: @"app-installed",
-            TKBLEventNumberKey: [[[[UIDevice currentDevice] identifierForVendor] UUIDString] lowercaseString]
+            TKBLEventNumberKey: [self deviceIdentifier]
         }
     };
     
@@ -696,6 +689,13 @@ stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
         _offerChecker = [[TKBLOfferChecker alloc] init];
     }
     return _offerChecker;
+}
+
+- (TKBLKeychainHelper*)keychain {
+    if (!_keychain) {
+        _keychain = [[TKBLKeychainHelper alloc] initWithService:self.server];
+    }
+    return _keychain;
 }
 
 - (NSString*)pathForType:(TKBLOriginType)type {
