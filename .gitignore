@@ -6,3 +6,5 @@ Intermediates
 .DS_Store
 
 example/TalkableSDKDemo/TalkableSDKDemo/TalkableServerConfig.h
+
+.pivotalrc
