@@ -91,14 +91,12 @@ NSString* TKBLContactPhoneNumberKey     = @"phone_number";
         CFRelease(abEmails);
         
         
-        if ([phoneNumbers count] > 0 && [emails count] > 0) {
-            [contacts addObject:@{
-                TKBLContactFirstNameKey: firstName ? firstName : [NSNull null],
-                TKBLContactLastNameKey: lastName ? lastName : [NSNull null],
-                TKBLContactEmailKey: emails,
-                TKBLContactPhoneNumberKey: phoneNumbers
-            }];
-        }
+        [contacts addObject:@{
+            TKBLContactFirstNameKey: firstName ? firstName : [NSNull null],
+            TKBLContactLastNameKey: lastName ? lastName : [NSNull null],
+            TKBLContactEmailKey: emails,
+            TKBLContactPhoneNumberKey: phoneNumbers
+        }];
     }
     return [NSArray arrayWithArray:contacts];
 }
