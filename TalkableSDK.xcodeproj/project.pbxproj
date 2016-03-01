@@ -23,6 +23,8 @@
 /* Begin PBXBuildFile section */
 		7A0CE73D1C3D1A5F009EC8CC /* TKBLUUIDExtractor.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A0CE73B1C3D1A5F009EC8CC /* TKBLUUIDExtractor.h */; };
 		7A0CE73E1C3D1A5F009EC8CC /* TKBLUUIDExtractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0CE73C1C3D1A5F009EC8CC /* TKBLUUIDExtractor.m */; };
+		7A11A8221C85A7BF00FA48CF /* TKBLOfferChecker.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A11A8201C85A7BF00FA48CF /* TKBLOfferChecker.h */; };
+		7A11A8231C85A7BF00FA48CF /* TKBLOfferChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A11A8211C85A7BF00FA48CF /* TKBLOfferChecker.m */; };
 		7A47DE1B1B69246E00BD1E6A /* TKBLHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A47DE191B69246E00BD1E6A /* TKBLHelper.h */; };
 		7A47DE1C1B69246E00BD1E6A /* TKBLHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A47DE1A1B69246E00BD1E6A /* TKBLHelper.m */; };
 		7A488CDE1AE64B2A002285C9 /* TKBLContactsLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A488CDC1AE64B2A002285C9 /* TKBLContactsLoader.h */; };
@@ -84,6 +86,8 @@
 /* Begin PBXFileReference section */
 		7A0CE73B1C3D1A5F009EC8CC /* TKBLUUIDExtractor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKBLUUIDExtractor.h; sourceTree = "<group>"; };
 		7A0CE73C1C3D1A5F009EC8CC /* TKBLUUIDExtractor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKBLUUIDExtractor.m; sourceTree = "<group>"; };
+		7A11A8201C85A7BF00FA48CF /* TKBLOfferChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKBLOfferChecker.h; sourceTree = "<group>"; };
+		7A11A8211C85A7BF00FA48CF /* TKBLOfferChecker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKBLOfferChecker.m; sourceTree = "<group>"; };
 		7A47DE191B69246E00BD1E6A /* TKBLHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKBLHelper.h; sourceTree = "<group>"; };
 		7A47DE1A1B69246E00BD1E6A /* TKBLHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKBLHelper.m; sourceTree = "<group>"; };
 		7A488CDC1AE64B2A002285C9 /* TKBLContactsLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKBLContactsLoader.h; sourceTree = "<group>"; };
@@ -219,6 +223,8 @@
 				7A7C513F1AD66B4A00CCC1CB /* TKBLConstants.m */,
 				7A7C51131AD5888F00CCC1CB /* TKBLOfferTarget.h */,
 				7A7C51151AD5893A00CCC1CB /* TKBLOfferTarget.m */,
+				7A11A8201C85A7BF00FA48CF /* TKBLOfferChecker.h */,
+				7A11A8211C85A7BF00FA48CF /* TKBLOfferChecker.m */,
 				7AC485E41AE7D54900165E04 /* TKBLSmsWatcher.h */,
 				7AC485E51AE7D54900165E04 /* TKBLSmsWatcher.m */,
 				7A488CDC1AE64B2A002285C9 /* TKBLContactsLoader.h */,
@@ -284,6 +290,7 @@
 				7A7A85FB1B68CFEE00DC3661 /* AFHTTPRequestOperation.h in Headers */,
 				7A7C514C1AD674E100CCC1CB /* TKBLTypes.h in Headers */,
 				7AC485E61AE7D54900165E04 /* TKBLSmsWatcher.h in Headers */,
+				7A11A8221C85A7BF00FA48CF /* TKBLOfferChecker.h in Headers */,
 				7A47DE1B1B69246E00BD1E6A /* TKBLHelper.h in Headers */,
 				7A7C51141AD5888F00CCC1CB /* TKBLOfferTarget.h in Headers */,
 				7A90F1601B39C3B1001AB964 /* NamespacedDependencies.h in Headers */,
@@ -439,6 +446,7 @@
 			files = (
 				7A7A86051B68CFEE00DC3661 /* AFSecurityPolicy.m in Sources */,
 				7A7C50B51AD3F83C00CCC1CB /* UIViewControllerExt.m in Sources */,
+				7A11A8231C85A7BF00FA48CF /* TKBLOfferChecker.m in Sources */,
 				7A7A86031B68CFEE00DC3661 /* AFNetworkReachabilityManager.m in Sources */,
 				7AC485E71AE7D54900165E04 /* TKBLSmsWatcher.m in Sources */,
 				7A7A86071B68CFEE00DC3661 /* AFURLConnectionOperation.m in Sources */,

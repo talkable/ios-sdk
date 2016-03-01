@@ -68,10 +68,12 @@ NSString* TKBLEventKey                                  = @"event";
 NSString* TKBLEventCategoryKey                          = @"event_category";
 NSString* TKBLEventNumberKey                            = @"event_number";
 
+NSString* TKBLCampaignTags                              = @"campaign_tags[]";
+
 NSString* TKBLOfferKey                                  = @"offer";
 NSString* TKBLOfferShortUrlCodeKey                      = @"short_url_code";
 NSString* TKBLOfferClaimUrlKey                          = @"claim_url";
-NSString* TKBLClipboardTextKey                             = @"text";
+NSString* TKBLClipboardTextKey                          = @"text";
 
 NSString* TKBLVisitorUUID                               = @"visitor_uuid";
 
