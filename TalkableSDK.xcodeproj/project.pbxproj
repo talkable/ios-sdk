@@ -23,10 +23,10 @@
 /* Begin PBXBuildFile section */
 		7A0CE73D1C3D1A5F009EC8CC /* TKBLUUIDExtractor.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A0CE73B1C3D1A5F009EC8CC /* TKBLUUIDExtractor.h */; };
 		7A0CE73E1C3D1A5F009EC8CC /* TKBLUUIDExtractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A0CE73C1C3D1A5F009EC8CC /* TKBLUUIDExtractor.m */; };
-		7A11A8221C85A7BF00FA48CF /* TKBLOfferChecker.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A11A8201C85A7BF00FA48CF /* TKBLOfferChecker.h */; };
-		7A11A8231C85A7BF00FA48CF /* TKBLOfferChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A11A8211C85A7BF00FA48CF /* TKBLOfferChecker.m */; };
 		7A11A81E1C847E9E00FA48CF /* TKBLKeychainHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A11A81C1C847E9E00FA48CF /* TKBLKeychainHelper.h */; };
 		7A11A81F1C847E9E00FA48CF /* TKBLKeychainHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A11A81D1C847E9E00FA48CF /* TKBLKeychainHelper.m */; };
+		7A11A8221C85A7BF00FA48CF /* TKBLOfferChecker.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A11A8201C85A7BF00FA48CF /* TKBLOfferChecker.h */; };
+		7A11A8231C85A7BF00FA48CF /* TKBLOfferChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A11A8211C85A7BF00FA48CF /* TKBLOfferChecker.m */; };
 		7A47DE1B1B69246E00BD1E6A /* TKBLHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A47DE191B69246E00BD1E6A /* TKBLHelper.h */; };
 		7A47DE1C1B69246E00BD1E6A /* TKBLHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A47DE1A1B69246E00BD1E6A /* TKBLHelper.m */; };
 		7A488CDE1AE64B2A002285C9 /* TKBLContactsLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A488CDC1AE64B2A002285C9 /* TKBLContactsLoader.h */; };
@@ -88,10 +88,10 @@
 /* Begin PBXFileReference section */
 		7A0CE73B1C3D1A5F009EC8CC /* TKBLUUIDExtractor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKBLUUIDExtractor.h; sourceTree = "<group>"; };
 		7A0CE73C1C3D1A5F009EC8CC /* TKBLUUIDExtractor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKBLUUIDExtractor.m; sourceTree = "<group>"; };
-		7A11A8201C85A7BF00FA48CF /* TKBLOfferChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKBLOfferChecker.h; sourceTree = "<group>"; };
-		7A11A8211C85A7BF00FA48CF /* TKBLOfferChecker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKBLOfferChecker.m; sourceTree = "<group>"; };
 		7A11A81C1C847E9E00FA48CF /* TKBLKeychainHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKBLKeychainHelper.h; sourceTree = "<group>"; };
 		7A11A81D1C847E9E00FA48CF /* TKBLKeychainHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKBLKeychainHelper.m; sourceTree = "<group>"; };
+		7A11A8201C85A7BF00FA48CF /* TKBLOfferChecker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKBLOfferChecker.h; sourceTree = "<group>"; };
+		7A11A8211C85A7BF00FA48CF /* TKBLOfferChecker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKBLOfferChecker.m; sourceTree = "<group>"; };
 		7A47DE191B69246E00BD1E6A /* TKBLHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKBLHelper.h; sourceTree = "<group>"; };
 		7A47DE1A1B69246E00BD1E6A /* TKBLHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TKBLHelper.m; sourceTree = "<group>"; };
 		7A488CDC1AE64B2A002285C9 /* TKBLContactsLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TKBLContactsLoader.h; sourceTree = "<group>"; };
@@ -532,7 +532,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1.3.2;
+				CURRENT_PROJECT_VERSION = 1.3.3;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -581,7 +581,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 1.3.2;
+				CURRENT_PROJECT_VERSION = 1.3.3;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
