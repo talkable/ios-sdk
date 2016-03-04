@@ -28,6 +28,7 @@
 - (void)setApiKey:(NSString*)apiKey andSiteSlug:(NSString*)siteSlug server:(NSString*)server;
 
 - (NSString*)visitorUUID;
+- (NSString*)deviceIdentifier;
 
 - (void)registerCoupon:(NSString*)coupon;
 - (NSString*)coupon;
