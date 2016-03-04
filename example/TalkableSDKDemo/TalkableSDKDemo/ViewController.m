@@ -139,6 +139,7 @@
             TKBLPurchaseEmailKey: @"test5@example.com",
             TKBLPurchaseSubtotalKey: @"17.43",
             TKBLPurchaseOrderNumberKey: @"100125",
+            @"campaign_tags": @"post-purchase"
         }
     };
 
@@ -146,7 +147,7 @@
 //        TKBLOriginTypeKey: TKBLOriginTypeEvent,
 //        TKBLOriginDataKey: @{
 //            TKBLEventCategoryKey: @"sample",
-//            TKBLEventNumberKey: [[[[UIDevice currentDevice] identifierForVendor] UUIDString] lowercaseString]
+//            TKBLEventNumberKey: [[Talkable manager] deviceIdentifier]
 //        }
 //    };
     

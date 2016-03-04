@@ -17,7 +17,7 @@
 //#define TALKABLE_API_KEY    @"FOuTgIbxpbOGP4LeDS6F"
 //#define TALKABLE_SITE_SLUG  @"demo-ios-integration"
 
-//#define TALKABLE_SERVER     @"http://172.16.10.65:3000"
+//#define TALKABLE_SERVER     @"http://172.16.10.66:3000"
 //#define TALKABLE_API_KEY    @"WCHpvYrQK8ABhBpA8JnN"
 //#define TALKABLE_SITE_SLUG  @"demo-ios-integration"
 
