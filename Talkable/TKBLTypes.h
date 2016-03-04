@@ -15,7 +15,8 @@ typedef NS_ENUM(NSUInteger, TKBLOriginType) {
 typedef NS_ENUM(NSUInteger, TKBLError) {
     TKBLNetworkError        = 1000,
     TKBLApiError            = 1001,
-    TKBLRequestError        = 1002
+    TKBLRequestError        = 1002,
+    TKBLCampaignError       = 1003
 };
 
 extern NSString* const UIImageDownloadErrorDomain;

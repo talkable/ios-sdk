@@ -10,6 +10,7 @@
 #import "TKBLOfferViewController.h"
 #import "UIViewControllerExt.h"
 #import "TKBLUUIDExtractor.h"
+#import "TKBLOfferChecker.h"
 #import "TKBLOfferTarget.h"
 #import "TKBLObjCChecker.h"
 #import "TKBLHelper.h"
@@ -37,6 +38,7 @@ NSString*   TKBLCouponKey           = @"coupon";
     NSArray* __strong               _couponCodeParams;
     NSString*                       _uuid;
     NSString*                       _appURLSchema;
+    TKBLOfferChecker*               _offerChecker;
 }
 
 @synthesize apiKey, siteSlug, delegate, server = _server, debug;
@@ -183,10 +185,12 @@ NSString*   TKBLCouponKey           = @"coupon";
         }
     }
     
-    if (TKBLAffiliateMember == type) {
-        [talkableParams setObject:@"invite" forKey:@"campaign_tags[]"];
-    } else if (TKBLPurchase == type) {
-        [talkableParams setObject:@"post-purchase" forKey:@"campaign_tags[]"];
+    if (![talkableParams objectForKey:TKBLCampaignTags]) {
+        if (TKBLAffiliateMember == type) {
+            [talkableParams setObject:@"invite" forKey:TKBLCampaignTags];
+        } else if (TKBLPurchase == type) {
+            [talkableParams setObject:@"post-purchase" forKey:TKBLCampaignTags];
+        }
     }
     
     NSURL* requestURL = [self requestURL:type params:talkableParams];
@@ -223,26 +227,36 @@ NSString*   TKBLCouponKey           = @"coupon";
              return;
          }
          
-         TKBLOfferViewController* controller = [[TKBLOfferViewController alloc] init];
-         
-         UIWebView* webView = [self buildWebView];
-         [self notifyOriginDidRegister:type withWebView:webView];
-         
-         BOOL shouldPresent = YES;
-         if ([self.delegate respondsToSelector:@selector(shouldPresentTalkableOfferViewController:)]) {
-             shouldPresent = [self.delegate shouldPresentTalkableOfferViewController:controller];
-         }
-         
-         if (shouldPresent) {
-             [webView setDelegate:controller];
-             CGRect frame = webView.frame;
-             frame = controller.view.bounds;
-             webView.frame = frame;
-             [controller.view addSubview:webView];
-             [self presentOfferViewController:controller];
-         }
-         
-         [webView loadData:responseData MIMEType:response.MIMEType textEncodingName:response.textEncodingName baseURL:requestURL];
+         [[self offerChecker] performWithContent:responseData MIMEType:response.MIMEType textEncodingName:response.textEncodingName baseURL:requestURL callback:^(BOOL isExist, NSString* localizedErrorMessage) {
+             if (!isExist) {
+                 TKBLLog(@"%@", localizedErrorMessage);
+                 NSError* error = [NSError errorWithDomain:TKBLErrorDomain
+                                                      code:TKBLCampaignError
+                                                  userInfo:@{NSLocalizedDescriptionKey: localizedErrorMessage}];
+                 [self notifyRegisterOrigin:type didFailWithError:error];
+             } else {
+                 TKBLOfferViewController* controller = [[TKBLOfferViewController alloc] init];
+                 
+                 UIWebView* webView = [self buildWebView];
+                 [self notifyOriginDidRegister:type withWebView:webView];
+                 
+                 BOOL shouldPresent = YES;
+                 if ([self.delegate respondsToSelector:@selector(shouldPresentTalkableOfferViewController:)]) {
+                     shouldPresent = [self.delegate shouldPresentTalkableOfferViewController:controller];
+                 }
+                 
+                 if (shouldPresent) {
+                     [webView setDelegate:controller];
+                     CGRect frame = webView.frame;
+                     frame = controller.view.bounds;
+                     webView.frame = frame;
+                     [controller.view addSubview:webView];
+                     [self presentOfferViewController:controller];
+                 }
+                 
+                 [webView loadData:responseData MIMEType:response.MIMEType textEncodingName:response.textEncodingName baseURL:requestURL];
+             }
+         }];
      }];
 }
 
@@ -675,6 +689,13 @@ stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
         _userAgent = [NSString stringWithFormat:@"%@;%@", userAgent, userAgentSufix];
     }
     return _userAgent;
+}
+
+- (TKBLOfferChecker*)offerChecker {
+    if (!_offerChecker) {
+        _offerChecker = [[TKBLOfferChecker alloc] init];
+    }
+    return _offerChecker;
 }
 
 - (NSString*)pathForType:(TKBLOriginType)type {
