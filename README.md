@@ -15,3 +15,5 @@ Talkable Integration and API for iOS devices.
 - [ ] WKWebView
 - [ ] Unify origin URL parameter key to use only one name aka purchase, affiliate_member, event => origin
 - [ ] Native contact importer
+- [ ] Rename app_installed to ios_app_installed
+- [ ] Introduce full_name in contact importer
