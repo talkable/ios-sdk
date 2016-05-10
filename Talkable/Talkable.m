@@ -35,6 +35,7 @@ NSString*   TKBLCouponKey           = @"coupon";
 @implementation Talkable {
     AFHTTPRequestOperationManager*  _networkClient;
     NSString*                       _userAgent;
+    NSString*                       _apiUserAgent;
     NSString*                       _originalUserAgent;
     NSArray* __strong               _couponCodeParams;
     NSString*                       _uuid;
@@ -554,7 +555,7 @@ NSString*   TKBLCouponKey           = @"coupon";
 - (AFHTTPRequestOperationManager*)networkClient {
     if (!_networkClient) {
         _networkClient = [[AFHTTPRequestOperationManager alloc] init];
-        [_networkClient.requestSerializer setValue:[self userAgent] forHTTPHeaderField:@"User-Agent"];
+        [_networkClient.requestSerializer setValue:[self apiUserAgent] forHTTPHeaderField:@"User-Agent"];
     }
     return _networkClient;
 }
@@ -579,7 +580,7 @@ NSString*   TKBLCouponKey           = @"coupon";
     NSString* path = [NSString stringWithFormat:@"/visitors?%@", params];
     
     
-    NSMutableURLRequest* request = [self serverRequest:[NSURL URLWithString:[self urlForAPI:path]] withHttpMethod:@"POST"];
+    NSMutableURLRequest* request = [self serverRequest:[NSURL URLWithString:[self urlForAPI:path]] withHttpMethod:@"POST" userAgent:[self apiUserAgent]];
     
     NSData* responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
     if (!responseData)
@@ -642,13 +643,13 @@ stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
 }
 
 - (NSMutableURLRequest*)serverRequest:(NSURL*)url {
-    return [self serverRequest:url withHttpMethod:@"GET"];
+    return [self serverRequest:url withHttpMethod:@"GET" userAgent:[self userAgent]];
 }
 
-- (NSMutableURLRequest*)serverRequest:(NSURL*)url withHttpMethod:(NSString*)httpMethod {
+- (NSMutableURLRequest*)serverRequest:(NSURL*)url withHttpMethod:(NSString*)httpMethod userAgent:(NSString*)userAgent{
     NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:url];
     [request setHTTPMethod:httpMethod];
-    [request setValue:[self userAgent] forHTTPHeaderField:@"User-Agent"];
+    [request setValue:userAgent forHTTPHeaderField:@"User-Agent"];
     return request;
 }
 
@@ -682,6 +683,13 @@ stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
         _userAgent = [NSString stringWithFormat:@"%@;%@", userAgent, userAgentSufix];
     }
     return _userAgent;
+}
+
+- (NSString*)apiUserAgent {
+    if (!_apiUserAgent) {
+        _apiUserAgent = [NSString stringWithFormat:@"Talkable iOS SDK v%@", TKBLVersion];
+    }
+    return _apiUserAgent;
 }
 
 - (TKBLOfferChecker*)offerChecker {
