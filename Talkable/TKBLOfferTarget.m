@@ -43,7 +43,7 @@
     }
     
     NSString* claimURL = [params objectForKey:TKBLOfferClaimUrlKey];
-    if (claimURL) {
+    if (claimURL && ![message containsString:claimURL]) {
         message = [NSString stringWithFormat:@"%@ %@", message, claimURL];
     }
     
