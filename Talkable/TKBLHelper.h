@@ -17,4 +17,6 @@
 + (void)registerInstall;
 + (BOOL)installRegistered;
 
++ (NSDictionary*)featuresInfo;
+
 @end

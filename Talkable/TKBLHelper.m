@@ -6,7 +6,10 @@
 //  Copyright (c) 2015 Talkable. All rights reserved.
 //
 
+#import <MessageUI/MessageUI.h>
+
 #import "TKBLHelper.h"
+#import "TKBLConstants.h"
 
 NSString*   TKBLInstallRegisteredKey    = @"tkbl_install_registered";
 
@@ -38,6 +41,16 @@ NSString*   TKBLInstallRegisteredKey    = @"tkbl_install_registered";
 + (BOOL)installRegistered {
     NSUserDefaults* pref = [NSUserDefaults standardUserDefaults];
     return [pref boolForKey:TKBLInstallRegisteredKey];
+}
+
++ (NSDictionary*)featuresInfo {
+    return @{
+        @"send_sms":            [NSNumber numberWithBool:[MFMessageComposeViewController canSendText]],
+        @"copy_to_clipboard":   [NSNumber numberWithBool:YES],
+        @"share_via_facebook":  [NSNumber numberWithBool:YES],
+        @"share_via_twitter":   [NSNumber numberWithBool:YES],
+        @"sdk_version":         TKBLVersion,
+    };
 }
 
 @end
