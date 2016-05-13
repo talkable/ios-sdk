@@ -181,22 +181,28 @@ NSString*   TKBLCouponKey           = @"coupon";
         [talkableParams setObject:uuid forKey:@"current_visitor_uuid"];
     }
     
+    NSArray* originKeys = @[TKBLOriginKey, TKBLAffiliateMemberKey, TKBLPurchaseKey, TKBLEventKey];
+    NSArray* filtered = [talkableParams objectsForKeys:originKeys notFoundMarker:[NSNull null]];
+    NSUInteger idx = [filtered indexOfObjectPassingTest:^BOOL(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        return [obj isKindOfClass:[NSDictionary class]];
+    }];
+    NSMutableDictionary* originParams = [NSMutableDictionary dictionary];
+    if (idx != NSNotFound) {
+        originParams = [NSMutableDictionary dictionaryWithDictionary:[filtered objectAtIndex:idx]];
+        [talkableParams setObject:originParams forKey:[originKeys objectAtIndex:idx]];
+    } else {
+        [talkableParams setObject:originParams forKey:TKBLOriginKey];
+    }
+    
     NSString* webUUID = [self webUUID];
     if (webUUID) {
-        NSArray* originKeys = @[TKBLOriginKey, TKBLAffiliateMemberKey, TKBLPurchaseKey, TKBLEventKey];
-        NSArray* filtered = [talkableParams objectsForKeys:originKeys notFoundMarker:[NSNull null]];
-        NSUInteger idx = [filtered indexOfObjectPassingTest:^BOOL(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            return [obj isKindOfClass:[NSDictionary class]];
-        }];
-        NSMutableDictionary* originParams = nil;
-        if (idx != NSNotFound) {
-            originParams = [NSMutableDictionary dictionaryWithDictionary:[filtered objectAtIndex:idx]];
-            [originParams setObject:webUUID forKey:@"alternative_visitor_uuid"];
-            [talkableParams setObject:originParams forKey:[originKeys objectAtIndex:idx]];
-        } else {
-            originParams = [NSMutableDictionary dictionaryWithObject:webUUID forKey:@"alternative_visitor_uuid"];
-            [talkableParams setObject:originParams forKey:TKBLOriginKey];
-        }
+        [originParams setObject:webUUID forKey:@"alternative_visitor_uuid"];
+    }
+    
+    if (TKBLAffiliateMember == type && ![originParams objectForKey:TKBLAffiliateMemberTrafficSourceKey]) {
+        [originParams setObject:@"ios" forKey:TKBLAffiliateMemberTrafficSourceKey];
+    } else if (TKBLPurchase == type && ![originParams objectForKey:TKBLPurchaseTrafficSourceKey]) {
+        [originParams setObject:@"ios" forKey:TKBLPurchaseTrafficSourceKey];
     }
     
     if (![talkableParams objectForKey:TKBLCampaignTags]) {
