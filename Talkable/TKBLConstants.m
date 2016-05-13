@@ -32,6 +32,7 @@ NSString* TKBLOriginUUIDKey                             = @"uuid";
 NSString* TKBLOriginTypeAffiliateMember                 = @"AffiliateMember";
 NSString* TKBLOriginTypePurchase                        = @"Purchase";
 NSString* TKBLOriginTypeEvent                           = @"Event";
+NSString* TKBLOriginTrafficSourceKey                    = @"traffic_source";
 
 NSString* TKBLAffiliateMemberKey                        = @"affiliate_member";
 NSString* TKBLAffiliateMemberEmailKey                   = @"email";

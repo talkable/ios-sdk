@@ -199,10 +199,8 @@ NSString*   TKBLCouponKey           = @"coupon";
         [originParams setObject:webUUID forKey:@"alternative_visitor_uuid"];
     }
     
-    if (TKBLAffiliateMember == type && ![originParams objectForKey:TKBLAffiliateMemberTrafficSourceKey]) {
-        [originParams setObject:@"ios" forKey:TKBLAffiliateMemberTrafficSourceKey];
-    } else if (TKBLPurchase == type && ![originParams objectForKey:TKBLPurchaseTrafficSourceKey]) {
-        [originParams setObject:@"ios" forKey:TKBLPurchaseTrafficSourceKey];
+    if (![originParams objectForKey:TKBLOriginTrafficSourceKey]) {
+        [originParams setObject:@"ios" forKey:TKBLOriginTrafficSourceKey];
     }
     
     if (![talkableParams objectForKey:TKBLCampaignTags]) {
