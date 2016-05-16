@@ -32,6 +32,7 @@ FOUNDATION_EXPORT NSString* TKBLOriginUUIDKey;
 FOUNDATION_EXPORT NSString* TKBLOriginTypeAffiliateMember;
 FOUNDATION_EXPORT NSString* TKBLOriginTypePurchase;
 FOUNDATION_EXPORT NSString* TKBLOriginTypeEvent;
+FOUNDATION_EXPORT NSString* TKBLOriginTrafficSourceKey;
 
 FOUNDATION_EXPORT NSString* TKBLAffiliateMemberKey;
 FOUNDATION_EXPORT NSString* TKBLAffiliateMemberEmailKey;
