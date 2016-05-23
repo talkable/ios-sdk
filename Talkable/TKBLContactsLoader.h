@@ -10,6 +10,7 @@
 
 NSString* TKBLContactFirstNameKey;
 NSString* TKBLContactLastNameKey;
+NSString* TKBLContactFullNameKey;
 NSString* TKBLContactEmailKey;
 NSString* TKBLContactPhoneNumberKey;
 
