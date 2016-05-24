@@ -14,6 +14,7 @@
 
 NSString* TKBLContactFirstNameKey       = @"first_name";
 NSString* TKBLContactLastNameKey        = @"last_name";
+NSString* TKBLContactFullNameKey        = @"full_name";
 NSString* TKBLContactEmailKey           = @"email";
 NSString* TKBLContactPhoneNumberKey     = @"phone_number";
 
@@ -72,6 +73,7 @@ NSString* TKBLContactPhoneNumberKey     = @"phone_number";
         
         NSString* firstName = CFBridgingRelease(ABRecordCopyValue(abContact, kABPersonFirstNameProperty));
         NSString* lastName  = CFBridgingRelease(ABRecordCopyValue(abContact, kABPersonLastNameProperty));
+        NSString *fullName = firstName ? [[NSArray arrayWithObjects:firstName, lastName, nil] componentsJoinedByString:@" "] : [lastName copy];
         
         NSMutableArray* phoneNumbers = [NSMutableArray array];
         ABMultiValueRef abPhoneNumbers = ABRecordCopyValue(abContact, kABPersonPhoneProperty);
@@ -94,6 +96,7 @@ NSString* TKBLContactPhoneNumberKey     = @"phone_number";
         [contacts addObject:@{
             TKBLContactFirstNameKey: firstName ? firstName : [NSNull null],
             TKBLContactLastNameKey: lastName ? lastName : [NSNull null],
+            TKBLContactFullNameKey: fullName ? fullName : [NSNull null],
             TKBLContactEmailKey: emails,
             TKBLContactPhoneNumberKey: phoneNumbers
         }];
