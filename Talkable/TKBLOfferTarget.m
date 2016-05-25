@@ -10,6 +10,7 @@
 
 #import "TKBLOfferTarget.h"
 #import "Talkable.h"
+#import "TKBLHelper.h"
 #import "TKBLSmsWatcher.h"
 #import "TKBLContactsLoader.h"
 #import "UIViewControllerExt.h"
@@ -33,7 +34,7 @@
 - (void)tkblShareOfferViaSms:(NSDictionary*)params sender:(id)sender {
     if (![MFMessageComposeViewController canSendText]) {
         TKBLLog(@"Current device does'nt support SMS sending'", nil);
-        [self publishSMSSupportStatus:sender];
+        [self publishFeaturesInfo:sender];
         return;
     }
     
@@ -43,7 +44,7 @@
     }
     
     NSString* claimURL = [params objectForKey:TKBLOfferClaimUrlKey];
-    if (claimURL) {
+    if (claimURL && ![message containsString:claimURL]) {
         message = [NSString stringWithFormat:@"%@ %@", message, claimURL];
     }
     
@@ -94,8 +95,8 @@
     }];
 }
 
-- (void)tkblGetSmsSupportStatus:(NSDictionary*)params sender:(id)sender {
-    [self publishSMSSupportStatus:sender];
+- (void)tkblGetNativeSupport:(NSDictionary*)params sender:(id)sender {
+    [self publishFeaturesInfo:sender];
 }
 
 #pragma mark - [UIWebViewDelegate]
@@ -220,11 +221,11 @@
     
 }
 
-- (void)publishSMSSupportStatus:(id)recipient {
-    BOOL status = [MFMessageComposeViewController canSendText];
-    NSData* data = [NSJSONSerialization dataWithJSONObject:@{@"status":[NSNumber numberWithBool:status]} options:0 error:nil];
+- (void)publishFeaturesInfo:(id)recipient {
+    NSDictionary* info = [TKBLHelper featuresInfo];
+    NSData* data = [NSJSONSerialization dataWithJSONObject:info options:0 error:nil];
     NSString* json =  [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    NSString* script = [NSString stringWithFormat:@"Talkable.publish('native_sms_support', %@)", json];
+    NSString* script = [NSString stringWithFormat:@"Talkable.publish('native_support', %@)", json];
     [(UIWebView*)recipient stringByEvaluatingJavaScriptFromString:script];
 }
 
