@@ -206,9 +206,9 @@ NSString*   TKBLCouponKey           = @"coupon";
     
     if (![talkableParams objectForKey:TKBLCampaignTags]) {
         if (TKBLAffiliateMember == type) {
-            [talkableParams setObject:@"invite" forKey:TKBLCampaignTags];
+            [talkableParams setObject:@"ios-invite" forKey:TKBLCampaignTags];
         } else if (TKBLPurchase == type) {
-            [talkableParams setObject:@"post-purchase" forKey:TKBLCampaignTags];
+            [talkableParams setObject:@"ios-post-purchase" forKey:TKBLCampaignTags];
         }
     }
     
