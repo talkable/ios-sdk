@@ -66,7 +66,7 @@
     
     TKBLSmsWatcher* watcher = [[TKBLSmsWatcher alloc] init];
     watcher.successCompletionHandler = ^(void){
-        [(UIWebView*)sender stringByEvaluatingJavaScriptFromString:@"Talkable.shareSucceeded('sms');"];
+        [(UIWebView*)sender stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"Talkable.shareSucceeded('%@');", TKBLShareChannelSMS]];
     };
     controller.messageComposeDelegate = watcher;
     [[UIViewController currentViewController] presentViewController:controller animated:YES completion:nil];

@@ -81,6 +81,7 @@ NSString* TKBLVisitorUUID                               = @"visitor_uuid";
 NSString* TKBLShareChannel                              = @"channel";
 NSString* TKBLShareChannelFacebook                      = @"facebook";
 NSString* TKBLShareChannelTwitter                       = @"twitter";
+NSString* TKBLShareChannelSMS                           = @"sms";
 NSString* TKBLShareChannelOther                         = @"other";
 NSString* TKBLShareMessage                              = @"message";
 NSString* TKBLShareRecipients                           = @"recipients";
