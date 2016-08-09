@@ -603,6 +603,14 @@ NSString*   TKBLCouponKey           = @"coupon";
     }
 }
 
+- (void)trackVisit:(NSString*)visitorOfferId {
+    NSMutableDictionary* parameters = [self paramsForAPI:nil];
+    NSString* path = [NSString stringWithFormat:@"/visitor_offers/%@/track_visit", visitorOfferId];
+    NSString* urlString = [self urlForAPI:path];
+    
+    [[self networkClient] PUT:urlString parameters:parameters success:nil failure:nil];
+}
+
 - (UIWebView*)buildWebView {
     [self registerCustomUserAgent];
     UIWebView* webView = [[UIWebView alloc] init];
@@ -810,6 +818,7 @@ stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
     // Visitor Offer
     if ([[param lowercaseString] isEqualToString:TKBLVisitorOfferKey]) {
         [self storeObject:value forKey:TKBLVisitorOfferKey];
+        [self trackVisit:value];
         handled = YES;
     }
     
