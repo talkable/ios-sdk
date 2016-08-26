@@ -508,7 +508,7 @@ NSString*   TKBLCouponKey           = @"coupon";
     NSDictionary* originParams = @{
         TKBLOriginTypeKey: TKBLOriginTypeEvent,
         TKBLOriginDataKey: @{
-            TKBLEventCategoryKey: @"ios-app-installed",
+            TKBLEventCategoryKey: @"ios_app_installed",
             TKBLEventNumberKey: [self deviceIdentifier]
         }
     };
