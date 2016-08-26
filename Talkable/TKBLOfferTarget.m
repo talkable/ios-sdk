@@ -198,6 +198,12 @@
 - (void)shareViaChannel:(NSString*)channel withParams:(NSDictionary*)params andSender:(id)sender {
     if (!params)
         return;
+    
+    if ([SLComposeViewController class] == nil) {
+        TKBLLog(@"Social.framework is not added to your project. Check http://docs.talkable.com/ios_sdk/getting_started.html for more details.", nil);
+        [self publishFeaturesInfo:sender];
+        return;
+    }
 
     SLComposeViewController* shareController  = [self shareController:channel];
     
