@@ -87,6 +87,7 @@ NSString*   TKBLCouponKey           = @"coupon";
 
 - (id)init {
     if (self = [super init]) {
+        [self checkFrameworksAvailability];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(applicationDidBecomeActive:)
                                                      name:UIApplicationDidBecomeActiveNotification
@@ -500,7 +501,7 @@ NSString*   TKBLCouponKey           = @"coupon";
 - (void)registerInstallIfNeeded {
     if ([TKBLHelper installRegistered]) return;
     if ([TKBLHelper wasAppUpdated]) return;
-    if (![self visitorUUID] || ![self webUUID]) {
+    if (![self visitorUUID] || ([SFSafariViewController class] != nil && ![self webUUID])) {
         [self retryRegisterInstall];
         return;
     }
@@ -556,6 +557,13 @@ NSString*   TKBLCouponKey           = @"coupon";
 
 #pragma mark - [Private]
 
+- (void)checkFrameworksAvailability {
+    NSLog(@"aasf %f", [[[UIDevice currentDevice] systemVersion] floatValue]);
+    if ([SFSafariViewController class] == nil && [[[UIDevice currentDevice] systemVersion] floatValue] >= 9 ) {
+        [self raiseException:NSObjectNotAvailableException withMessage:@"SafariServices.framework is not added to your project. Check http://docs.talkable.com/ios_sdk/getting_started.html for more details."];
+    }
+}
+
 - (AFHTTPRequestOperationManager*)networkClient {
     if (!_networkClient) {
         _networkClient = [[AFHTTPRequestOperationManager alloc] init];
@@ -596,8 +604,10 @@ NSString*   TKBLCouponKey           = @"coupon";
 }
 
 - (void)extractWebUUID {
-    if ([SFSafariViewController class] != nil && _appURLSchema && self.server && self.siteSlug) {
-        if (UIApplicationStateActive == [[UIApplication sharedApplication] applicationState]) {
+    if ([SFSafariViewController class] != nil && self.server && self.siteSlug) {
+        if (!_appURLSchema) {
+            [self raiseException:NSObjectNotAvailableException withMessage:@"Provide your application URL Scheme. Check http://docs.talkable.com/ios_sdk/getting_started.html#configuration for more details."];
+        } else if (UIApplicationStateActive == [[UIApplication sharedApplication] applicationState]) {
             [[TKBLUUIDExtractor extractor] extractFromServer:self.server withSiteSlug:self.siteSlug andAppSchema:_appURLSchema];
         }
     }
