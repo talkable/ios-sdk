@@ -558,7 +558,6 @@ NSString*   TKBLCouponKey           = @"coupon";
 #pragma mark - [Private]
 
 - (void)checkFrameworksAvailability {
-    NSLog(@"aasf %f", [[[UIDevice currentDevice] systemVersion] floatValue]);
     if ([SFSafariViewController class] == nil && [[[UIDevice currentDevice] systemVersion] floatValue] >= 9 ) {
         [self raiseException:NSObjectNotAvailableException withMessage:@"SafariServices.framework is not added to your project. Check http://docs.talkable.com/ios_sdk/getting_started.html for more details."];
     }
