@@ -40,12 +40,11 @@ NSString*   TKBLCouponKey           = @"coupon";
     NSArray* __strong               _couponCodeParams;
     NSString*                       _uuid;
     NSString*                       _deviceIdentifier;
-    NSString*                       _appURLSchema;
     TKBLOfferChecker*               _offerChecker;
     TKBLKeychainHelper*             _keychain;
 }
 
-@synthesize apiKey, siteSlug, delegate, server = _server, debug;
+@synthesize apiKey, siteSlug = _siteSlug, delegate, server = _server, debug;
 
 #pragma mark - [Singleton]
 
@@ -103,6 +102,12 @@ NSString*   TKBLCouponKey           = @"coupon";
     [self visitorUUID]; // make sure visitor UUID for new server created
 }
 
+- (void)setSiteSlug:(NSString*)siteSlug {
+    _siteSlug = siteSlug;
+    [self checkUrlScheme];
+    [self extractWebUUID];
+}
+
 # pragma mark - [Public]
 
 - (void)setApiKey:(NSString*)aApiKey andSiteSlug:(NSString*)aSiteSlug server:(NSString*)aServer {
@@ -153,8 +158,7 @@ NSString*   TKBLCouponKey           = @"coupon";
 }
 
 - (void)registerURLScheme:(NSString*)urlScheme {
-    _appURLSchema = urlScheme;
-    [self extractWebUUID];
+    TKBLLog(@"Method %@ is deprecated and has no affect at all.", NSStringFromSelector(_cmd));
 }
 
 #pragma make - [Handlers]
@@ -557,6 +561,20 @@ NSString*   TKBLCouponKey           = @"coupon";
 
 #pragma mark - [Private]
 
+- (NSString*)applicationURLScheme {
+    return [NSString stringWithFormat:@"tkbl-%@", _siteSlug];
+}
+
+- (void)checkUrlScheme {
+    NSString* scheme = [self applicationURLScheme];
+    NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"%@://", scheme]];
+    UIApplication* app = [UIApplication sharedApplication];
+    if (![app canOpenURL:url]) {
+        NSString* message = [NSString stringWithFormat:@"Please set up custom URL scheme `%@` in your application. Check http://docs.talkable.com/ios_sdk/getting_started.html#configuration for more details.", scheme];
+        [self raiseException:NSObjectNotAvailableException withMessage:message];
+    }
+}
+
 - (void)checkFrameworksAvailability {
     if ([SFSafariViewController class] == nil && [[[UIDevice currentDevice] systemVersion] floatValue] >= 9 ) {
         [self raiseException:NSObjectNotAvailableException withMessage:@"SafariServices.framework is not added to your project. Check http://docs.talkable.com/ios_sdk/getting_started.html for more details."];
@@ -603,11 +621,9 @@ NSString*   TKBLCouponKey           = @"coupon";
 }
 
 - (void)extractWebUUID {
-    if ([SFSafariViewController class] != nil && self.server && self.siteSlug) {
-        if (!_appURLSchema) {
-            [self raiseException:NSObjectNotAvailableException withMessage:@"Provide your application URL Scheme. Check http://docs.talkable.com/ios_sdk/getting_started.html#configuration for more details."];
-        } else if (UIApplicationStateActive == [[UIApplication sharedApplication] applicationState]) {
-            [[TKBLUUIDExtractor extractor] extractFromServer:self.server withSiteSlug:self.siteSlug andAppSchema:_appURLSchema];
+    if (UIApplicationStateActive == [[UIApplication sharedApplication] applicationState]) {
+        if (self.server && self.siteSlug) {
+            [[TKBLUUIDExtractor extractor] extractFromServer:self.server withSiteSlug:self.siteSlug andAppSchema:[self applicationURLScheme]];
         }
     }
 }
