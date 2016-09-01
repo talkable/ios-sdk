@@ -21,16 +21,21 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
-			<key>CFBundleURLName</key>
-			<string>com.talkable.$(PRODUCT_NAME:rfc1034identifier)</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>tkbldemo</string>
+                <string>tkbl-demo-ios-integration</string>
+                <string>tkbl-talkable-ios-demo</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>tkbl-demo-ios-integration</string>
+		<string>tkbl-talkable-ios-demo</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
