@@ -67,11 +67,18 @@ NSString*   TKBLCouponKey           = @"coupon";
         NSLog(@"TalkableSDK suports iOS7.0 and later.");
         return NO;
     }
+    
     TKBLObjCChecker* checker = [[TKBLObjCChecker alloc] init];
     if (![checker flagExist]) {
         NSLog(@"Add -ObjC to Other Linker Flags to use TalkableSDK. More details at https://developer.apple.com/library/ios/qa/qa1490/_index.html");
         return NO;
     }
+    
+    if ([SFSafariViewController class] == nil && [[[UIDevice currentDevice] systemVersion] floatValue] >= 9 ) {
+        NSLog(@"TalkableSDK needs SafariServices.framework. It is not added to your project. Check http://docs.talkable.com/ios_sdk/getting_started.html for more details.");
+        return NO;
+    }
+    
     return YES;
 }
 
@@ -86,7 +93,6 @@ NSString*   TKBLCouponKey           = @"coupon";
 
 - (id)init {
     if (self = [super init]) {
-        [self checkFrameworksAvailability];
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(applicationDidBecomeActive:)
                                                      name:UIApplicationDidBecomeActiveNotification
@@ -572,12 +578,6 @@ NSString*   TKBLCouponKey           = @"coupon";
     if (![app canOpenURL:url]) {
         NSString* message = [NSString stringWithFormat:@"Please set up custom URL scheme `%@` in your application. Check http://docs.talkable.com/ios_sdk/getting_started.html#configuration for more details.", scheme];
         [self raiseException:NSObjectNotAvailableException withMessage:message];
-    }
-}
-
-- (void)checkFrameworksAvailability {
-    if ([SFSafariViewController class] == nil && [[[UIDevice currentDevice] systemVersion] floatValue] >= 9 ) {
-        [self raiseException:NSObjectNotAvailableException withMessage:@"SafariServices.framework is not added to your project. Check http://docs.talkable.com/ios_sdk/getting_started.html for more details."];
     }
 }
 
