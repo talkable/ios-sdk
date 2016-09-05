@@ -17,3 +17,4 @@ Talkable Integration and API for iOS devices.
 - [ ] Native contact importer
 - [X] Rename app_installed to ios-app-installed
 - [X] Introduce full_name in contact importer
+- [ ] Investigate the size of SDK binary
