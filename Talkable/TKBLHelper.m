@@ -50,8 +50,15 @@ NSString*   TKBLInstallRegisteredKey    = @"tkbl_install_registered";
         @"copy_to_clipboard":   [NSNumber numberWithBool:YES],
         @"share_via_facebook":  [NSNumber numberWithBool:[self canShareVia:SLServiceTypeFacebook]],
         @"share_via_twitter":   [NSNumber numberWithBool:[self canShareVia:SLServiceTypeTwitter]],
+        @"share_via_facebook_messenger":  [NSNumber numberWithBool:[self isFacebookMessangerInstalled]],
         @"sdk_version":         TKBLVersion,
     };
+}
+
++ (BOOL)isFacebookMessangerInstalled {
+    UIApplication* app = [UIApplication sharedApplication];
+    // In iOS 9 you must whitelist any URL schemes your App wants to query in Info.plist under the LSApplicationQueriesSchemes
+    return [app canOpenURL:[NSURL URLWithString:@"fb-messenger://share"]];
 }
 
 #pragma mark - [Private]
@@ -62,12 +69,6 @@ NSString*   TKBLInstallRegisteredKey    = @"tkbl_install_registered";
 
 + (BOOL)canShareVia:()channel {
     return [SLComposeViewController class] != nil && [SLComposeViewController isAvailableForServiceType:channel];
-}
-
-+ (BOOL)isFacebookMessangerInstalled {
-    UIApplication* app = [UIApplication sharedApplication];
-    // In iOS 9 you must whitelist any URL schemes your App wants to query in Info.plist under the LSApplicationQueriesSchemes
-    return [app canOpenURL:[NSURL URLWithString:@"fb://messaging/new"]] || [app canOpenURL:[NSURL URLWithString:@"fb-messenger://new"]];
 }
 
 

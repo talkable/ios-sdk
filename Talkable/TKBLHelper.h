@@ -19,4 +19,6 @@
 
 + (NSDictionary*)featuresInfo;
 
++ (BOOL)isFacebookMessangerInstalled;
+
 @end

@@ -79,6 +79,7 @@ FOUNDATION_EXPORT NSString* TKBLClipboardTextKey;
 FOUNDATION_EXPORT NSString* TKBLVisitorUUID;
 
 FOUNDATION_EXPORT NSString* TKBLShareChannel;
+FOUNDATION_EXPORT NSString* TKBLShareChannelFacebookMessage;
 FOUNDATION_EXPORT NSString* TKBLShareChannelFacebook;
 FOUNDATION_EXPORT NSString* TKBLShareChannelTwitter;
 FOUNDATION_EXPORT NSString* TKBLShareChannelSMS;
