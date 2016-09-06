@@ -4,6 +4,9 @@ CONFIGURATION   = 'Release'
 BUILD_DIR       = 'build'
 PROJECT_NAME    = 'TalkableSDK'
 UNIVERSAL_SDK   = "#{BUILD_DIR}/#{CONFIGURATION}-universal/#{PROJECT_NAME}.framework/#{PROJECT_NAME}"
+TMP_DIR         = 'tmp'
+DEMO_DIR        = 'example/TalkableSDKDemo'
+SDK_ARCHIVE     = "#{BUILD_DIR}/talkable_ios_sdk.zip"
 
 AWS_KEY         = 'AKIAJO2XLL4WTAL3QLRQ'
 AWS_SECRET      = 'XrQxWEitMUCCNeFrhH8mPoYeIXZiDGTIDkUtO/EF'
@@ -21,6 +24,19 @@ module Rake
 
     def version
       @version ||= `agvtool what-version -terse`.strip
+    end
+
+    def zip_compress(archive_name, dir)
+      # Clean up
+      FileUtils.rm_rf(TMP_DIR)
+
+      FileUtils.mkdir_p(TMP_DIR)
+      FileUtils.cp_r(dir, TMP_DIR)
+
+      filename = "#{archive_name}.zip"
+
+      run "cd #{TMP_DIR} && zip -r #{filename} ./*"
+      File.join(TMP_DIR, filename)
     end
 
     def s3(source, destination)
@@ -76,7 +92,7 @@ task lipo: :build do
   # output = File.join(BUILD_DIR, "#{CONFIGURATION}-universal", "#{PROJECT_NAME}.framework", PROJECT_NAME)
 
   # Clean up
-  FileUtils.rm_f(UNIVERSAL_SDK)
+  FileUtils.rm_rf(UNIVERSAL_SDK)
 
   # Create file structure
   FileUtils.mkdir_p(File.dirname(UNIVERSAL_SDK))
@@ -87,13 +103,14 @@ task lipo: :build do
 end
 
 task compress: :lipo do
-  run "zip #{BUILD_DIR}/talkable_ios_sdk.zip #{File.dirname(UNIVERSAL_SDK)}/*"
+  archive_path = zip_compress('talkable_ios_sdk', File.dirname(UNIVERSAL_SDK))
+  FileUtils.cp_r(archive_path, SDK_ARCHIVE)
 end
 
 desc 'Deploy framework to Amazone S3'
 task deploy: :compress do
-  puts s3("#{BUILD_DIR}/talkable_ios_sdk.zip", "ios-sdk/talkable_ios_sdk_#{version}.zip")
-  puts s3("#{BUILD_DIR}/talkable_ios_sdk.zip", "ios-sdk/talkable_ios_sdk.zip")
+  puts s3(SDK_ARCHIVE, "ios-sdk/talkable_ios_sdk_#{version}.zip")
+  puts s3(SDK_ARCHIVE, "ios-sdk/talkable_ios_sdk.zip")
 end
 
 task :tag do
@@ -103,3 +120,9 @@ end
 
 desc 'Release new SDK version'
 task release: [:check_master, :check_version, :deploy, :tag]
+
+desc 'Upload Demo Example'
+task :demo do
+  archive_path = zip_compress('talkable_sdk_demo', DEMO_DIR)
+  puts s3(archive_path, "ios-sdk/talkable_sdk_demo.zip")
+end

@@ -5,6 +5,7 @@ Talkable Integration and API for iOS devices.
 
 * Install dependencies: ```bundle install```
 * Deploy SDK to AWS S3: ```rake deploy```
+* Upload example to AWS S3: ```rake demo```
 * Increment or modify version in ```Info.plist``` file and in ```TKBLConstants.m``` file
 * Make a release, when version is incremented: ```rake release```
 

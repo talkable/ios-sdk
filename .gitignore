@@ -1,5 +1,6 @@
 # iOS/OSX (XCode)
 build
+tmp
 xcuserdata
 project.xcworkspace
 Intermediates
