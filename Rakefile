@@ -19,7 +19,7 @@ module Rake
     def run(command)
       puts "> #{command}"
       system(command)
-      fail "Command \`#{command}\` failed with exit status #{$?}" if !$?.success?
+      fail "Command `#{command}` failed with exit status #{$?}" unless $?.success?
     end
 
     def version
@@ -88,8 +88,6 @@ task lipo: :build do
   builds = %w(iphoneos iphonesimulator).map do |sdk|
     File.join(BUILD_DIR, "#{CONFIGURATION}-#{sdk}", "#{PROJECT_NAME}.framework", PROJECT_NAME)
   end
-
-  # output = File.join(BUILD_DIR, "#{CONFIGURATION}-universal", "#{PROJECT_NAME}.framework", PROJECT_NAME)
 
   # Clean up
   FileUtils.rm_rf(UNIVERSAL_SDK)
