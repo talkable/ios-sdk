@@ -13,17 +13,20 @@
     NSMutableArray*         _webViewHolder;
 }
 
-- (void)performWithContent:(NSData*)contentData MIMEType:(NSString*)MIMEType textEncodingName:(NSString*)textEncodingName baseURL:(NSURL*)baseURL callback:(TKBLOfferExistingHandler)callback {
-    UIWebView* webView = [[UIWebView alloc] init];
-    [webView setDelegate:self];
+- (void)performWithHTMLString:(NSString*)htmlString baseURL:(NSURL*)baseURL callback:(TKBLOfferExistingHandler)callback {
+    WKWebView* webView = [[WKWebView alloc] init];
+    webView.navigationDelegate = self;
+    
     [self assignCallback:callback toWebView:webView];
     [self retainWebView:webView];
-    [webView loadData:contentData MIMEType:MIMEType textEncodingName:textEncodingName baseURL:baseURL];
+    
+    [webView loadHTMLString:htmlString baseURL:baseURL];
 }
 
 #pragma mark - [Private]
 
-- (void)assignCallback:(TKBLOfferExistingHandler)callback toWebView:(UIWebView*)webView {
+- (void)assignCallback:(TKBLOfferExistingHandler)callback toWebView:(WKWebView*)webView {
+    
     if (!_callbacks) {
         _callbacks = [NSMutableDictionary dictionary];
     }
@@ -31,31 +34,29 @@
     [_callbacks setObject:callback forKey:key];
 }
 
-- (TKBLOfferExistingHandler)callbackForWebView:(UIWebView*)webView {
+- (TKBLOfferExistingHandler)callbackForWebView:(WKWebView*)webView {
     NSValue* key = [NSValue valueWithNonretainedObject:webView];
     return [_callbacks objectForKey:key];
 }
 
-- (void)removeCallbackForWebView:(UIWebView*)webView {
+- (void)removeCallbackForWebView:(WKWebView*)webView {
     NSValue* key = [NSValue valueWithNonretainedObject:webView];
     [_callbacks removeObjectForKey:key];
 }
 
-- (void)retainWebView:(UIWebView*)webView {
+- (void)retainWebView:(WKWebView*)webView {
     if (!_webViewHolder) {
         _webViewHolder = [NSMutableArray array];
     }
     [_webViewHolder addObject:webView];
 }
 
-- (void)releaseWebView:(UIWebView*)webView {
+- (void)releaseWebView:(WKWebView*)webView {
     [_webViewHolder removeObject:webView];
 }
 
-#pragma mark - [UIWebViewDelegate]
-
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError*)error {
-    TKBLOfferExistingHandler callback = [self callbackForWebView: webView];
+- (void)webView:(WKWebView*)webView didFailRequestWithError:(NSError*)error {
+    TKBLOfferExistingHandler callback = [self callbackForWebView:webView];
     if (callback) {
         callback(NO, error.localizedDescription);
     }
@@ -63,20 +64,41 @@
     [self removeCallbackForWebView:webView];
 }
 
-- (void)webViewDidFinishLoad:(UIWebView*)webView {
+- (void)webViewDidSuccessRequest:(WKWebView*)webView {
     TKBLOfferExistingHandler callback = [self callbackForWebView: webView];
     if (callback) {
-        NSString* offerShortCode = [webView stringByEvaluatingJavaScriptFromString:@"Talkable.configuration('offer_short_code');"];
-        if ([offerShortCode length] > 0) {
-            callback(YES, nil);
-        } else {
-            NSString* errorMessage = [webView stringByEvaluatingJavaScriptFromString:@"Talkable.configuration('error_message');"];
-            callback(NO, NSLocalizedString(errorMessage, nil));
-        }
-        
+        [webView evaluateJavaScript:@"Talkable.configuration('offer_short_code');" completionHandler:^(NSString* offerShortCode, NSError* error) {
+            if (!error) {
+                if ([offerShortCode length] > 0) {
+                    callback(YES, nil);
+                } else {
+                    [webView evaluateJavaScript:@"Talkable.configuration('error_message');" completionHandler:^(NSString* errorMessage, NSError* error) {
+                        if (error) {
+                            callback(NO, error.localizedDescription);
+                        } else {
+                            callback(NO, NSLocalizedString(errorMessage, nil));
+                        }
+                    }];
+                }
+            }
+        }];
     }
     [self releaseWebView:webView];
     [self removeCallbackForWebView:webView];
+}
+
+#pragma mark - [WKNavigationDelegate]
+
+- (void)webView:(WKWebView*)webView didFailNavigation:(WKNavigation*)navigation withError:(NSError*)error {
+    [self webView:webView didFailRequestWithError:error];
+}
+
+- (void)webView:(WKWebView*)webView didFailProvisionalNavigation:(WKNavigation*)navigation withError:(NSError*)error {
+    [self webView:webView didFailRequestWithError:error];
+}
+
+- (void)webView:(WKWebView*)webView didFinishNavigation:(WKNavigation*)navigation {
+    [self webViewDidSuccessRequest:webView];
 }
 
 @end

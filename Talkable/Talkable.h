@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <WebKit/WebKit.h>
 #import <Social/Social.h>
 #import "TalkableDelegate.h"
 #import "TKBLConstants.h"

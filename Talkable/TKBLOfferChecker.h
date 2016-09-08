@@ -6,12 +6,13 @@
 //  Copyright © 2016 Talkable. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import <WebKit/WebKit.h>
 
 typedef void (^TKBLOfferExistingHandler)(BOOL isExist, NSString* localizedErrorMessage);
 
-@interface TKBLOfferChecker : NSObject <UIWebViewDelegate>
+@interface TKBLOfferChecker : NSObject <WKNavigationDelegate>
 
-- (void)performWithContent:(NSData*)contentData MIMEType:(NSString*)MIMEType textEncodingName:(NSString*)textEncodingName baseURL:(NSURL*)baseURL callback:(TKBLOfferExistingHandler)callback;
+- (void)performWithHTMLString:(NSString*)htmlString baseURL:(NSURL*)baseURL callback:(TKBLOfferExistingHandler)callback;
 
 @end
