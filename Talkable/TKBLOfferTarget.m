@@ -31,9 +31,27 @@
     [self shareViaChannel:TKBLShareChannelTwitter withParams:params andSender:sender];
 }
 
+- (void)tkblShareOfferViaFacebookMessage:(NSDictionary*)params sender:(id)sender {
+    if (![TKBLHelper isFacebookMessangerInstalled]) {
+        TKBLLog(@"Facebook Messanger is not installed. Check http://docs.talkable.com/ios_sdk/getting_started.html#configuration for more details about using Facebook Messanger as a sharing channel.", nil);
+        [self publishFeaturesInfo:sender];
+        return;
+    }
+    
+    // There is no way to pass a text to fb messanger, only an url.
+    NSString* claimURL = [params objectForKey:TKBLOfferClaimUrlKey];
+    NSString* escapedClaimURL = [claimURL stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
+    UIApplication* app = [UIApplication sharedApplication];
+    
+    // There is no way to check whether user shared a message or not
+    [(UIWebView*)sender stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"Talkable.shareSucceeded('%@');", TKBLShareChannelFacebookMessage]];
+    [app openURL:[NSURL URLWithString:[NSString stringWithFormat:@"fb-messenger://share?link=%@", escapedClaimURL]]];
+    
+}
+
 - (void)tkblShareOfferViaSms:(NSDictionary*)params sender:(id)sender {
     if (![MFMessageComposeViewController canSendText]) {
-        TKBLLog(@"Current device does'nt support SMS sending'", nil);
+        TKBLLog(@"Current device does'nt support SMS sending", nil);
         [self publishFeaturesInfo:sender];
         return;
     }
@@ -198,6 +216,12 @@
 - (void)shareViaChannel:(NSString*)channel withParams:(NSDictionary*)params andSender:(id)sender {
     if (!params)
         return;
+    
+    if ([SLComposeViewController class] == nil) {
+        TKBLLog(@"Social.framework is not added to your project. Check http://docs.talkable.com/ios_sdk/getting_started.html for more details.", nil);
+        [self publishFeaturesInfo:sender];
+        return;
+    }
 
     SLComposeViewController* shareController  = [self shareController:channel];
     

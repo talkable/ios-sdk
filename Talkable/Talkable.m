@@ -40,12 +40,11 @@ NSString*   TKBLCouponKey           = @"coupon";
     NSArray* __strong               _couponCodeParams;
     NSString*                       _uuid;
     NSString*                       _deviceIdentifier;
-    NSString*                       _appURLSchema;
     TKBLOfferChecker*               _offerChecker;
     TKBLKeychainHelper*             _keychain;
 }
 
-@synthesize apiKey, siteSlug, delegate, server = _server, debug;
+@synthesize apiKey, siteSlug = _siteSlug, delegate, server = _server, debug;
 
 #pragma mark - [Singleton]
 
@@ -68,11 +67,18 @@ NSString*   TKBLCouponKey           = @"coupon";
         NSLog(@"TalkableSDK suports iOS7.0 and later.");
         return NO;
     }
+    
     TKBLObjCChecker* checker = [[TKBLObjCChecker alloc] init];
     if (![checker flagExist]) {
         NSLog(@"Add -ObjC to Other Linker Flags to use TalkableSDK. More details at https://developer.apple.com/library/ios/qa/qa1490/_index.html");
         return NO;
     }
+    
+    if ([SFSafariViewController class] == nil && [[[UIDevice currentDevice] systemVersion] floatValue] >= 9 ) {
+        NSLog(@"TalkableSDK needs SafariServices.framework. It is not added to your project. Check http://docs.talkable.com/ios_sdk/getting_started.html for more details.");
+        return NO;
+    }
+    
     return YES;
 }
 
@@ -100,6 +106,12 @@ NSString*   TKBLCouponKey           = @"coupon";
 - (void)setServer:(NSString*)server {
     _server = server;
     [self visitorUUID]; // make sure visitor UUID for new server created
+}
+
+- (void)setSiteSlug:(NSString*)siteSlug {
+    _siteSlug = siteSlug;
+    [self checkUrlScheme];
+    [self extractWebUUID];
 }
 
 # pragma mark - [Public]
@@ -152,8 +164,7 @@ NSString*   TKBLCouponKey           = @"coupon";
 }
 
 - (void)registerURLScheme:(NSString*)urlScheme {
-    _appURLSchema = urlScheme;
-    [self extractWebUUID];
+    TKBLLog(@"Method %@ is deprecated and has no affect at all.", NSStringFromSelector(_cmd));
 }
 
 #pragma make - [Handlers]
@@ -500,7 +511,7 @@ NSString*   TKBLCouponKey           = @"coupon";
 - (void)registerInstallIfNeeded {
     if ([TKBLHelper installRegistered]) return;
     if ([TKBLHelper wasAppUpdated]) return;
-    if (![self visitorUUID] || ![self webUUID]) {
+    if (![self visitorUUID] || ([SFSafariViewController class] != nil && ![self webUUID])) {
         [self retryRegisterInstall];
         return;
     }
@@ -508,7 +519,7 @@ NSString*   TKBLCouponKey           = @"coupon";
     NSDictionary* originParams = @{
         TKBLOriginTypeKey: TKBLOriginTypeEvent,
         TKBLOriginDataKey: @{
-            TKBLEventCategoryKey: @"ios-app-installed",
+            TKBLEventCategoryKey: @"ios_app_installed",
             TKBLEventNumberKey: [self deviceIdentifier]
         }
     };
@@ -556,6 +567,20 @@ NSString*   TKBLCouponKey           = @"coupon";
 
 #pragma mark - [Private]
 
+- (NSString*)applicationURLScheme {
+    return [NSString stringWithFormat:@"tkbl-%@", _siteSlug];
+}
+
+- (void)checkUrlScheme {
+    NSString* scheme = [self applicationURLScheme];
+    NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"%@://", scheme]];
+    UIApplication* app = [UIApplication sharedApplication];
+    if (![app canOpenURL:url]) {
+        NSString* message = [NSString stringWithFormat:@"Please set up custom URL scheme `%@` in your application. Check http://docs.talkable.com/ios_sdk/getting_started.html#configuration for more details.", scheme];
+        [self raiseException:NSObjectNotAvailableException withMessage:message];
+    }
+}
+
 - (AFHTTPRequestOperationManager*)networkClient {
     if (!_networkClient) {
         _networkClient = [[AFHTTPRequestOperationManager alloc] init];
@@ -596,11 +621,19 @@ NSString*   TKBLCouponKey           = @"coupon";
 }
 
 - (void)extractWebUUID {
-    if ([SFSafariViewController class] != nil && _appURLSchema && self.server && self.siteSlug) {
-        if (UIApplicationStateActive == [[UIApplication sharedApplication] applicationState]) {
-            [[TKBLUUIDExtractor extractor] extractFromServer:self.server withSiteSlug:self.siteSlug andAppSchema:_appURLSchema];
+    if (UIApplicationStateActive == [[UIApplication sharedApplication] applicationState]) {
+        if (self.server && self.siteSlug) {
+            [[TKBLUUIDExtractor extractor] extractFromServer:self.server withSiteSlug:self.siteSlug andAppSchema:[self applicationURLScheme]];
         }
     }
+}
+
+- (void)trackVisit:(NSString*)visitorOfferId {
+    NSMutableDictionary* parameters = [self paramsForAPI:nil];
+    NSString* path = [NSString stringWithFormat:@"/visitor_offers/%@/track_visit", visitorOfferId];
+    NSString* urlString = [self urlForAPI:path];
+    
+    [[self networkClient] PUT:urlString parameters:parameters success:nil failure:nil];
 }
 
 - (UIWebView*)buildWebView {
@@ -810,6 +843,7 @@ stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
     // Visitor Offer
     if ([[param lowercaseString] isEqualToString:TKBLVisitorOfferKey]) {
         [self storeObject:value forKey:TKBLVisitorOfferKey];
+        [self trackVisit:value];
         handled = YES;
     }
     

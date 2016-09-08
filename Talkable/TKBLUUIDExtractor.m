@@ -23,6 +23,10 @@ NSTimeInterval const TKBLUUIDExtractorIntervalThreshold = 60.0;
     // This method just makes initial request
     // uuid will be handled by [Talkable handleOpenURL:]
     
+    if (![SFSafariViewController class]) {
+        return; // SFSafariViewController supports starting from from iOS 9.0
+    }
+    
     static NSTimeInterval lastExtrated;
     NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
     if (now - lastExtrated < TKBLUUIDExtractorIntervalThreshold) return;
