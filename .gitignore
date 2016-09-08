@@ -1,5 +1,6 @@
 # iOS/OSX (XCode)
 build
+tmp
 xcuserdata
 project.xcworkspace
 Intermediates
@@ -8,3 +9,5 @@ Intermediates
 example/TalkableSDKDemo/TalkableSDKDemo/TalkableServerConfig.h
 
 .pivotalrc
+.ruby-gemset
+.ruby-version

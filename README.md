@@ -1,6 +1,15 @@
 # talkable-ios-sdk
 Talkable Integration and API for iOS devices.
 
+## Hacking
+
+* Install dependencies: ```bundle install```
+* Deploy SDK to AWS S3: ```rake deploy```
+* Upload example to AWS S3: ```rake demo```
+* Increment or modify version in ```Info.plist``` file and in ```TKBLConstants.m``` file
+* Make a release, when version is incremented: ```rake release```
+
+
 ## TODO
 - [ ] Direct SMS Sharing
 - [ ] CocoaPod
@@ -8,7 +17,7 @@ Talkable Integration and API for iOS devices.
 - [ ] Special Mobile Tracking method
   - [X] Altenative Cookie
   - [ ] Explicitly specified visitor id
-- [ ] Pair Device's idfa and Visitor UUID 
+- [ ] Pair Device's idfa and Visitor UUID
 - [X] Fraud detection
 - [X] Network Queue and Offline
 - [ ] Update AFNetworking
