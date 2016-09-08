@@ -21,11 +21,13 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>tkbldemo</string>
-                <string>tkbl-demo-ios-integration</string>
-                <string>tkbl-talkable-ios-demo</string>
+				<string>tkbl-demo-ios-integration</string>
+				<string>tkbl-talkable-ios-demo</string>
 			</array>
 		</dict>
 	</array>
@@ -35,6 +37,7 @@
 	<array>
 		<string>tkbl-demo-ios-integration</string>
 		<string>tkbl-talkable-ios-demo</string>
+		<string>fb-messenger</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

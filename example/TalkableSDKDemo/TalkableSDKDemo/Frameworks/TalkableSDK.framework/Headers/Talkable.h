@@ -33,7 +33,7 @@
 - (void)registerCoupon:(NSString*)coupon;
 - (NSString*)coupon;
 
-- (void)registerURLScheme:(NSString*)urlScheme;
+- (void)registerURLScheme:(NSString*)urlScheme __deprecated;
 
 #pragma make - [Handlers]
 

@@ -21,7 +21,6 @@
     // Override point for customization after application launch.
     [Talkable manager].debug = YES;
     [[Talkable manager] setApiKey:TALKABLE_API_KEY andSiteSlug:TALKABLE_SITE_SLUG server:TALKABLE_SERVER];
-    [[Talkable manager] registerURLScheme:@"tkbldemo"];
     return YES;
 }
 

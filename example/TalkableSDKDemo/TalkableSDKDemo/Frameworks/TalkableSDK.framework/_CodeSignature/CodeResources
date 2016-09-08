@@ -6,7 +6,7 @@
 	<dict>
 		<key>Headers/TKBLConstants.h</key>
 		<data>
-		/y4hvCg/hyYM7IR084yuhGNfoEg=
+		L+08FczqFR/AKBu3Fwe6SSYecSg=
 		</data>
 		<key>Headers/TKBLOfferTarget.h</key>
 		<data>
@@ -18,7 +18,7 @@
 		</data>
 		<key>Headers/Talkable.h</key>
 		<data>
-		+K14hYsdmUdUGcYOKhXC9QD3Q7Q=
+		Mb4rlXxZrFbI/y+kQqcX9w/1fqg=
 		</data>
 		<key>Headers/TalkableDelegate.h</key>
 		<data>
@@ -30,7 +30,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		s+a6UdMCBB+MRL5/OF5QZgMeeXA=
+		MbwGI+a48+dCH6qPkCdQow1gznQ=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -40,33 +40,82 @@
 	<key>files2</key>
 	<dict>
 		<key>Headers/TKBLConstants.h</key>
-		<data>
-		/y4hvCg/hyYM7IR084yuhGNfoEg=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			L+08FczqFR/AKBu3Fwe6SSYecSg=
+			</data>
+			<key>hash2</key>
+			<data>
+			IIr1dCq4POrA8XDmZJ4GR05i+SnmEfQOZezbChlsW4w=
+			</data>
+		</dict>
 		<key>Headers/TKBLOfferTarget.h</key>
-		<data>
-		C5sGBqSCAb5Y0a1snzaStSrUHuw=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			C5sGBqSCAb5Y0a1snzaStSrUHuw=
+			</data>
+			<key>hash2</key>
+			<data>
+			1lyQxvK/FmNW7PkXTcrfSNMa6h6ChuNPbazR8AbN1fw=
+			</data>
+		</dict>
 		<key>Headers/TKBLTypes.h</key>
-		<data>
-		/9M2UR5XDODTW8S9azL5ubXl2qw=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			/9M2UR5XDODTW8S9azL5ubXl2qw=
+			</data>
+			<key>hash2</key>
+			<data>
+			kwddEFbPbKj4Fbfe0bNcBUO4RMQPwLRMvgQ2qMwEA5o=
+			</data>
+		</dict>
 		<key>Headers/Talkable.h</key>
-		<data>
-		+K14hYsdmUdUGcYOKhXC9QD3Q7Q=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			Mb4rlXxZrFbI/y+kQqcX9w/1fqg=
+			</data>
+			<key>hash2</key>
+			<data>
+			yGfYmgXiHKjziBLX25QU88FBRAp8Gzt4AKw/5sgyBSU=
+			</data>
+		</dict>
 		<key>Headers/TalkableDelegate.h</key>
-		<data>
-		yTtTHnP5hvduRiXOHBe8NRQqZFg=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			yTtTHnP5hvduRiXOHBe8NRQqZFg=
+			</data>
+			<key>hash2</key>
+			<data>
+			4jzLq50DZKhGrL0VhxVYQWYQ3kkV12Ebl6BSvJpOmMw=
+			</data>
+		</dict>
 		<key>Headers/TalkableSDK.h</key>
-		<data>
-		R5JFC1rfJm+ojWc7me4lW0f1HVU=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			R5JFC1rfJm+ojWc7me4lW0f1HVU=
+			</data>
+			<key>hash2</key>
+			<data>
+			XcTkqdXd6CFy9erKAa7SQtHW8G5f5NQpBXU0ZLawQas=
+			</data>
+		</dict>
 		<key>Modules/module.modulemap</key>
-		<data>
-		EcumgW8GdY5gGfDoJ0MbySXH1YY=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			EcumgW8GdY5gGfDoJ0MbySXH1YY=
+			</data>
+			<key>hash2</key>
+			<data>
+			bHIhrVV+yqL+5WZs6KTI1H6qgXXrfJ8Mdf4gXS4JjLk=
+			</data>
+		</dict>
 	</dict>
 	<key>rules</key>
 	<dict>
