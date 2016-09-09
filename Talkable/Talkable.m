@@ -266,7 +266,7 @@ NSString*   TKBLCouponKey           = @"coupon";
          NSStringEncoding encoding = CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding((CFStringRef)response.textEncodingName));
          NSString* htmlString = [[NSString alloc] initWithData:responseData encoding:encoding];
          
-         [[self offerChecker] performWithHTMLString:htmlString baseURL:requestURL callback:^(BOOL isExist, NSString* localizedErrorMessage) {
+         [[self offerChecker] performWithHTMLString:htmlString encoding:encoding callback:^(BOOL isExist, NSString* localizedErrorMessage) {
              if (!isExist) {
                  TKBLLog(@"%@", localizedErrorMessage);
                  NSError* error = [NSError errorWithDomain:TKBLErrorDomain

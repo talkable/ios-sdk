@@ -7,12 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <WebKit/WebKit.h>
 
 typedef void (^TKBLOfferExistingHandler)(BOOL isExist, NSString* localizedErrorMessage);
 
-@interface TKBLOfferChecker : NSObject <WKNavigationDelegate>
+@interface TKBLOfferChecker : NSObject
 
-- (void)performWithHTMLString:(NSString*)htmlString baseURL:(NSURL*)baseURL callback:(TKBLOfferExistingHandler)callback;
+- (void)performWithHTMLString:(NSString*)htmlString encoding:(NSStringEncoding)encoding callback:(TKBLOfferExistingHandler)callback;
 
 @end

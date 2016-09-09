@@ -7,98 +7,48 @@
 //
 
 #import "TKBLOfferChecker.h"
+#import "Talkable.h"
 
-@implementation TKBLOfferChecker {
-    NSMutableDictionary*    _callbacks;
-    NSMutableArray*         _webViewHolder;
-}
+@implementation TKBLOfferChecker
 
-- (void)performWithHTMLString:(NSString*)htmlString baseURL:(NSURL*)baseURL callback:(TKBLOfferExistingHandler)callback {
-    WKWebView* webView = [[WKWebView alloc] init];
-    webView.navigationDelegate = self;
+- (void)performWithHTMLString:(NSString*)htmlString encoding:(NSStringEncoding)encoding callback:(TKBLOfferExistingHandler)callback {
     
-    [self assignCallback:callback toWebView:webView];
-    [self retainWebView:webView];
+    if (!callback) return;
     
-    [webView loadHTMLString:htmlString baseURL:baseURL];
-}
-
-#pragma mark - [Private]
-
-- (void)assignCallback:(TKBLOfferExistingHandler)callback toWebView:(WKWebView*)webView {
+    NSRange searchedRange = NSMakeRange(0, [htmlString length]);
+    NSString* pattern = @"Talkable.configure\\((.*)\\);";
+    NSError* patternError = nil;
     
-    if (!_callbacks) {
-        _callbacks = [NSMutableDictionary dictionary];
+    NSRegularExpression* regex = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:&patternError];
+    if (patternError) {
+        callback(NO, patternError.localizedDescription);
+        return;
     }
-    NSValue* key = [NSValue valueWithNonretainedObject:webView];
-    [_callbacks setObject:callback forKey:key];
-}
-
-- (TKBLOfferExistingHandler)callbackForWebView:(WKWebView*)webView {
-    NSValue* key = [NSValue valueWithNonretainedObject:webView];
-    return [_callbacks objectForKey:key];
-}
-
-- (void)removeCallbackForWebView:(WKWebView*)webView {
-    NSValue* key = [NSValue valueWithNonretainedObject:webView];
-    [_callbacks removeObjectForKey:key];
-}
-
-- (void)retainWebView:(WKWebView*)webView {
-    if (!_webViewHolder) {
-        _webViewHolder = [NSMutableArray array];
+    NSTextCheckingResult* match = [regex firstMatchInString:htmlString options:0 range:searchedRange];
+    if ([match numberOfRanges] != 2) {
+        callback(NO, NSLocalizedString(@"Incompatible response. Unable to locate view configuration.", nil));
+        return;
     }
-    [_webViewHolder addObject:webView];
-}
-
-- (void)releaseWebView:(WKWebView*)webView {
-    [_webViewHolder removeObject:webView];
-}
-
-- (void)webView:(WKWebView*)webView didFailRequestWithError:(NSError*)error {
-    TKBLOfferExistingHandler callback = [self callbackForWebView:webView];
-    if (callback) {
-        callback(NO, error.localizedDescription);
+    NSRange configurationRange = [match rangeAtIndex:1];
+        
+        
+    NSError* jsonError = nil;
+    NSData* jsonData = [[htmlString substringWithRange:configurationRange] dataUsingEncoding:encoding];
+    NSDictionary* configuration = [NSJSONSerialization JSONObjectWithData:jsonData
+                                                                  options:NSJSONReadingMutableContainers
+                                                                    error:&jsonError];
+    if (jsonError) {
+        NSLog(@"%@", [htmlString substringWithRange:configurationRange]);
+        callback(NO, jsonError.localizedDescription);
+        return;
     }
-    [self releaseWebView:webView];
-    [self removeCallbackForWebView:webView];
-}
-
-- (void)webViewDidSuccessRequest:(WKWebView*)webView {
-    TKBLOfferExistingHandler callback = [self callbackForWebView: webView];
-    if (callback) {
-        [webView evaluateJavaScript:@"Talkable.configuration('offer_short_code');" completionHandler:^(NSString* offerShortCode, NSError* error) {
-            if (!error) {
-                if ([offerShortCode length] > 0) {
-                    callback(YES, nil);
-                } else {
-                    [webView evaluateJavaScript:@"Talkable.configuration('error_message');" completionHandler:^(NSString* errorMessage, NSError* error) {
-                        if (error) {
-                            callback(NO, error.localizedDescription);
-                        } else {
-                            callback(NO, NSLocalizedString(errorMessage, nil));
-                        }
-                    }];
-                }
-            }
-        }];
+    
+    if ([[configuration objectForKey:@"offer_short_code"] length] > 0) {
+        callback(YES, nil);
+    } else {
+        NSString* errorMessage = [configuration objectForKey:@"error_message"];
+        callback(NO, NSLocalizedString(errorMessage, nil));
     }
-    [self releaseWebView:webView];
-    [self removeCallbackForWebView:webView];
-}
-
-#pragma mark - [WKNavigationDelegate]
-
-- (void)webView:(WKWebView*)webView didFailNavigation:(WKNavigation*)navigation withError:(NSError*)error {
-    [self webView:webView didFailRequestWithError:error];
-}
-
-- (void)webView:(WKWebView*)webView didFailProvisionalNavigation:(WKNavigation*)navigation withError:(NSError*)error {
-    [self webView:webView didFailRequestWithError:error];
-}
-
-- (void)webView:(WKWebView*)webView didFinishNavigation:(WKNavigation*)navigation {
-    [self webViewDidSuccessRequest:webView];
 }
 
 @end

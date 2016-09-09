@@ -114,7 +114,7 @@
     [self publishFeaturesInfo:sender];
 }
 
-#pragma mark - [WKNavigationDelegae]
+#pragma mark - [WKNavigationDelegate]
 
 - (void)webView:(WKWebView*)webView decidePolicyForNavigationAction:(WKNavigationAction*)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
     if (navigationAction.navigationType == WKNavigationTypeLinkActivated &&
