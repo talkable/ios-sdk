@@ -15,10 +15,6 @@
 #import "TKBLContactsLoader.h"
 #import "UIViewControllerExt.h"
 
-#ifndef TKBL_CROSS_REQUEST_SCHEMA
-    #define TKBL_CROSS_REQUEST_SCHEMA @"tkbl"
-#endif
-
 @implementation NSObject (TKBLOfferTarget)
 
 #pragma mark - [Talkable Messages]
@@ -121,13 +117,6 @@
 #pragma mark - [WKNavigationDelegae]
 
 - (void)webView:(WKWebView*)webView decidePolicyForNavigationAction:(WKNavigationAction*)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
-    
-    if ([[[navigationAction.request URL] scheme] isEqualToString:TKBL_CROSS_REQUEST_SCHEMA]) {
-        [self popMobileEventsFrom:webView];
-        decisionHandler(WKNavigationActionPolicyCancel);
-        return;
-    }
-    
     if (navigationAction.navigationType == WKNavigationTypeLinkActivated &&
         ![self isAnchorNavigation:webView.URL to:navigationAction.request.URL]) {
         [[UIApplication sharedApplication] openURL:[navigationAction.request URL]];
@@ -136,6 +125,19 @@
     }
     
     decisionHandler(WKNavigationActionPolicyAllow);
+}
+
+#pragma mark - [WKScriptMessageHandler]
+
+- (void)userContentController:(WKUserContentController*)userContentController didReceiveScriptMessage:(WKScriptMessage*)message {
+    if ([message.body isKindOfClass:[NSDictionary class]]) {
+        NSString* name          = [message.body objectForKey:TKBLMessageNameKey];
+        NSDictionary* params    = [message.body objectForKey:TKBLMessageDataKey];
+        if (name) {
+            [self notifyMessage:name withParams:params sender:message.webView];
+            [self proccessMessage:name withParams:params sender:message.webView];
+        }
+    }
 }
 
 #pragma mark - [Private]
@@ -147,45 +149,6 @@
 - (NSString*)urlStringWithoutAnchor:(NSURL*)url {
     NSString* anchor = [NSString stringWithFormat:@"#%@", url.fragment];
     return [url.absoluteString stringByReplacingOccurrencesOfString:anchor withString:@""];
-}
-
-- (void)popMobileEventsFrom:(WKWebView*)webView {
-    [webView evaluateJavaScript:@"Talkable.popNativeMobileEvents();" completionHandler:^(NSString* jsonQueue, NSError* error) {
-        if (error) {
-            TKBLLog(@"Couldn't retrive page messages - %@", error);
-            return;
-        }
-        
-        NSArray* events = [self parseEventsQueue:jsonQueue];
-        [events enumerateObjectsUsingBlock:^(id event, NSUInteger idx, BOOL *stop) {
-            if ([event isKindOfClass:[NSDictionary class]]) {
-                NSString* message       = [event objectForKey:TKBLMessageNameKey];
-                NSDictionary* params    = [event objectForKey:TKBLMessageDataKey];
-                if (message) {
-                    [self notifyMessage:message withParams:params sender:webView];
-                    [self proccessMessage:message withParams:params sender:webView];
-                }
-            }
-        }];
-    }];
-}
-
-- (NSArray*)parseEventsQueue:(NSString*)jsonString {
-    if (!jsonString || [jsonString length] == 0)
-        return nil;
-    
-    NSData* jsonData = [[jsonString stringByRemovingPercentEncoding] dataUsingEncoding:NSUTF8StringEncoding];
-    if (!jsonData)
-        return nil;
-    
-    NSError __autoreleasing *error = error;
-    NSArray* queue = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingAllowFragments error:&error];
-    if (!error && [queue isKindOfClass:[NSArray class]]) {
-        return queue;
-    } else {
-        TKBLLog(@"Invalid events queue %@ Error - %@", [jsonString stringByRemovingPercentEncoding], error);
-        return nil;
-    }
 }
 
 - (SEL)selectorFromMessage:(NSString*)message {

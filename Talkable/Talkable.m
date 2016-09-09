@@ -286,6 +286,7 @@ NSString*   TKBLCouponKey           = @"coupon";
                  
                  if (shouldPresent) {
                      [webView setNavigationDelegate:controller];
+                     [webView.configuration.userContentController addScriptMessageHandler:controller name:@"talkableiOSHub"];
                      CGRect frame = webView.frame;
                      frame = controller.view.bounds;
                      webView.frame = frame;
@@ -648,7 +649,12 @@ NSString*   TKBLCouponKey           = @"coupon";
 
 - (WKWebView*)buildWebView {
     [self registerCustomUserAgent];
-    WKWebView* webView = [[WKWebView alloc] init];
+    
+    WKWebViewConfiguration* webConfig = [[WKWebViewConfiguration alloc] init];
+    WKUserContentController* contentController = [[WKUserContentController alloc] init];
+    WKWebView* webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:webConfig];
+    [webConfig setUserContentController:contentController];
+    
     webView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin;
     [self restoreOriginalUserAgent];
     return webView;

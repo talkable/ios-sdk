@@ -8,6 +8,6 @@
 
 #import <WebKit/WebKit.h>
 
-@interface NSObject (TKBLOfferTarget) <WKNavigationDelegate>
+@interface NSObject (TKBLOfferTarget) <WKNavigationDelegate, WKScriptMessageHandler>
 
 @end
