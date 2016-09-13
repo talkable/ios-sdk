@@ -37,6 +37,7 @@ NSString*   TKBLCouponKey           = @"coupon";
     NSString*                       _userAgent;
     NSString*                       _apiUserAgent;
     NSString*                       _originalUserAgent;
+    NSString*                       _featuresJsonString;
     NSArray* __strong               _couponCodeParams;
     NSString*                       _uuid;
     NSString*                       _deviceIdentifier;
@@ -687,7 +688,23 @@ stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
     NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:url];
     [request setHTTPMethod:httpMethod];
     [request setValue:userAgent forHTTPHeaderField:@"User-Agent"];
+    
+    if ([self featuresJsonString]) {
+        [request setValue:[self featuresJsonString] forHTTPHeaderField:@"X-Talkable-Native-Features"];
+    }
+    
     return request;
+}
+
+- (NSString*)featuresJsonString {
+    if (!_featuresJsonString) {
+        NSError* error = nil;
+        NSData* jsonData = [NSJSONSerialization dataWithJSONObject:[TKBLHelper featuresInfo] options:0 error:&error];
+        if  (!error) {
+            _featuresJsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        }
+    }
+    return _featuresJsonString;
 }
 
 - (NSString*)originalUserAgent {
