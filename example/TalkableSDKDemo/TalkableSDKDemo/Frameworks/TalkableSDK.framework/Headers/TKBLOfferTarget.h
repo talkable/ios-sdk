@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 Talkable. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <WebKit/WebKit.h>
 
-@interface NSObject (TKBLOfferTarget) <UIWebViewDelegate>
+@interface NSObject (TKBLOfferTarget) <WKNavigationDelegate, WKScriptMessageHandler>
 
 @end

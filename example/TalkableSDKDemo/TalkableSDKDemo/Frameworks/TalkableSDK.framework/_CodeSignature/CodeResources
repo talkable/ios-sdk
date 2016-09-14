@@ -10,7 +10,7 @@
 		</data>
 		<key>Headers/TKBLOfferTarget.h</key>
 		<data>
-		C5sGBqSCAb5Y0a1snzaStSrUHuw=
+		7/31LHZrrKOxvynLesbzGys3wtI=
 		</data>
 		<key>Headers/TKBLTypes.h</key>
 		<data>
@@ -18,11 +18,11 @@
 		</data>
 		<key>Headers/Talkable.h</key>
 		<data>
-		Mb4rlXxZrFbI/y+kQqcX9w/1fqg=
+		bPzgp3cewdXU1nntSjP7qX9pJUg=
 		</data>
 		<key>Headers/TalkableDelegate.h</key>
 		<data>
-		yTtTHnP5hvduRiXOHBe8NRQqZFg=
+		W0vumk2p4j0GaL+IiHnMEhlY89A=
 		</data>
 		<key>Headers/TalkableSDK.h</key>
 		<data>
@@ -30,7 +30,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		MbwGI+a48+dCH6qPkCdQow1gznQ=
+		+Yu27Y+YufRX9lHdb2lp38tige4=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -54,11 +54,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			C5sGBqSCAb5Y0a1snzaStSrUHuw=
+			7/31LHZrrKOxvynLesbzGys3wtI=
 			</data>
 			<key>hash2</key>
 			<data>
-			1lyQxvK/FmNW7PkXTcrfSNMa6h6ChuNPbazR8AbN1fw=
+			VgppV7FaOsY+CH+7OgMKfWsYF+0Psl8ngAeWyYt1Y6M=
 			</data>
 		</dict>
 		<key>Headers/TKBLTypes.h</key>
@@ -76,22 +76,22 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			Mb4rlXxZrFbI/y+kQqcX9w/1fqg=
+			bPzgp3cewdXU1nntSjP7qX9pJUg=
 			</data>
 			<key>hash2</key>
 			<data>
-			yGfYmgXiHKjziBLX25QU88FBRAp8Gzt4AKw/5sgyBSU=
+			f+2pqJH9c8WcIxqZ/Cire6E8ygUbTtiuSAuUT0924PI=
 			</data>
 		</dict>
 		<key>Headers/TalkableDelegate.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			yTtTHnP5hvduRiXOHBe8NRQqZFg=
+			W0vumk2p4j0GaL+IiHnMEhlY89A=
 			</data>
 			<key>hash2</key>
 			<data>
-			4jzLq50DZKhGrL0VhxVYQWYQ3kkV12Ebl6BSvJpOmMw=
+			4++2Gzy0m7typlcP8ue2h6TO5offNdgrVQINNfsjtKs=
 			</data>
 		</dict>
 		<key>Headers/TalkableSDK.h</key>
