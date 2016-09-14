@@ -105,6 +105,13 @@ task compress: :lipo do
   FileUtils.cp_r(archive_path, SDK_ARCHIVE)
 end
 
+desc 'Build and Archive framework'
+task archive: :compress do
+  puts '*'*20
+  puts SDK_ARCHIVE
+  puts '*'*20
+end
+
 desc 'Deploy framework to Amazone S3'
 task deploy: :compress do
   puts s3(SDK_ARCHIVE, "ios-sdk/talkable_ios_sdk_#{version}.zip")
