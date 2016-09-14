@@ -15,10 +15,6 @@
 #import "TKBLContactsLoader.h"
 #import "UIViewControllerExt.h"
 
-#ifndef TKBL_CROSS_REQUEST_SCHEMA
-    #define TKBL_CROSS_REQUEST_SCHEMA @"tkbl"
-#endif
-
 @implementation NSObject (TKBLOfferTarget)
 
 #pragma mark - [Talkable Messages]
@@ -84,7 +80,8 @@
     
     TKBLSmsWatcher* watcher = [[TKBLSmsWatcher alloc] init];
     watcher.successCompletionHandler = ^(void){
-        [(UIWebView*)sender stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"Talkable.shareSucceeded('%@');", TKBLShareChannelSMS]];
+        NSString* script = [NSString stringWithFormat:@"Talkable.shareSucceeded('%@');", TKBLShareChannelSMS];
+        [(WKWebView*)sender evaluateJavaScript:script completionHandler:nil];
     };
     controller.messageComposeDelegate = watcher;
     [[UIViewController currentViewController] presentViewController:controller animated:YES completion:nil];
@@ -108,7 +105,7 @@
         NSString* json =  [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         if ([json length] > 0) {
             NSString* script = [NSString stringWithFormat:@"Talkable.publish('contacts_imported', %@)", json];
-            [(UIWebView*)sender stringByEvaluatingJavaScriptFromString:script];
+            [(WKWebView*)sender evaluateJavaScript:script completionHandler:nil];
         }
     }];
 }
@@ -117,36 +114,30 @@
     [self publishFeaturesInfo:sender];
 }
 
-#pragma mark - [UIWebViewDelegate]
+#pragma mark - [WKNavigationDelegate]
 
-- (BOOL)webView:(UIWebView*)webView shouldStartLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType {
-    
-    if ([[[request URL] scheme] isEqualToString:TKBL_CROSS_REQUEST_SCHEMA]) {
-        NSString* jsonQueue = [webView stringByEvaluatingJavaScriptFromString:@"Talkable.popNativeMobileEvents();"];
-        
-        NSArray* events = [self parseEventsQueue:jsonQueue];
-        [events enumerateObjectsUsingBlock:^(id event, NSUInteger idx, BOOL *stop) {
-            if ([event isKindOfClass:[NSDictionary class]]) {
-                NSString* message       = [event objectForKey:TKBLMessageNameKey];
-                NSDictionary* params    = [event objectForKey:TKBLMessageDataKey];
-                if (message) {
-                    [self notifyMessage:message withParams:params sender:webView];
-                    [self proccessMessage:message withParams:params sender:webView];
-                }
-            }
-
-        }];
-        
-        return NO;
+- (void)webView:(WKWebView*)webView decidePolicyForNavigationAction:(WKNavigationAction*)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+    if (navigationAction.navigationType == WKNavigationTypeLinkActivated &&
+        ![self isAnchorNavigation:webView.URL to:navigationAction.request.URL]) {
+        [[UIApplication sharedApplication] openURL:[navigationAction.request URL]];
+        decisionHandler(WKNavigationActionPolicyCancel);
+        return;
     }
     
-    if (navigationType == UIWebViewNavigationTypeLinkClicked &&
-        ![self isAnchorNavigation:webView.request.URL to:request.URL]) {
-        [[UIApplication sharedApplication] openURL:[request URL]];
-        return NO;
+    decisionHandler(WKNavigationActionPolicyAllow);
+}
+
+#pragma mark - [WKScriptMessageHandler]
+
+- (void)userContentController:(WKUserContentController*)userContentController didReceiveScriptMessage:(WKScriptMessage*)message {
+    if ([message.body isKindOfClass:[NSDictionary class]]) {
+        NSString* name          = [message.body objectForKey:TKBLMessageNameKey];
+        NSDictionary* params    = [message.body objectForKey:TKBLMessageDataKey];
+        if (name) {
+            [self notifyMessage:name withParams:params sender:message.webView];
+            [self proccessMessage:name withParams:params sender:message.webView];
+        }
     }
-    
-    return YES;
 }
 
 #pragma mark - [Private]
@@ -158,24 +149,6 @@
 - (NSString*)urlStringWithoutAnchor:(NSURL*)url {
     NSString* anchor = [NSString stringWithFormat:@"#%@", url.fragment];
     return [url.absoluteString stringByReplacingOccurrencesOfString:anchor withString:@""];
-}
-
-- (NSArray*)parseEventsQueue:(NSString*)jsonString {
-    if (!jsonString || [jsonString length] == 0)
-        return nil;
-    
-    NSData* jsonData = [[jsonString stringByRemovingPercentEncoding] dataUsingEncoding:NSUTF8StringEncoding];
-    if (!jsonData)
-        return nil;
-    
-    NSError __autoreleasing *error = error;
-    NSArray* queue = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingAllowFragments error:&error];
-    if (!error && [queue isKindOfClass:[NSArray class]]) {
-        return queue;
-    } else {
-        TKBLLog(@"Invalid events queue %@ Error - %@", [jsonString stringByRemovingPercentEncoding], error);
-        return nil;
-    }
 }
 
 - (SEL)selectorFromMessage:(NSString*)message {
@@ -237,7 +210,8 @@
     
     [shareController setCompletionHandler:^(SLComposeViewControllerResult result) {
         if (result == SLComposeViewControllerResultDone) {
-            [(UIWebView*)sender stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"Talkable.shareSucceeded('%@');", channel]];
+            NSString* script = [NSString stringWithFormat:@"Talkable.shareSucceeded('%@');", channel];
+            [(WKWebView*)sender evaluateJavaScript:script completionHandler:nil];
         }
     }];
     
@@ -245,12 +219,12 @@
     
 }
 
-- (void)publishFeaturesInfo:(id)recipient {
+- (void)publishFeaturesInfo:(id)sender {
     NSDictionary* info = [TKBLHelper featuresInfo];
     NSData* data = [NSJSONSerialization dataWithJSONObject:info options:0 error:nil];
     NSString* json =  [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     NSString* script = [NSString stringWithFormat:@"Talkable.publish('native_support', %@)", json];
-    [(UIWebView*)recipient stringByEvaluatingJavaScriptFromString:script];
+    [(WKWebView*)sender evaluateJavaScript:script completionHandler:nil];
 }
 
 - (void)shareViaLinkWithParams:(NSDictionary*)params andSender:(id)sender {
@@ -272,7 +246,8 @@
     
     [controller setCompletionWithItemsHandler:^(NSString* activityType, BOOL completed, NSArray* returnedItems, NSError*activityError) {
         if (!completed) return;
-        [(UIWebView*)sender stringByEvaluatingJavaScriptFromString:@"Talkable.shareSucceeded('other');"];
+        NSString* script = [NSString stringWithFormat:@"Talkable.shareSucceeded('%@');", TKBLShareChannelOther];
+        [(WKWebView*)sender evaluateJavaScript:script completionHandler:nil];
         
     }];
     

@@ -6,10 +6,9 @@
 //  Copyright (c) 2015 Talkable. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #import "Talkable.h"
 
-@interface TKBLOfferViewController : UIViewController<UIWebViewDelegate>
+@interface TKBLOfferViewController : UIViewController <WKNavigationDelegate>
 
 - (IBAction)close:(id)sender;
 

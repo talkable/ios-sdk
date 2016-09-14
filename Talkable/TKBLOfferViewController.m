@@ -47,28 +47,32 @@
     return !_requestCompleted;
 }
 
-#pragma mark - [UIWebViewDelegate]
-
-- (BOOL)webView:(UIWebView*)webView shouldStartLoadWithRequest:(NSURLRequest*)request navigationType:(UIWebViewNavigationType)navigationType {
-    return [super webView:webView shouldStartLoadWithRequest:request navigationType:navigationType];
-}
-
-- (void)webViewDidStartLoad:(UIWebView*)webView {
-    [self validateFullViewActivity];
-}
-
-- (void)webViewDidFinishLoad:(UIWebView*)webView; {
-    _requestCompleted = YES;
-    [self validateFullViewActivity];
-}
-
-- (void)webView:(UIWebView*)webView didFailLoadWithError:(NSError*)error {
+- (void)didFailNavigation:(WKWebView*)webView withError:(NSError*)error {
     if (!_requestCompleted) {
         TKBLLog(@"Request has failed with error - %@", error);
         [self close:webView];
     }
     _requestCompleted = YES;
     [self validateFullViewActivity];
+}
+
+#pragma mark - [WKNavigationDelegate]
+
+- (void)webView:(WKWebView*)webView didStartProvisionalNavigation:(WKNavigation*)navigation {
+    [self validateFullViewActivity];
+}
+
+- (void)webView:(WKWebView*)webView didFailProvisionalNavigation:(WKNavigation*)navigation withError:(NSError*)error {
+    [self didFailNavigation:webView withError:error];    
+}
+
+- (void)webView:(WKWebView*)webView didFinishNavigation:(WKNavigation*)navigation {
+    _requestCompleted = YES;
+    [self validateFullViewActivity];
+}
+
+- (void)webView:(WKWebView*)webView didFailNavigation:(WKNavigation*)navigation withError:(NSError*)error {
+    [self didFailNavigation:webView withError:error];
 }
 
 #pragma mark - [Notifications]
@@ -81,9 +85,12 @@
         if ([[Talkable manager].delegate respondsToSelector:@selector(titleForTalkableOfferViewController:)]) {
             [self setTitle: [[Talkable manager].delegate titleForTalkableOfferViewController:self]];
         } else {
-            UIWebView* webView = (UIWebView*)ntf.object;
-            NSString* title = [webView stringByEvaluatingJavaScriptFromString:@"Talkable.configuration('page_title');"];
-            [self setTitle: title];
+            WKWebView* webView = (WKWebView*)ntf.object;
+            [webView evaluateJavaScript:@"Talkable.configuration('page_title');" completionHandler:^(NSString* title, NSError* error) {
+                if (!error) {
+                    [self setTitle: title];
+                }
+            }];
         }
     }
 }

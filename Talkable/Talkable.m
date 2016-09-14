@@ -63,8 +63,8 @@ NSString*   TKBLCouponKey           = @"coupon";
 }
 
 + (BOOL)talkableSupported {
-    if (NSFoundationVersionNumber < NSFoundationVersionNumber_iOS_7_0) {
-        NSLog(@"TalkableSDK suports iOS7.0 and later.");
+    if (NSFoundationVersionNumber < NSFoundationVersionNumber_iOS_8_0) {
+        NSLog(@"TalkableSDK suports iOS8.0 and later.");
         return NO;
     }
     
@@ -73,6 +73,12 @@ NSString*   TKBLCouponKey           = @"coupon";
         NSLog(@"Add -ObjC to Other Linker Flags to use TalkableSDK. More details at https://developer.apple.com/library/ios/qa/qa1490/_index.html");
         return NO;
     }
+    
+    if ([WKWebView class] == nil) {
+        NSLog(@"TalkableSDK needs WebKit.framework. It is not added to your project. Check http://docs.talkable.com/ios_sdk/getting_started.html for more details.");
+        return NO;
+    }
+    
     
     if ([SFSafariViewController class] == nil && [[[UIDevice currentDevice] systemVersion] floatValue] >= 9 ) {
         NSLog(@"TalkableSDK needs SafariServices.framework. It is not added to your project. Check http://docs.talkable.com/ios_sdk/getting_started.html for more details.");
@@ -257,7 +263,10 @@ NSString*   TKBLCouponKey           = @"coupon";
              return;
          }
          
-         [[self offerChecker] performWithContent:responseData MIMEType:response.MIMEType textEncodingName:response.textEncodingName baseURL:requestURL callback:^(BOOL isExist, NSString* localizedErrorMessage) {
+         NSStringEncoding encoding = CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding((CFStringRef)response.textEncodingName));
+         NSString* htmlString = [[NSString alloc] initWithData:responseData encoding:encoding];
+         
+         [[self offerChecker] performWithHTMLString:htmlString encoding:encoding callback:^(BOOL isExist, NSString* localizedErrorMessage) {
              if (!isExist) {
                  TKBLLog(@"%@", localizedErrorMessage);
                  NSError* error = [NSError errorWithDomain:TKBLErrorDomain
@@ -267,7 +276,7 @@ NSString*   TKBLCouponKey           = @"coupon";
              } else {
                  TKBLOfferViewController* controller = [[TKBLOfferViewController alloc] init];
                  
-                 UIWebView* webView = [self buildWebView];
+                 WKWebView* webView = [self buildWebView];
                  [self notifyOriginDidRegister:type withWebView:webView];
                  
                  BOOL shouldPresent = YES;
@@ -276,7 +285,8 @@ NSString*   TKBLCouponKey           = @"coupon";
                  }
                  
                  if (shouldPresent) {
-                     [webView setDelegate:controller];
+                     [webView setNavigationDelegate:controller];
+                     [webView.configuration.userContentController addScriptMessageHandler:controller name:@"talkableiOSHub"];
                      CGRect frame = webView.frame;
                      frame = controller.view.bounds;
                      webView.frame = frame;
@@ -284,7 +294,7 @@ NSString*   TKBLCouponKey           = @"coupon";
                      [self presentOfferViewController:controller];
                  }
                  
-                 [webView loadData:responseData MIMEType:response.MIMEType textEncodingName:response.textEncodingName baseURL:requestURL];
+                 [webView loadHTMLString:htmlString baseURL:requestURL];
              }
          }];
      }];
@@ -628,6 +638,7 @@ NSString*   TKBLCouponKey           = @"coupon";
     }
 }
 
+
 - (void)trackVisit:(NSString*)visitorOfferId {
     NSMutableDictionary* parameters = [self paramsForAPI:nil];
     NSString* path = [NSString stringWithFormat:@"/visitor_offers/%@/track_visit", visitorOfferId];
@@ -636,12 +647,15 @@ NSString*   TKBLCouponKey           = @"coupon";
     [[self networkClient] PUT:urlString parameters:parameters success:nil failure:nil];
 }
 
-- (UIWebView*)buildWebView {
+- (WKWebView*)buildWebView {
     [self registerCustomUserAgent];
-    UIWebView* webView = [[UIWebView alloc] init];
-    webView.scalesPageToFit = YES;
+    
+    WKWebViewConfiguration* webConfig = [[WKWebViewConfiguration alloc] init];
+    WKUserContentController* contentController = [[WKUserContentController alloc] init];
+    WKWebView* webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:webConfig];
+    [webConfig setUserContentController:contentController];
+    
     webView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin;
-    webView.delegate = self;
     [self restoreOriginalUserAgent];
     return webView;
 }
@@ -698,7 +712,10 @@ stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
 }
 
 - (void)registerCustomUserAgent {
-    [[NSUserDefaults standardUserDefaults] registerDefaults:@{@"UserAgent": [self userAgent]}];
+    NSString* userAgent = [self userAgent];
+    if (userAgent) {
+        [[NSUserDefaults standardUserDefaults] registerDefaults:@{@"UserAgent": userAgent}];
+    }
 }
 
 - (void)restoreOriginalUserAgent {
@@ -714,10 +731,13 @@ stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
         NSString* userAgent = [self originalUserAgent];
         if (!userAgent) {
             UIWebView*  webView = [[UIWebView alloc] init];
+            [webView loadHTMLString:@"<html></html>" baseURL:nil];
             userAgent = [webView stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
         }
-        NSString* userAgentSufix = [NSString stringWithFormat:@"Talkable iOS/%@", TKBLVersion];
-        _userAgent = [NSString stringWithFormat:@"%@;%@", userAgent, userAgentSufix];
+        if (userAgent) {
+            NSString* userAgentSufix = [NSString stringWithFormat:@"Talkable iOS/%@", TKBLVersion];
+            _userAgent = [NSString stringWithFormat:@"%@;%@", userAgent, userAgentSufix];
+        }
     }
     return _userAgent;
 }
@@ -919,7 +939,7 @@ stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
     return YES;
 }
 
-- (void)notifyOriginDidRegister:(TKBLOriginType)type withWebView:(UIWebView*)webView {
+- (void)notifyOriginDidRegister:(TKBLOriginType)type withWebView:(WKWebView*)webView {
     if ([self.delegate respondsToSelector:@selector(didRegisterOrigin:withWebView:)]) {
         [self.delegate didRegisterOrigin:type withWebView:webView];
     }
