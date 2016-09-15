@@ -40,7 +40,8 @@
     UIApplication* app = [UIApplication sharedApplication];
     
     // There is no way to check whether user shared a message or not
-    [(UIWebView*)sender stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"Talkable.shareSucceeded('%@');", TKBLShareChannelFacebookMessage]];
+    [self shareSucceeded:(WKWebView*)sender withChannel:TKBLShareChannelFacebookMessage];
+    
     [app openURL:[NSURL URLWithString:[NSString stringWithFormat:@"fb-messenger://share?link=%@", escapedClaimURL]]];
     
 }
@@ -80,8 +81,7 @@
     
     TKBLSmsWatcher* watcher = [[TKBLSmsWatcher alloc] init];
     watcher.successCompletionHandler = ^(void){
-        NSString* script = [NSString stringWithFormat:@"Talkable.shareSucceeded('%@');", TKBLShareChannelSMS];
-        [(WKWebView*)sender evaluateJavaScript:script completionHandler:nil];
+        [self shareSucceeded:(WKWebView*)sender withChannel:TKBLShareChannelSMS];
     };
     controller.messageComposeDelegate = watcher;
     [[UIViewController currentViewController] presentViewController:controller animated:YES completion:nil];
@@ -186,6 +186,11 @@
     }
 }
 
+- (void)shareSucceeded:(WKWebView*)webView withChannel:(NSString*)channel {
+    NSString* script = [NSString stringWithFormat:@"Talkable.shareSucceeded('%@');", channel];
+    [webView evaluateJavaScript:script completionHandler:nil];
+}
+
 - (void)shareViaChannel:(NSString*)channel withParams:(NSDictionary*)params andSender:(id)sender {
     if (!params)
         return;
@@ -210,8 +215,7 @@
     
     [shareController setCompletionHandler:^(SLComposeViewControllerResult result) {
         if (result == SLComposeViewControllerResultDone) {
-            NSString* script = [NSString stringWithFormat:@"Talkable.shareSucceeded('%@');", channel];
-            [(WKWebView*)sender evaluateJavaScript:script completionHandler:nil];
+            [self shareSucceeded:(WKWebView*)sender withChannel:channel];
         }
     }];
     
@@ -246,8 +250,7 @@
     
     [controller setCompletionWithItemsHandler:^(NSString* activityType, BOOL completed, NSArray* returnedItems, NSError*activityError) {
         if (!completed) return;
-        NSString* script = [NSString stringWithFormat:@"Talkable.shareSucceeded('%@');", TKBLShareChannelOther];
-        [(WKWebView*)sender evaluateJavaScript:script completionHandler:nil];
+        [self shareSucceeded:(WKWebView*)sender withChannel:TKBLShareChannelOther];
         
     }];
     
