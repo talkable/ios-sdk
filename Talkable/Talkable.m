@@ -174,7 +174,7 @@ NSString*   TKBLCouponKey           = @"coupon";
     TKBLLog(@"Method %@ is deprecated and has no affect at all.", NSStringFromSelector(_cmd));
 }
 
-#pragma make - [Handlers]
+#pragma mark - [Handlers]
 
 - (BOOL)handleOpenURL:(NSURL*)url {
     __block BOOL handled = NO;
