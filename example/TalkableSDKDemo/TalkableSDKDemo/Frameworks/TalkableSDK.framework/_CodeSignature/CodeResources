@@ -18,7 +18,7 @@
 		</data>
 		<key>Headers/Talkable.h</key>
 		<data>
-		bPzgp3cewdXU1nntSjP7qX9pJUg=
+		fJQHRrgHbY7ZNWuFpixePyyvZeA=
 		</data>
 		<key>Headers/TalkableDelegate.h</key>
 		<data>
@@ -30,7 +30,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		+Yu27Y+YufRX9lHdb2lp38tige4=
+		Q6A6iKJam24tnVLVy7pce8sRt3U=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -76,11 +76,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			bPzgp3cewdXU1nntSjP7qX9pJUg=
+			fJQHRrgHbY7ZNWuFpixePyyvZeA=
 			</data>
 			<key>hash2</key>
 			<data>
-			f+2pqJH9c8WcIxqZ/Cire6E8ygUbTtiuSAuUT0924PI=
+			HLVW3CuNawRrgjjqQysY0X6rJAQ463CL1uaaMrnCZYs=
 			</data>
 		</dict>
 		<key>Headers/TalkableDelegate.h</key>

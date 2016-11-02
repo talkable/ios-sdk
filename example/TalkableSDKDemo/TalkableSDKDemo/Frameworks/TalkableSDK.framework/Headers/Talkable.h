@@ -36,7 +36,7 @@
 
 - (void)registerURLScheme:(NSString*)urlScheme __deprecated;
 
-#pragma make - [Handlers]
+#pragma mark - [Handlers]
 
 - (BOOL)handleOpenURL:(NSURL*)url;
 
