@@ -313,6 +313,10 @@ NSString*   TKBLCouponKey           = @"coupon";
         [data setObject:uuid forKey:TKBLOriginUUIDKey];
     }
     
+    if (![data objectForKey:TKBLOriginTrafficSourceKey]) {
+        [data setObject:@"ios" forKey:TKBLOriginTrafficSourceKey];
+    }
+    
     NSString* webUUID = [self webUUID];
     if (webUUID) {
         [data setObject:webUUID forKey:@"alternative_visitor_uuid"];
