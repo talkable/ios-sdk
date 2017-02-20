@@ -499,6 +499,7 @@
 		7A488CD11AE0F5C9002285C9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULE_DEBUGGING = YES;
 				GCC_NO_COMMON_BLOCKS = NO;
 				MACH_O_TYPE = staticlib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -509,6 +510,7 @@
 		7A488CD21AE0F5C9002285C9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULE_DEBUGGING = NO;
 				GCC_NO_COMMON_BLOCKS = NO;
 				MACH_O_TYPE = staticlib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -617,6 +619,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ANALYZER_OBJC_RETAIN_COUNT = NO;
+				CLANG_ENABLE_MODULE_DEBUGGING = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				CREATE_INFOPLIST_SECTION_IN_BINARY = NO;
@@ -645,6 +648,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ANALYZER_OBJC_RETAIN_COUNT = NO;
+				CLANG_ENABLE_MODULE_DEBUGGING = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				CREATE_INFOPLIST_SECTION_IN_BINARY = NO;
@@ -673,6 +677,7 @@
 		7A7C4FFF1AD2E37000CCC1CB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULE_DEBUGGING = YES;
 				DEVELOPMENT_TEAM = 97R9ZGB9VS;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -693,6 +698,7 @@
 		7A7C50001AD2E37000CCC1CB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULE_DEBUGGING = NO;
 				DEVELOPMENT_TEAM = 97R9ZGB9VS;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
