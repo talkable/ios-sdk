@@ -15,7 +15,22 @@
 #import "TKBLContactsLoader.h"
 #import "UIViewControllerExt.h"
 
-@implementation NSObject (TKBLOfferTarget)
+@implementation TKBLOfferTarget {
+    WKWebView*   _webView;
+}
+
+- (id)initWithWebView:(WKWebView*)webView {
+    if (self = [super init]) {
+        _webView = webView;
+    }
+    return self;
+}
+
+#pragma mark - [Public]
+
+- (BOOL)isUsed {
+    return [_webView superview] != nil;
+}
 
 #pragma mark - [Talkable Messages]
 

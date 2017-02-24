@@ -39,6 +39,7 @@ NSString*   TKBLCouponKey           = @"coupon";
     NSString*                       _originalUserAgent;
     NSString*                       _featuresJsonString;
     NSArray* __strong               _couponCodeParams;
+    NSMutableArray* __strong        _offerTargets;
     NSString*                       _uuid;
     NSString*                       _deviceIdentifier;
     TKBLOfferChecker*               _offerChecker;
@@ -287,7 +288,6 @@ NSString*   TKBLCouponKey           = @"coupon";
                  
                  if (shouldPresent) {
                      [webView setNavigationDelegate:controller];
-                     [webView.configuration.userContentController addScriptMessageHandler:controller name:@"talkableiOSHub"];
                      CGRect frame = webView.frame;
                      frame = controller.view.bounds;
                      webView.frame = frame;
@@ -662,6 +662,10 @@ NSString*   TKBLCouponKey           = @"coupon";
     
     webView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin;
     [self restoreOriginalUserAgent];
+    
+    TKBLOfferTarget* targer = [self offerTargetFor:webView];
+    [webView.configuration.userContentController addScriptMessageHandler:targer name:@"talkableiOSHub"];
+    
     return webView;
 }
 
@@ -913,6 +917,19 @@ stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
         _couponCodeParams = @[@"coupon", @"couponcode", @"discount"];
     }
     return _couponCodeParams;
+}
+
+- (TKBLOfferTarget*)offerTargetFor:(WKWebView*) webView {
+    if (!_offerTargets) {
+        _offerTargets = [NSMutableArray new];
+    }
+    for (TKBLOfferTarget* target in _offerTargets) {
+        if (![target isUsed])
+            [_offerTargets removeObject:target];
+    }
+    TKBLOfferTarget* target = [[TKBLOfferTarget alloc] initWithWebView:webView];
+    [_offerTargets addObject:target];
+    return target;
 }
 
 - (void)storeObject:(id)anObject forKey:(id<NSCopying>)key {

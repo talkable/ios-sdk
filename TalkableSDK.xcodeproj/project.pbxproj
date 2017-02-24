@@ -59,7 +59,6 @@
 		7A7C50B51AD3F83C00CCC1CB /* UIViewControllerExt.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A7C50B31AD3F83C00CCC1CB /* UIViewControllerExt.m */; };
 		7A7C50B81AD4157600CCC1CB /* TKBLOfferViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A7C50B61AD4157600CCC1CB /* TKBLOfferViewController.h */; };
 		7A7C50B91AD4157600CCC1CB /* TKBLOfferViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A7C50B71AD4157600CCC1CB /* TKBLOfferViewController.m */; };
-		7A7C51141AD5888F00CCC1CB /* TKBLOfferTarget.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A7C51131AD5888F00CCC1CB /* TKBLOfferTarget.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7A7C51161AD5893A00CCC1CB /* TKBLOfferTarget.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A7C51151AD5893A00CCC1CB /* TKBLOfferTarget.m */; };
 		7A7C51401AD66B4A00CCC1CB /* TKBLConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A7C513F1AD66B4A00CCC1CB /* TKBLConstants.m */; };
 		7A7C514B1AD6748500CCC1CB /* TalkableDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A7C51421AD66C6E00CCC1CB /* TalkableDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -299,7 +298,6 @@
 				7AC485E61AE7D54900165E04 /* TKBLSmsWatcher.h in Headers */,
 				7A11A8221C85A7BF00FA48CF /* TKBLOfferChecker.h in Headers */,
 				7A47DE1B1B69246E00BD1E6A /* TKBLHelper.h in Headers */,
-				7A7C51141AD5888F00CCC1CB /* TKBLOfferTarget.h in Headers */,
 				7A90F1601B39C3B1001AB964 /* NamespacedDependencies.h in Headers */,
 				7A7C514B1AD6748500CCC1CB /* TalkableDelegate.h in Headers */,
 				7A7A860C1B68CFEE00DC3661 /* AFURLSessionManager.h in Headers */,
