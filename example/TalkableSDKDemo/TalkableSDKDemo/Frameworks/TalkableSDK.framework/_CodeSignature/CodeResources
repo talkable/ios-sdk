@@ -8,17 +8,13 @@
 		<data>
 		L+08FczqFR/AKBu3Fwe6SSYecSg=
 		</data>
-		<key>Headers/TKBLOfferTarget.h</key>
-		<data>
-		7/31LHZrrKOxvynLesbzGys3wtI=
-		</data>
 		<key>Headers/TKBLTypes.h</key>
 		<data>
 		/9M2UR5XDODTW8S9azL5ubXl2qw=
 		</data>
 		<key>Headers/Talkable.h</key>
 		<data>
-		fJQHRrgHbY7ZNWuFpixePyyvZeA=
+		VRWkYu3gggmitxm5NUW9cSdWLno=
 		</data>
 		<key>Headers/TalkableDelegate.h</key>
 		<data>
@@ -30,7 +26,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		Cq6Pwjmhg97ambqiR/r6CtTeC2Q=
+		hmWHPtN/itMFohBfnFIiqTHX97k=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -50,17 +46,6 @@
 			IIr1dCq4POrA8XDmZJ4GR05i+SnmEfQOZezbChlsW4w=
 			</data>
 		</dict>
-		<key>Headers/TKBLOfferTarget.h</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			7/31LHZrrKOxvynLesbzGys3wtI=
-			</data>
-			<key>hash2</key>
-			<data>
-			VgppV7FaOsY+CH+7OgMKfWsYF+0Psl8ngAeWyYt1Y6M=
-			</data>
-		</dict>
 		<key>Headers/TKBLTypes.h</key>
 		<dict>
 			<key>hash</key>
@@ -76,11 +61,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			fJQHRrgHbY7ZNWuFpixePyyvZeA=
+			VRWkYu3gggmitxm5NUW9cSdWLno=
 			</data>
 			<key>hash2</key>
 			<data>
-			HLVW3CuNawRrgjjqQysY0X6rJAQ463CL1uaaMrnCZYs=
+			mSRe7ESPaEgM1UMdSx+rBJ3JEcBKkSN0P2p9+O4L9vI=
 			</data>
 		</dict>
 		<key>Headers/TalkableDelegate.h</key>

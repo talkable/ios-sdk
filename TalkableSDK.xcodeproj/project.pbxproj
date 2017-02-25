@@ -59,7 +59,6 @@
 		7A7C50B51AD3F83C00CCC1CB /* UIViewControllerExt.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A7C50B31AD3F83C00CCC1CB /* UIViewControllerExt.m */; };
 		7A7C50B81AD4157600CCC1CB /* TKBLOfferViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A7C50B61AD4157600CCC1CB /* TKBLOfferViewController.h */; };
 		7A7C50B91AD4157600CCC1CB /* TKBLOfferViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A7C50B71AD4157600CCC1CB /* TKBLOfferViewController.m */; };
-		7A7C51141AD5888F00CCC1CB /* TKBLOfferTarget.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A7C51131AD5888F00CCC1CB /* TKBLOfferTarget.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7A7C51161AD5893A00CCC1CB /* TKBLOfferTarget.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A7C51151AD5893A00CCC1CB /* TKBLOfferTarget.m */; };
 		7A7C51401AD66B4A00CCC1CB /* TKBLConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A7C513F1AD66B4A00CCC1CB /* TKBLConstants.m */; };
 		7A7C514B1AD6748500CCC1CB /* TalkableDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A7C51421AD66C6E00CCC1CB /* TalkableDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -299,7 +298,6 @@
 				7AC485E61AE7D54900165E04 /* TKBLSmsWatcher.h in Headers */,
 				7A11A8221C85A7BF00FA48CF /* TKBLOfferChecker.h in Headers */,
 				7A47DE1B1B69246E00BD1E6A /* TKBLHelper.h in Headers */,
-				7A7C51141AD5888F00CCC1CB /* TKBLOfferTarget.h in Headers */,
 				7A90F1601B39C3B1001AB964 /* NamespacedDependencies.h in Headers */,
 				7A7C514B1AD6748500CCC1CB /* TalkableDelegate.h in Headers */,
 				7A7A860C1B68CFEE00DC3661 /* AFURLSessionManager.h in Headers */,
@@ -364,7 +362,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = TKBL;
-				LastUpgradeCheck = 0720;
+				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = Talkable;
 				TargetAttributes = {
 					7A488CCF1AE0F5C9002285C9 = {
@@ -376,6 +374,7 @@
 					};
 					7A7C4FEF1AD2E37000CCC1CB = {
 						CreatedOnToolsVersion = 6.1.1;
+						DevelopmentTeam = 97R9ZGB9VS;
 					};
 				};
 			};
@@ -498,6 +497,8 @@
 		7A488CD11AE0F5C9002285C9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULE_DEBUGGING = YES;
+				GCC_NO_COMMON_BLOCKS = NO;
 				MACH_O_TYPE = staticlib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALID_ARCHS = "arm64 armv7 armv7s";
@@ -507,6 +508,8 @@
 		7A488CD21AE0F5C9002285C9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULE_DEBUGGING = NO;
+				GCC_NO_COMMON_BLOCKS = NO;
 				MACH_O_TYPE = staticlib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALID_ARCHS = "arm64 armv7 armv7s";
@@ -526,17 +529,20 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1.4.2;
+				CURRENT_PROJECT_VERSION = 1.4.3;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -575,16 +581,19 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 1.4.2;
+				CURRENT_PROJECT_VERSION = 1.4.3;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -608,6 +617,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ANALYZER_OBJC_RETAIN_COUNT = NO;
+				CLANG_ENABLE_MODULE_DEBUGGING = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CREATE_INFOPLIST_SECTION_IN_BINARY = NO;
 				DEAD_CODE_STRIPPING = YES;
@@ -615,6 +625,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_NO_COMMON_BLOCKS = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/Talkable/TalkableSDK-Prefix.pch";
 				GENERATE_PKGINFO_FILE = NO;
@@ -634,6 +645,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ANALYZER_OBJC_RETAIN_COUNT = NO;
+				CLANG_ENABLE_MODULE_DEBUGGING = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CREATE_INFOPLIST_SECTION_IN_BINARY = NO;
 				DEAD_CODE_STRIPPING = YES;
@@ -641,6 +653,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_NO_COMMON_BLOCKS = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/Talkable/TalkableSDK-Prefix.pch";
 				GENERATE_PKGINFO_FILE = NO;
@@ -660,10 +673,13 @@
 		7A7C4FFF1AD2E37000CCC1CB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULE_DEBUGGING = YES;
+				DEVELOPMENT_TEAM = 97R9ZGB9VS;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 				);
+				GCC_NO_COMMON_BLOCKS = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -678,10 +694,13 @@
 		7A7C50001AD2E37000CCC1CB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULE_DEBUGGING = NO;
+				DEVELOPMENT_TEAM = 97R9ZGB9VS;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 				);
+				GCC_NO_COMMON_BLOCKS = NO;
 				INFOPLIST_FILE = TalkableTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.talkable.$(PRODUCT_NAME:rfc1034identifier)";

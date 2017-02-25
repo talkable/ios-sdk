@@ -8,6 +8,10 @@
 
 #import <WebKit/WebKit.h>
 
-@interface NSObject (TKBLOfferTarget) <WKNavigationDelegate, WKScriptMessageHandler>
+@interface TKBLOfferTarget: NSObject <WKNavigationDelegate, WKScriptMessageHandler>
+
+- (id)initWithWebView:(WKWebView*)webView;
+
+- (BOOL)isUsed;
 
 @end

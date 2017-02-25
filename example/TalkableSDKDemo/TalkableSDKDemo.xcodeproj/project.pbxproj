@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7A1F6A881AEA947300B099A2 /* TalkableSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A1F6A871AEA947300B099A2 /* TalkableSDK.framework */; };
 		7A1F6A8A1AEA94A800B099A2 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A1F6A891AEA94A800B099A2 /* MobileCoreServices.framework */; };
 		7A1F6A8C1AEA94B800B099A2 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A1F6A8B1AEA94B800B099A2 /* Security.framework */; };
 		7A1F6A8E1AEA94C000B099A2 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A1F6A8D1AEA94C000B099A2 /* SystemConfiguration.framework */; };
 		7A1F6A901AEA94C800B099A2 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A1F6A8F1AEA94C800B099A2 /* CFNetwork.framework */; };
 		7A1F6A921AEA94D100B099A2 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A1F6A911AEA94D100B099A2 /* Social.framework */; };
+		7A268E341E5B5BCC00D6D5B5 /* TalkableSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A268E331E5B5BCC00D6D5B5 /* TalkableSDK.framework */; };
 		7A4FFCE01AEA91AB00995DF0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A4FFCDF1AEA91AB00995DF0 /* main.m */; };
 		7A4FFCE31AEA91AB00995DF0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A4FFCE21AEA91AB00995DF0 /* AppDelegate.m */; };
 		7A4FFCE61AEA91AB00995DF0 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A4FFCE51AEA91AB00995DF0 /* ViewController.m */; };
@@ -37,12 +37,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		7A1F6A871AEA947300B099A2 /* TalkableSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TalkableSDK.framework; sourceTree = "<group>"; };
 		7A1F6A891AEA94A800B099A2 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		7A1F6A8B1AEA94B800B099A2 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		7A1F6A8D1AEA94C000B099A2 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		7A1F6A8F1AEA94C800B099A2 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		7A1F6A911AEA94D100B099A2 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		7A268E331E5B5BCC00D6D5B5 /* TalkableSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TalkableSDK.framework; sourceTree = "<group>"; };
 		7A4FFCDA1AEA91AB00995DF0 /* TalkableSDKDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TalkableSDKDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A4FFCDE1AEA91AB00995DF0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7A4FFCDF1AEA91AB00995DF0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -75,9 +75,9 @@
 				7A1F6A921AEA94D100B099A2 /* Social.framework in Frameworks */,
 				7A1F6A901AEA94C800B099A2 /* CFNetwork.framework in Frameworks */,
 				7A1F6A8E1AEA94C000B099A2 /* SystemConfiguration.framework in Frameworks */,
+				7A268E341E5B5BCC00D6D5B5 /* TalkableSDK.framework in Frameworks */,
 				7A1F6A8C1AEA94B800B099A2 /* Security.framework in Frameworks */,
 				7A1F6A8A1AEA94A800B099A2 /* MobileCoreServices.framework in Frameworks */,
-				7A1F6A881AEA947300B099A2 /* TalkableSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -94,6 +94,7 @@
 		7A1F6A861AEA947300B099A2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7A268E331E5B5BCC00D6D5B5 /* TalkableSDK.framework */,
 				7AA46B231D8993DD00F877CC /* WebKit.framework */,
 				7A6DD7C81C3FC13900C5E71D /* SafariServices.framework */,
 				7A83196D1B3AF54A00EF6445 /* MessageUI.framework */,
@@ -103,7 +104,6 @@
 				7A1F6A8D1AEA94C000B099A2 /* SystemConfiguration.framework */,
 				7A1F6A8B1AEA94B800B099A2 /* Security.framework */,
 				7A1F6A891AEA94A800B099A2 /* MobileCoreServices.framework */,
-				7A1F6A871AEA947300B099A2 /* TalkableSDK.framework */,
 			);
 			name = Frameworks;
 			path = TalkableSDKDemo/Frameworks;

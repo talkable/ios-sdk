@@ -11,7 +11,6 @@
 #import <Social/Social.h>
 #import "TalkableDelegate.h"
 #import "TKBLConstants.h"
-#import "TKBLOfferTarget.h"
 
 #define TKBLLog(format, ...)		[[Talkable manager] debug] ? NSLog([@"[Talkable]: " stringByAppendingString:format], ##__VA_ARGS__) : nil
 
