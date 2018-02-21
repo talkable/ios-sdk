@@ -636,6 +636,7 @@ NSString*   TKBLCouponKey           = @"coupon";
 }
 
 - (void)extractWebUUID {
+    return; // skip extracting alternative cookie since it doesn't work in all versions of iOS
     if (UIApplicationStateActive == [[UIApplication sharedApplication] applicationState]) {
         if (self.server && self.siteSlug) {
             [[TKBLUUIDExtractor extractor] extractFromServer:self.server withSiteSlug:self.siteSlug andAppSchema:[self applicationURLScheme]];

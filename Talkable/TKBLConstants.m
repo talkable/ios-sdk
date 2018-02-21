@@ -55,7 +55,8 @@ NSString* TKBLPurchaseLastNameKey                       = @"last_name";
 NSString* TKBLPurchaseCustomerIDKey                     = @"customer_id";
 NSString* TKBLPurchaseIPAddressKey                      = @"ip_address";
 NSString* TKBLPurchaseTrafficSourceKey                  = @"traffic_source";
-NSString* TKBLPurchasePersonCustomPropertiesKeyKey      = @"person_custom_properties";
+NSString* TKBLPurchasePersonCustomPropertiesKey         = @"person_custom_properties";
+NSString* TKBLPurchasePersonCustomPropertiesKeyKey      = @"person_custom_properties"; // legacy typo
 
 NSString* TKBLPurchaseOrderItemsKey                     = @"i";
 NSString* TKBLPurchaseOrderItemProductIDKey             = @"product_id";
@@ -68,6 +69,10 @@ NSString* TKBLPurchaseOrderItemImageUrlKey              = @"image_url";
 NSString* TKBLEventKey                                  = @"event";
 NSString* TKBLEventCategoryKey                          = @"event_category";
 NSString* TKBLEventNumberKey                            = @"event_number";
+NSString* TKBLEventEmailKey                             = @"email";
+NSString* TKBLEventSubtotalKey                          = @"subtotal";
+NSString* TKBLEventTrafficSourceKey                     = @"traffic_source";
+NSString* TKBLEventPersonCustomPropertiesKey            = @"person_custom_properties";
 
 NSString* TKBLCampaignTags                              = @"campaign_tags[]";
 
