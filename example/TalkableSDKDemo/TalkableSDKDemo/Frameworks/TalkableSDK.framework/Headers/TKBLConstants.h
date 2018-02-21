@@ -55,6 +55,7 @@ FOUNDATION_EXPORT NSString* TKBLPurchaseLastNameKey;
 FOUNDATION_EXPORT NSString* TKBLPurchaseCustomerIDKey;
 FOUNDATION_EXPORT NSString* TKBLPurchaseIPAddressKey;
 FOUNDATION_EXPORT NSString* TKBLPurchaseTrafficSourceKey;
+FOUNDATION_EXPORT NSString* TKBLPurchasePersonCustomPropertiesKey;
 FOUNDATION_EXPORT NSString* TKBLPurchasePersonCustomPropertiesKeyKey;
 
 FOUNDATION_EXPORT NSString* TKBLPurchaseOrderItemsKey;
@@ -68,6 +69,10 @@ FOUNDATION_EXPORT NSString* TKBLPurchaseOrderItemImageUrlKey;
 FOUNDATION_EXPORT NSString* TKBLEventKey;
 FOUNDATION_EXPORT NSString* TKBLEventCategoryKey;
 FOUNDATION_EXPORT NSString* TKBLEventNumberKey;
+FOUNDATION_EXPORT NSString* TKBLEventEmailKey;
+FOUNDATION_EXPORT NSString* TKBLEventSubtotalKey;
+FOUNDATION_EXPORT NSString* TKBLEventTrafficSourceKey;
+FOUNDATION_EXPORT NSString* TKBLEventPersonCustomPropertiesKey;
 
 FOUNDATION_EXPORT NSString* TKBLCampaignTags;
 

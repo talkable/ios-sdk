@@ -225,6 +225,10 @@
     return self;
 }
 
+- (BOOL)shouldPresentTalkableOfferViewController:(UIViewController *)controller {
+    return YES;
+}
+
 #pragma mark - [Notifications]
 
 -(void)couponReceived:(NSNotification*)ntf {

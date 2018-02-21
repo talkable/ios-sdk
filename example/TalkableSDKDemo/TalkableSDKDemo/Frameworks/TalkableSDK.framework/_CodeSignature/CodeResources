@@ -6,7 +6,7 @@
 	<dict>
 		<key>Headers/TKBLConstants.h</key>
 		<data>
-		L+08FczqFR/AKBu3Fwe6SSYecSg=
+		2pYQDv/ejS0ZfPVv0OWt5Gh8dHI=
 		</data>
 		<key>Headers/TKBLTypes.h</key>
 		<data>
@@ -26,7 +26,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		hmWHPtN/itMFohBfnFIiqTHX97k=
+		RakqoiIAn8KZSxngx5DR2D4rAWw=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -39,11 +39,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			L+08FczqFR/AKBu3Fwe6SSYecSg=
+			2pYQDv/ejS0ZfPVv0OWt5Gh8dHI=
 			</data>
 			<key>hash2</key>
 			<data>
-			IIr1dCq4POrA8XDmZJ4GR05i+SnmEfQOZezbChlsW4w=
+			rja5xCjiHHSYGEdqO7giaqqeeIvqD9Fvugq7zO2fPAY=
 			</data>
 		</dict>
 		<key>Headers/TKBLTypes.h</key>
@@ -120,6 +120,11 @@
 			<key>weight</key>
 			<real>1100</real>
 		</dict>
+		<key>^Base\.lproj/</key>
+		<dict>
+			<key>weight</key>
+			<real>1010</real>
+		</dict>
 		<key>^version.plist$</key>
 		<true/>
 	</dict>
@@ -164,6 +169,11 @@
 			<true/>
 			<key>weight</key>
 			<real>1100</real>
+		</dict>
+		<key>^Base\.lproj/</key>
+		<dict>
+			<key>weight</key>
+			<real>1010</real>
 		</dict>
 		<key>^Info\.plist$</key>
 		<dict>
