@@ -816,11 +816,12 @@ stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
 }
 
 - (NSString*)buildQueryFromArray:(NSArray*)params andPrefix:(NSString*)prefix {
+    if (!prefix.length) {
+        [self raiseException:NSInvalidArgumentException withMessage:@"Prefix should be non-empty string"];
+    }
     NSMutableArray* items = [NSMutableArray arrayWithCapacity:[params count]];
+    NSString* keyName = [NSString stringWithFormat:@"%@[]", prefix];
     [params enumerateObjectsUsingBlock:^(id value, NSUInteger idx, BOOL* stop) {
-        NSString* keyName = prefix ?
-        [NSString stringWithFormat:@"%@[%lu]", prefix, (unsigned long)idx] :
-        [NSString stringWithFormat:@"%lu", (unsigned long)idx];
         [self addKeyName:keyName value:value toArray:items];
     }];
     return [items componentsJoinedByString:@"&"];
