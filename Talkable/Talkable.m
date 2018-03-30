@@ -209,10 +209,27 @@ NSString*   TKBLCouponKey           = @"coupon";
     NSMutableDictionary* originParams = [NSMutableDictionary dictionary];
     if (idx != NSNotFound) {
         originParams = [NSMutableDictionary dictionaryWithDictionary:[filtered objectAtIndex:idx]];
-        [talkableParams setObject:originParams forKey:[originKeys objectAtIndex:idx]];
-    } else {
-        [talkableParams setObject:originParams forKey:TKBLOriginKey];
+        if (originParams[TKBLPurchaseOrderItemsKey]) {
+            [originParams[TKBLPurchaseOrderItemsKey] enumerateObjectsUsingBlock:^(NSDictionary* obj,
+                                                                                  NSUInteger idx,
+                                                                                  BOOL * _Nonnull stop) {
+                if (obj[TKBLPurchaseOrderItemProductIDKey] &&
+                    (obj[TKBLPurchaseOrderItemUrlKey] ||
+                     obj[TKBLPurchaseOrderItemImageUrlKey] ||
+                     obj[TKBLPurchaseOrderItemTitleKey])
+                ) {
+                    [self registerProduct:[obj dictionaryWithValuesForKeys:@[
+                        TKBLPurchaseOrderItemProductIDKey,
+                        TKBLPurchaseOrderItemUrlKey,
+                        TKBLPurchaseOrderItemImageUrlKey,
+                        TKBLPurchaseOrderItemTitleKey,
+                        TKBLPurchaseOrderItemPriceKey
+                    ]]];
+                }
+            }];
+        }
     }
+    [talkableParams setObject:originParams forKey:TKBLOriginKey];
     
     NSString* webUUID = [self webUUID];
     if (webUUID) {
@@ -231,7 +248,11 @@ NSString*   TKBLCouponKey           = @"coupon";
         }
     }
     
-    NSURL* requestURL = [self requestURL:type params:talkableParams];
+    NSURL* requestURL = [self requestURL:type params:talkableParams excludingKeys: @[
+                                                                                     TKBLPurchaseOrderItemTitleKey,
+                                                                                     TKBLPurchaseOrderItemUrlKey,
+                                                                                     TKBLPurchaseOrderItemImageUrlKey
+                                                                                     ]];
     if (![self shouldRegisterOrigin:type withURL:requestURL]) return;
     
     NSMutableURLRequest* request = [self serverRequest:requestURL];
@@ -301,6 +322,25 @@ NSString*   TKBLCouponKey           = @"coupon";
      }];
 }
 
+- (void)registerProduct:(NSDictionary*)productParams {
+    NSURL* url = [self createProductRequestURLWithParams:productParams];
+    [NSURLConnection sendAsynchronousRequest:[self serverRequest:url]
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse * _Nullable response,
+                                               NSData * _Nullable data,
+                                               NSError * _Nullable connectionError) {
+       NSString* resultDescription = [NSString new];
+       if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
+           NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
+           resultDescription = [NSHTTPURLResponse localizedStringForStatusCode:httpResponse.statusCode];
+       } else {
+           resultDescription = connectionError ? connectionError.localizedDescription : @"Invalid Response";
+       }
+       TKBLLog(@"Create product request resulted in: `%@` to URL: %@",
+               resultDescription,
+               url.absoluteString);
+   }];
+}
 
 #pragma mark - [API]
 
@@ -687,7 +727,17 @@ NSString*   TKBLCouponKey           = @"coupon";
     }
 }
 
-- (NSURL*)requestURL:(TKBLOriginType)type params:(NSDictionary*)params {
+- (NSURL*)createProductRequestURLWithParams:(NSDictionary*)params {
+    NSURLComponents* components = [NSURLComponents componentsWithString:self.server];
+    components.path = [NSString stringWithFormat:@"/public/%@/%@/%@", self.siteSlug, @"products", @"create"];
+    NSString* query = [self buildQueryFromDictonary:@{TKBLProductKey: params} andPrefix:nil];
+    NSString* percentEncodedQuery = [[query stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]
+                                     stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
+    components.percentEncodedQuery = percentEncodedQuery;
+    return components.URL;
+}
+
+- (NSURL*)requestURL:(TKBLOriginType)type params:(NSDictionary*)params excludingKeys:(NSArray*)excludedKeys {
     NSURLComponents* components = [NSURLComponents componentsWithString:self.server];
     NSString* action = @"create";
     if (type == TKBLAffiliateMember && (![params objectForKey:@"affiliate_member"] || ![[params objectForKey:@"affiliate_member"] objectForKey:@"email"])) {
@@ -695,12 +745,16 @@ NSString*   TKBLCouponKey           = @"coupon";
     }
     components.path = [NSString stringWithFormat:@"/public/%@/%@/%@", self.siteSlug, [self pathForType:type], action] ;
     
-    NSString* query = [self buildQueryFromDictonary:params andPrefix:nil];
+    NSString* query = [self buildQueryFromDictonary:params andPrefix:nil excludingKeys:excludedKeys];
     NSString* percentEncodedQuery = [[query stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]
-stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
+                                     stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
     components.percentEncodedQuery = percentEncodedQuery;
-
+    
     return components.URL;
+}
+
+- (NSURL*)requestURL:(TKBLOriginType)type params:(NSDictionary*)params {
+    return [self requestURL:type params:params excludingKeys:nil];
 }
 
 - (NSMutableURLRequest*)serverRequest:(NSURL*)url {
@@ -803,35 +857,45 @@ stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
     }
 }
 
-- (NSString*)buildQueryFromDictonary:(NSDictionary*)params andPrefix:(NSString*)prefix {
+- (NSString*)buildQueryFromDictonary:(NSDictionary*)params andPrefix:(NSString*)prefix excludingKeys:(NSArray*)excludedKeys {
     NSMutableArray* items = [NSMutableArray arrayWithCapacity:[params count]];
     [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL* stop) {
         if (![key isKindOfClass:[NSString class]]) {
             [self raiseException:NSInvalidArgumentException withMessage:[NSString stringWithFormat:@"Key %@ should be NSString class", key]];
         }
-        NSString* keyName = prefix ? [NSString stringWithFormat:@"%@[%@]", prefix, key] : key;
-        [self addKeyName:keyName value:value toArray:items];
+        if (![excludedKeys containsObject:key]) {
+            NSString* keyName = prefix ? [NSString stringWithFormat:@"%@[%@]", prefix, key] : key;
+            [self addKeyName:keyName value:value toArray:items excludingKeys:excludedKeys];
+        }
     }];
     return [items componentsJoinedByString:@"&"];
 }
 
-- (NSString*)buildQueryFromArray:(NSArray*)params andPrefix:(NSString*)prefix {
+- (NSString*)buildQueryFromDictonary:(NSDictionary*)params andPrefix:(NSString*)prefix {
+    return [self buildQueryFromDictonary:params andPrefix:prefix excludingKeys:nil];
+}
+
+- (NSString*)buildQueryFromArray:(NSArray*)params andPrefix:(NSString*)prefix excludingNestedDictionaryKeys:(NSArray*)excludedKeys {
     if (!prefix.length) {
         [self raiseException:NSInvalidArgumentException withMessage:@"Prefix should be non-empty string"];
     }
     NSMutableArray* items = [NSMutableArray arrayWithCapacity:[params count]];
     NSString* keyName = [NSString stringWithFormat:@"%@[]", prefix];
     [params enumerateObjectsUsingBlock:^(id value, NSUInteger idx, BOOL* stop) {
-        [self addKeyName:keyName value:value toArray:items];
+        [self addKeyName:keyName value:value toArray:items excludingKeys:excludedKeys];
     }];
     return [items componentsJoinedByString:@"&"];
 }
 
-- (void)addKeyName:(NSString*)keyName value:(id)value toArray:(NSMutableArray*)items {
+- (NSString*)buildQueryFromArray:(NSArray*)params andPrefix:(NSString*)prefix {
+    return [self buildQueryFromArray:params andPrefix:prefix excludingNestedDictionaryKeys:nil];
+}
+
+- (void)addKeyName:(NSString*)keyName value:(id)value toArray:(NSMutableArray*)items excludingKeys:(NSArray*)excludedKeys {
     if ([value isKindOfClass:[NSDictionary class]]) {
-        [items addObject:[self buildQueryFromDictonary:value andPrefix:keyName]];
+        [items addObject:[self buildQueryFromDictonary:value andPrefix:keyName excludingKeys:excludedKeys]];
     } else if ([value isKindOfClass:[NSArray class]]) {
-        [items addObject:[self buildQueryFromArray:value andPrefix:keyName]];
+        [items addObject:[self buildQueryFromArray:value andPrefix:keyName excludingNestedDictionaryKeys:excludedKeys]];
     } else {
         [items addObject:[NSString stringWithFormat:@"%@=%@", keyName, [self stringFromValue:value]]];
     }

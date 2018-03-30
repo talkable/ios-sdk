@@ -92,3 +92,5 @@ NSString* TKBLShareChannelOther                         = @"other";
 NSString* TKBLShareMessage                              = @"message";
 NSString* TKBLShareRecipients                           = @"recipients";
 NSString* TKBLShareImage                                = @"image";
+
+NSString* TKBLProductKey                                = @"product";
