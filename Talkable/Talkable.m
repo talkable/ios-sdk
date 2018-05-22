@@ -420,17 +420,45 @@ NSString*   TKBLCouponKey           = @"coupon";
 }
 
 - (void)createShare:(NSString*)shortUrlCode channel:(NSString*)channel withHandler:(TKBLCompletionHandler)handler {
-    [self createShare:shortUrlCode channel:channel withParams:nil andHandler:handler];
+    [self createSocialShare:shortUrlCode channel:channel withParams:nil andHandler:handler];
 }
 
 - (void)createShare:(NSString*)shortUrlCode channel:(NSString*)channel withParams:(NSDictionary *)params andHandler:(TKBLCompletionHandler)handler{
-    NSString* path = [NSString stringWithFormat:@"/offers/%@/shares", shortUrlCode];
+    [self createSocialShare:shortUrlCode channel:channel withParams:params andHandler:handler];
+}
+
+- (void)createSocialShare:(NSString*)shortUrlCode channel:(NSString*)channel withHandler:(TKBLCompletionHandler)handler{
+    [self createSocialShare:shortUrlCode channel:channel withParams:nil andHandler:handler];
+}
+
+- (void)createSocialShare:(NSString*)shortUrlCode channel:(NSString*)channel withParams:(NSDictionary *)params andHandler:(TKBLCompletionHandler)handler{
+    NSString* path = [NSString stringWithFormat:@"/offers/%@/shares/social", shortUrlCode];
     NSMutableDictionary* parameters = [self paramsForAPI:params];
     [parameters setObject:channel forKey:TKBLShareChannel];
     
     NSString* urlString = [self urlForAPI:path];
-    [self logAPIRequest:urlString withMethod:@"GET" andParameters:parameters];
-    [[self networkClient] POST:[self urlForAPI:path] parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [self logAPIRequest:urlString withMethod:@"POST" andParameters:parameters];
+    [[self networkClient] POST:urlString parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        [self processSuccessfulResponse:responseObject withHandler:handler];
+    } failure:^(AFHTTPRequestOperation* operation, NSError* networkError) {
+        [self processFailedResponse:operation.responseObject
+                   withNetworkError:networkError
+                     andWithHandler:handler];
+    }];
+}
+
+- (void)createEmailShare:(NSString*)shortUrlCode recipients:(NSString *)recipients withHandler:(TKBLCompletionHandler)handler {
+    [self createEmailShare:shortUrlCode recipients:recipients withParams:nil andHandler:handler];
+}
+
+- (void)createEmailShare:(NSString*)shortUrlCode recipients:(NSString*)recipients withParams:(NSDictionary*)params andHandler:(TKBLCompletionHandler)handler {
+    NSString* path = [NSString stringWithFormat:@"/offers/%@/shares/email", shortUrlCode];
+    NSMutableDictionary* parameters = [self paramsForAPI:params];
+    [parameters setObject:recipients forKey:TKBLShareRecipients];
+    
+    NSString* urlString = [self urlForAPI:path];
+    [self logAPIRequest:urlString withMethod:@"POST" andParameters:parameters];
+    [[self networkClient] POST:urlString parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
         [self processSuccessfulResponse:responseObject withHandler:handler];
     } failure:^(AFHTTPRequestOperation* operation, NSError* networkError) {
         [self processFailedResponse:operation.responseObject
@@ -479,7 +507,7 @@ NSString*   TKBLCouponKey           = @"coupon";
     if (offerShortUrlCode) {
         [controller setCompletionHandler:^(SLComposeViewControllerResult result){
             if (result == SLComposeViewControllerResultDone) {
-                [self createShare:offerShortUrlCode channel:channel withHandler:nil];
+                [self createSocialShare:offerShortUrlCode channel:channel withHandler:nil];
             }
         }];
     } else {
@@ -509,7 +537,7 @@ NSString*   TKBLCouponKey           = @"coupon";
     if (offerShortUrlCode) {
         [controller setCompletionWithItemsHandler:^(NSString* activityType, BOOL completed, NSArray* returnedItems, NSError*activityError) {
             if (!completed) return;
-            [self createShare:offerShortUrlCode channel:[self mapActivityType:activityType] withHandler:nil];
+            [self createSocialShare:offerShortUrlCode channel:[self mapActivityType:activityType] withHandler:nil];
         }];
     } else {
         TKBLLog(@"Specify %@ key or create share manually.", TKBLOfferShortUrlCodeKey);

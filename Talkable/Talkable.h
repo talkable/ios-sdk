@@ -53,8 +53,14 @@
 - (void)retrieveOffer:(NSString*)shortUrlCode withHandler:(TKBLCompletionHandler)handler;
 - (void)retrieveOffer:(NSString*)shortUrlCode withParams:(NSDictionary*)params andHandler:(TKBLCompletionHandler)handler;
 
-- (void)createShare:(NSString*)shortUrlCode channel:(NSString*)channel withHandler:(TKBLCompletionHandler)handler;
-- (void)createShare:(NSString*)shortUrlCode channel:(NSString*)channel withParams:(NSDictionary*)params andHandler:(TKBLCompletionHandler)handler;
+- (void)createShare:(NSString*)shortUrlCode channel:(NSString*)channel withHandler:(TKBLCompletionHandler)handler __deprecated;
+- (void)createShare:(NSString*)shortUrlCode channel:(NSString*)channel withParams:(NSDictionary*)params andHandler:(TKBLCompletionHandler)handler __deprecated;
+
+- (void)createSocialShare:(NSString*)shortUrlCode channel:(NSString*)channel withHandler:(TKBLCompletionHandler)handler;
+- (void)createSocialShare:(NSString*)shortUrlCode channel:(NSString*)channel withParams:(NSDictionary*)params andHandler:(TKBLCompletionHandler)handler;
+
+- (void)createEmailShare:(NSString*)shortUrlCode recipients:(NSString*)recipients withHandler:(TKBLCompletionHandler)handler;
+- (void)createEmailShare:(NSString*)shortUrlCode recipients:(NSString*)recipients withParams:(NSDictionary*)params andHandler:(TKBLCompletionHandler)handler;
 
 #pragma mark - [Sharing]
 

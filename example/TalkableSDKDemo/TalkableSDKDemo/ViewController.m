@@ -125,6 +125,41 @@
     [alert show];
 }
 
+- (IBAction)testFacebookShare:(id)sender {
+    NSDictionary* originParams = @{
+                                   TKBLOriginTypeKey: TKBLOriginTypePurchase,
+                                   TKBLOriginDataKey: @{
+                                           TKBLPurchaseEmailKey: @"test5@example.com",
+                                           TKBLPurchaseSubtotalKey: @"17.43",
+                                           TKBLPurchaseOrderNumberKey: @"100125",
+                                           @"campaign_tags": @"post-purchase"
+                                           }
+                                   };
+    
+    [[Talkable manager] createOrigin:originParams withHandler:^(NSDictionary* response, NSError* error) {
+        if (error) {
+            NSLog(@"Error: %@", error);
+        } else {
+            NSString* shortUrlCode  = [[response objectForKey:TKBLOfferKey] objectForKey:TKBLOfferShortUrlCodeKey];
+            [[Talkable manager] retrieveOffer:shortUrlCode withHandler:^(NSDictionary* response, NSError* error) {
+                if (error) {
+                    NSLog(@"Error: %@", error);
+                } else {
+                    NSString* shortUrlCode  = [[response objectForKey:TKBLOfferKey] objectForKey:TKBLOfferShortUrlCodeKey];
+                    SLComposeViewController* sheet = [[Talkable manager] socialShare:@{
+                                                      TKBLShareChannel: TKBLShareChannelFacebook,
+                                                      TKBLOfferClaimUrlKey: [[response objectForKey:TKBLOfferKey] objectForKey:TKBLOfferClaimUrlKey],
+                                                      TKBLShareMessage: self.messageField.text,
+                                                      TKBLOfferShortUrlCodeKey: shortUrlCode
+                                                      }];
+                    [self presentViewController:sheet animated:YES completion:^{}];
+                }
+            }];
+
+        }
+    }];
+}
+
 - (void)testCreateOrigin {
 //    NSDictionary* originParams = @{
 //        TKBLOriginTypeKey: TKBLOriginTypeAffiliateMember,
@@ -156,7 +191,7 @@
             NSLog(@"Error: %@", error);
         } else {
             NSString* shortUrlCode  = [[response objectForKey:TKBLOfferKey] objectForKey:TKBLOfferShortUrlCodeKey];
-            [self testRetriveOffer: shortUrlCode];
+            [self testRetriveOffer:shortUrlCode];
         }
     }];
 }
@@ -173,7 +208,26 @@
 }
 
 - (void)testCreateShare:(NSString*)shortUrlCode {
-    [[Talkable manager] createShare:shortUrlCode channel:TKBLShareChannelOther withHandler:^(NSDictionary* response, NSError* error) {
+    // Share offer link using one of available social network channels (e.g. facebook, twitter, whatsapp, other)
+    [[Talkable manager] createSocialShare:shortUrlCode channel:TKBLShareChannelOther withHandler:^(NSDictionary* response, NSError* error) {
+        if (error) {
+            NSLog(@"Error: %@", error);
+        } else {
+            [self testRetrieveRewards:[[Talkable manager] visitorUUID]];
+        }
+    }];
+    
+    NSString* recipients = self.emailField.text;
+    NSDictionary* emailShareParams = @{
+                                       @"subject": self.subjectField.text,
+                                       @"body": self.messageField.text,
+                                       @"reminder": @YES
+                                       };
+    
+    // Share offer link using e-mail to one or more comma separated recipients (e.g. @"customer@example.com,elon@musk.com")
+    // Additional params allow for custom subject and personalized message in body
+    // Pass {@"reminder": @YES} to enable e-mail reminder
+    [[Talkable manager] createEmailShare:shortUrlCode recipients:recipients withParams:emailShareParams andHandler:^(NSDictionary* response, NSError* error) {
         if (error) {
             NSLog(@"Error: %@", error);
         } else {

@@ -12,6 +12,8 @@
 @interface ViewController : UIViewController <TalkableDelegate, UITextFieldDelegate>
 
 @property(nonatomic) IBOutlet UITextField*  emailField;
+@property(nonatomic) IBOutlet UITextField*  subjectField;
+@property(nonatomic) IBOutlet UITextField*  messageField;
 @property(nonatomic) IBOutlet UITextField*  orderNumberField;
 @property(nonatomic) IBOutlet UITextField*  couponField;
 @property(nonatomic) IBOutlet UITextField*  subtotalField;
@@ -21,6 +23,7 @@
 - (IBAction)testAffiliateMemberWithEmail:(id)sender;
 - (IBAction)testPurchase:(id)sender;
 - (IBAction)testEvent:(id)sender;
+- (IBAction)testFacebookShare:(id)sender;
 
 - (IBAction)testAPI:(id)sender;
 

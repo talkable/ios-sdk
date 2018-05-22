@@ -6,7 +6,7 @@
 	<dict>
 		<key>Headers/TKBLConstants.h</key>
 		<data>
-		2pYQDv/ejS0ZfPVv0OWt5Gh8dHI=
+		RjIlvfbflgtrun3OFiXu/Qf8Ztk=
 		</data>
 		<key>Headers/TKBLTypes.h</key>
 		<data>
@@ -14,7 +14,7 @@
 		</data>
 		<key>Headers/Talkable.h</key>
 		<data>
-		VRWkYu3gggmitxm5NUW9cSdWLno=
+		nXOXEv7xruszJrttxccRhoPbGwQ=
 		</data>
 		<key>Headers/TalkableDelegate.h</key>
 		<data>
@@ -26,7 +26,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		RakqoiIAn8KZSxngx5DR2D4rAWw=
+		38XSsrTeBIzXL92d6ZK6JA6Nnj8=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -39,11 +39,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			2pYQDv/ejS0ZfPVv0OWt5Gh8dHI=
+			RjIlvfbflgtrun3OFiXu/Qf8Ztk=
 			</data>
 			<key>hash2</key>
 			<data>
-			rja5xCjiHHSYGEdqO7giaqqeeIvqD9Fvugq7zO2fPAY=
+			N+BmnzEMER//nCERlTviy4EtUuKM+yYssU29ef66n4w=
 			</data>
 		</dict>
 		<key>Headers/TKBLTypes.h</key>
@@ -61,11 +61,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			VRWkYu3gggmitxm5NUW9cSdWLno=
+			nXOXEv7xruszJrttxccRhoPbGwQ=
 			</data>
 			<key>hash2</key>
 			<data>
-			mSRe7ESPaEgM1UMdSx+rBJ3JEcBKkSN0P2p9+O4L9vI=
+			ON7Kl626ie0oWZuuj+vTjwwAcQ7z3ERdtiQcX5za0wY=
 			</data>
 		</dict>
 		<key>Headers/TalkableDelegate.h</key>
