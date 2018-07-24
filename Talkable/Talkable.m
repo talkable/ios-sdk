@@ -11,7 +11,6 @@
 #import "UIViewControllerExt.h"
 #import "TKBLKeychainHelper.h"
 #import "TKBLUUIDExtractor.h"
-#import "TKBLOfferChecker.h"
 #import "TKBLOfferTarget.h"
 #import "TKBLObjCChecker.h"
 #import "TKBLHelper.h"
@@ -26,11 +25,21 @@
     #define TKBL_DEFAULT_SERVER @"https://www.talkable.com"
 #endif
 
-NSString*   TKBLApiKey              = @"api_key";
-NSString*   TKBLSiteSlug            = @"site_slug";
-NSString*   TKBLVisitorOfferKey     = @"visitor_offer_id";
-NSString*   TKBLVisitorWebUUIDKey   = @"current_visitor_uuid";
-NSString*   TKBLCouponKey           = @"coupon";
+NSString*   TKBLApiKey                                  = @"api_key";
+NSString*   TKBLSiteSlug                                = @"site_slug";
+NSString*   TKBLVisitorOfferKey                         = @"visitor_offer_id";
+NSString*   TKBLVisitorWebUUIDKey                       = @"current_visitor_uuid";
+NSString*   TKBLCouponKey                               = @"coupon";
+
+NSString*   TKBLHeaderErrorCode                         = @"X-Talkable-Error-Code";
+NSString*   TKBLHeaderErrorMessage                      = @"X-Talkable-Error-Message";
+
+NSString*   TKBLFailureReasonRequestError               = @"REQUEST_ERROR";
+NSString*   TKBLFailureReasonSiteNotFound               = @"SITE_NOT_FOUND";
+NSString*   TKBLFailureReasonCampaignNotFound           = @"CAMPAIGN_NOT_FOUND";
+NSString*   TKBLFailureReasonOriginAlreadyExists        = @"ORIGIN_ALREADY_EXISTS";
+NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRIBUTES";
+
 
 @implementation Talkable {
     AFHTTPRequestOperationManager*  _networkClient;
@@ -42,7 +51,6 @@ NSString*   TKBLCouponKey           = @"coupon";
     NSMutableArray* __strong        _offerTargets;
     NSString*                       _uuid;
     NSString*                       _deviceIdentifier;
-    TKBLOfferChecker*               _offerChecker;
     TKBLKeychainHelper*             _keychain;
 }
 
@@ -263,62 +271,65 @@ NSString*   TKBLCouponKey           = @"coupon";
      ^(NSURLResponse* response, NSData* responseData, NSError* networkError) {
          NSInteger errorCode = 0;
          NSString* errorLocalizedDescription = nil;
+         NSString* errorFailureReason = TKBLFailureReasonRequestError;
          if (networkError || ![response isKindOfClass: [NSHTTPURLResponse class]]) {
              errorCode = TKBLNetworkError;
              errorLocalizedDescription = networkError ? networkError.localizedDescription : @"Invalid Response";
          } else {
              NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
+             if (httpResponse.allHeaderFields[TKBLHeaderErrorCode]) {
+                 errorFailureReason = httpResponse.allHeaderFields[TKBLHeaderErrorCode];
+             }
              if (httpResponse.statusCode >= 500) {
                  errorCode = TKBLApiError;
                  errorLocalizedDescription = NSLocalizedString(@"Trouble reaching Talkable servers, please try again later", nil);
              } else if (httpResponse.statusCode >= 400) {
                  errorCode = TKBLRequestError;
                  errorLocalizedDescription = NSLocalizedString(@"Request can't be processed", nil);
+             } else if (errorFailureReason != TKBLFailureReasonRequestError) {
+                 if (errorFailureReason == TKBLFailureReasonSiteNotFound) {
+                     errorCode = TKBLRequestError;
+                 } else {
+                     errorCode = TKBLCampaignError;
+                 }
+                 NSData* errorMsgDecodedData = [[NSData alloc] initWithBase64EncodedString:httpResponse.allHeaderFields[TKBLHeaderErrorMessage] ?: @""
+                                                                                   options:NSDataBase64DecodingIgnoreUnknownCharacters];
+                 errorLocalizedDescription = NSLocalizedString([[NSString alloc] initWithData:errorMsgDecodedData encoding:NSUTF8StringEncoding], nil);
              }
          }
          
-         if (errorLocalizedDescription) {
-             TKBLLog(@"%@", errorLocalizedDescription);
+         if (errorCode) {
+             TKBLLog(@"%@: %@", errorFailureReason, errorLocalizedDescription);
              NSError* error = [NSError errorWithDomain:TKBLErrorDomain
                                                   code:errorCode
-                                              userInfo:@{NSLocalizedDescriptionKey: errorLocalizedDescription}];
+                                              userInfo:@{
+                                                         NSLocalizedDescriptionKey: errorLocalizedDescription,
+                                                         NSLocalizedFailureReasonErrorKey: errorFailureReason
+                                                         }];
              [self notifyRegisterOrigin:type didFailWithError:error];
-             return;
-         }
-         
-         NSStringEncoding encoding = CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding((CFStringRef)response.textEncodingName));
-         NSString* htmlString = [[NSString alloc] initWithData:responseData encoding:encoding];
-         
-         [[self offerChecker] performWithHTMLString:htmlString encoding:encoding callback:^(BOOL isExist, NSString* localizedErrorMessage) {
-             if (!isExist) {
-                 TKBLLog(@"%@", localizedErrorMessage);
-                 NSError* error = [NSError errorWithDomain:TKBLErrorDomain
-                                                      code:TKBLCampaignError
-                                                  userInfo:@{NSLocalizedDescriptionKey: localizedErrorMessage}];
-                 [self notifyRegisterOrigin:type didFailWithError:error];
-             } else {
-                 TKBLOfferViewController* controller = [[TKBLOfferViewController alloc] init];
-                 
-                 WKWebView* webView = [self buildWebView];
-                 [self notifyOriginDidRegister:type withWebView:webView];
-                 
-                 BOOL shouldPresent = YES;
-                 if ([self.delegate respondsToSelector:@selector(shouldPresentTalkableOfferViewController:)]) {
-                     shouldPresent = [self.delegate shouldPresentTalkableOfferViewController:controller];
-                 }
-                 
-                 if (shouldPresent) {
-                     [webView setNavigationDelegate:controller];
-                     CGRect frame = webView.frame;
-                     frame = controller.view.bounds;
-                     webView.frame = frame;
-                     [controller.view addSubview:webView];
-                     [self presentOfferViewController:controller];
-                 }
-                 
-                 [webView loadHTMLString:htmlString baseURL:requestURL];
+         } else {
+             TKBLOfferViewController* controller = [[TKBLOfferViewController alloc] init];
+             
+             WKWebView* webView = [self buildWebView];
+             [self notifyOriginDidRegister:type withWebView:webView];
+             
+             BOOL shouldPresent = YES;
+             if ([self.delegate respondsToSelector:@selector(shouldPresentTalkableOfferViewController:)]) {
+                 shouldPresent = [self.delegate shouldPresentTalkableOfferViewController:controller];
              }
-         }];
+             
+             if (shouldPresent) {
+                 [webView setNavigationDelegate:controller];
+                 CGRect frame = webView.frame;
+                 frame = controller.view.bounds;
+                 webView.frame = frame;
+                 [controller.view addSubview:webView];
+                 [self presentOfferViewController:controller];
+             }
+             
+             NSStringEncoding encoding = CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding((CFStringRef)response.textEncodingName));
+             [webView loadHTMLString:[[NSString alloc] initWithData:responseData encoding:encoding] baseURL:requestURL];
+         }
      }];
 }
 
@@ -856,13 +867,6 @@ NSString*   TKBLCouponKey           = @"coupon";
         _apiUserAgent = [NSString stringWithFormat:@"Talkable iOS SDK v%@", TKBLVersion];
     }
     return _apiUserAgent;
-}
-
-- (TKBLOfferChecker*)offerChecker {
-    if (!_offerChecker) {
-        _offerChecker = [[TKBLOfferChecker alloc] init];
-    }
-    return _offerChecker;
 }
 
 - (TKBLKeychainHelper*)keychain {
