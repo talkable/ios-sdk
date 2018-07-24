@@ -10,7 +10,6 @@
 #import "TKBLOfferViewController.h"
 #import "UIViewControllerExt.h"
 #import "TKBLKeychainHelper.h"
-#import "TKBLUUIDExtractor.h"
 #import "TKBLOfferTarget.h"
 #import "TKBLObjCChecker.h"
 #import "TKBLHelper.h"
@@ -27,8 +26,8 @@
 
 NSString*   TKBLApiKey                                  = @"api_key";
 NSString*   TKBLSiteSlug                                = @"site_slug";
-NSString*   TKBLVisitorOfferKey                         = @"visitor_offer_id";
-NSString*   TKBLVisitorWebUUIDKey                       = @"current_visitor_uuid";
+NSString*   TKBLVisitorOfferKey                         = @"talkable_visitor_offer_id";
+NSString*   TKBLVisitorWebUUIDKey                       = @"talkable_visitor_uuid";
 NSString*   TKBLCouponKey                               = @"coupon";
 
 NSString*   TKBLHeaderErrorCode                         = @"X-Talkable-Error-Code";
@@ -39,7 +38,6 @@ NSString*   TKBLFailureReasonSiteNotFound               = @"SITE_NOT_FOUND";
 NSString*   TKBLFailureReasonCampaignNotFound           = @"CAMPAIGN_NOT_FOUND";
 NSString*   TKBLFailureReasonOriginAlreadyExists        = @"ORIGIN_ALREADY_EXISTS";
 NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRIBUTES";
-
 
 @implementation Talkable {
     AFHTTPRequestOperationManager*  _networkClient;
@@ -89,12 +87,6 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
         return NO;
     }
     
-    
-    if ([SFSafariViewController class] == nil && [[[UIDevice currentDevice] systemVersion] floatValue] >= 9 ) {
-        NSLog(@"TalkableSDK needs SafariServices.framework. It is not added to your project. Check http://docs.talkable.com/ios_sdk/getting_started.html for more details.");
-        return NO;
-    }
-    
     return YES;
 }
 
@@ -127,7 +119,6 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 - (void)setSiteSlug:(NSString*)siteSlug {
     _siteSlug = siteSlug;
     [self checkUrlScheme];
-    [self extractWebUUID];
 }
 
 # pragma mark - [Public]
@@ -194,6 +185,14 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
             NSString* value = [[pairComponents lastObject] stringByRemovingPercentEncoding];
             handled = handled || [self handleUrlParam:name withValue:value];
         }
+    }];
+    return handled;
+}
+
+- (BOOL)handleURLParams:(NSDictionary* _Nonnull)urlParams {
+    __block BOOL handled = NO;
+    [urlParams enumerateKeysAndObjectsUsingBlock:^(NSString* _Nonnull key, NSString* _Nonnull obj, BOOL * _Nonnull stop) {
+        handled = [self handleUrlParam:key withValue:obj] || handled;
     }];
     return handled;
 }
@@ -605,7 +604,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 - (void)registerInstallIfNeeded {
     if ([TKBLHelper installRegistered]) return;
     if ([TKBLHelper wasAppUpdated]) return;
-    if (![self visitorUUID] || ([SFSafariViewController class] != nil && ![self webUUID])) {
+    if (![self visitorUUID] || ![self webUUID]) {
         [self retryRegisterInstall];
         return;
     }
@@ -714,16 +713,6 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     
     return [[response objectForKey:@"result"] objectForKey:@"uuid"];
 }
-
-- (void)extractWebUUID {
-    return; // skip extracting alternative cookie since it doesn't work in all versions of iOS
-    if (UIApplicationStateActive == [[UIApplication sharedApplication] applicationState]) {
-        if (self.server && self.siteSlug) {
-            [[TKBLUUIDExtractor extractor] extractFromServer:self.server withSiteSlug:self.siteSlug andAppSchema:[self applicationURLScheme]];
-        }
-    }
-}
-
 
 - (void)trackVisit:(NSString*)visitorOfferId {
     NSMutableDictionary* parameters = [self paramsForAPI:nil];
@@ -1089,8 +1078,6 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 }
 
 - (void)applicationDidBecomeActive:(NSNotification*)ntf {
-    [self extractWebUUID];
-    [self scheduleRegisterInstall:0.0];
     [self scheduleRetrieveRewards:0.0];
 }
 

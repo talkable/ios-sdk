@@ -39,6 +39,8 @@
 
 - (BOOL)handleOpenURL:(NSURL*)url;
 
+- (BOOL)handleURLParams:(NSDictionary* _Nonnull)urlParams;
+
 #pragma mark - [Integration]
 
 - (void)registerOrigin:(TKBLOriginType)type params:(NSDictionary*)params;
