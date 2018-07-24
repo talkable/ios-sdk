@@ -668,6 +668,8 @@ NSString*   TKBLCouponKey           = @"coupon";
     if (!_networkClient) {
         _networkClient = [[AFHTTPRequestOperationManager alloc] init];
         [_networkClient.requestSerializer setValue:[self apiUserAgent] forHTTPHeaderField:@"User-Agent"];
+        [_networkClient.requestSerializer setValue:[[NSString alloc] initWithFormat:@"Bearer %@", self.apiKey]
+                                          forHTTPHeaderField:@"Authorization"];
     }
     return _networkClient;
 }
@@ -678,7 +680,6 @@ NSString*   TKBLCouponKey           = @"coupon";
 
 - (NSMutableDictionary*)paramsForAPI:(NSDictionary*)params {
     NSMutableDictionary* paramsForAPI = [NSMutableDictionary dictionaryWithDictionary:params];
-    [paramsForAPI setValue:self.apiKey forKey:TKBLApiKey];
     [paramsForAPI setValue:self.siteSlug forKey:TKBLSiteSlug];
     return paramsForAPI;
 }
