@@ -52,7 +52,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     TKBLKeychainHelper*             _keychain;
 }
 
-@synthesize apiKey, siteSlug = _siteSlug, delegate, server = _server, debug;
+@synthesize apiKey, siteSlug = _siteSlug, delegate, server = _server, debug, skipFirstInstallCheck, skipReinstallCheck, ignoreStoredDeviceUUID;
 
 #pragma mark - [Singleton]
 
@@ -151,8 +151,10 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 - (NSString*)deviceIdentifier {
     if (_deviceIdentifier) return _deviceIdentifier;
     
-    if (!_deviceIdentifier) _deviceIdentifier = [self uuidFromKeychain:@"tkbl_device_id"];
-    if (!_deviceIdentifier) _deviceIdentifier = [self uuidFromPref:@"tkbl_device_id"];
+    if (!self.debug || !self.ignoreStoredDeviceUUID) {
+        if (!_deviceIdentifier) _deviceIdentifier = [self uuidFromKeychain:@"tkbl_device_id"];
+        if (!_deviceIdentifier) _deviceIdentifier = [self uuidFromPref:@"tkbl_device_id"];
+    }
     if (!_deviceIdentifier) _deviceIdentifier = [self generateUUID];
     if (_deviceIdentifier) [self syncUUID:_deviceIdentifier forKey:@"tkbl_device_id"];
     
@@ -602,8 +604,8 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 #pragma mark - [Installed Event]
 
 - (void)registerInstallIfNeeded {
-    if ([TKBLHelper installRegistered]) return;
-    if ([TKBLHelper wasAppUpdated]) return;
+    if (!(self.debug && self.skipFirstInstallCheck) && [TKBLHelper installRegistered]) return;
+    if (!(self.debug && self.skipReinstallCheck) && [TKBLHelper wasAppUpdated]) return;
     if (![self visitorUUID] || ![self webUUID]) {
         [self retryRegisterInstall];
         return;

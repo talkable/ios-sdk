@@ -24,10 +24,14 @@
     [super viewDidAppear:animated];
     [self setTitle:@"iOS Demo Integration"];
     
-    self.emailField.delegate        = self;
-    self.orderNumberField.delegate  = self;
-    self.couponField.delegate       = self;
-    self.subtotalField.delegate     = self;
+    self.subjectField.delegate          = self;
+    self.emailField.delegate            = self;
+    self.messageField.delegate          = self;
+    self.orderNumberField.delegate      = self;
+    self.couponField.delegate           = self;
+    self.subtotalField.delegate         = self;
+    self.webUUIDField.delegate          = self;
+    self.visitorOfferIDField.delegate   = self;
     
     double subtotal = (((double) (arc4random() % ((unsigned)RAND_MAX + 1)) / RAND_MAX) * 40) + 10;
     [self.subtotalField setText: [NSString stringWithFormat:@"%.02f", subtotal]];
@@ -160,6 +164,21 @@
     }];
 }
 
+- (IBAction)testDeepLinking:(id)sender {
+    NSMutableDictionary* params = [NSMutableDictionary dictionary];
+    if (self.webUUIDField.text && self.webUUIDField.text.length > 0) {
+        params[@"talkable_visitor_uuid"] = self.webUUIDField.text;
+    }
+    if (self.visitorOfferIDField.text && self.visitorOfferIDField.text.length > 0) {
+        params[@"talkable_visitor_offer_id"] = self.visitorOfferIDField.text;
+    }
+    if ([params count] > 0) {
+        [[Talkable manager] handleURLParams:params];
+        UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Talkable" message:@"Deep linking params were handled. Check console for details." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        [alert show];
+    }
+}
+
 - (void)testCreateOrigin {
 //    NSDictionary* originParams = @{
 //        TKBLOriginTypeKey: TKBLOriginTypeAffiliateMember,
@@ -250,13 +269,6 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField*)textField {
     [textField resignFirstResponder];
-    if (textField == self.emailField) {
-        [self.orderNumberField becomeFirstResponder];
-    } else if (textField == self.orderNumberField) {
-        [self.couponField becomeFirstResponder];
-    } else if (textField == self.couponField) {
-        [self.subtotalField becomeFirstResponder];
-    }
     return YES;
 }
 

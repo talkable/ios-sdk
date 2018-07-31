@@ -17,6 +17,8 @@
 @property(nonatomic) IBOutlet UITextField*  orderNumberField;
 @property(nonatomic) IBOutlet UITextField*  couponField;
 @property(nonatomic) IBOutlet UITextField*  subtotalField;
+@property(nonatomic) IBOutlet UITextField*  webUUIDField;
+@property(nonatomic) IBOutlet UITextField*  visitorOfferIDField;
 
 
 - (IBAction)testAffiliateMember:(id)sender;
@@ -26,6 +28,8 @@
 - (IBAction)testFacebookShare:(id)sender;
 
 - (IBAction)testAPI:(id)sender;
+
+- (IBAction)testDeepLinking:(id)sender;
 
 @end
 

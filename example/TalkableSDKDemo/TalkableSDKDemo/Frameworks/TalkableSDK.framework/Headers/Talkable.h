@@ -21,6 +21,9 @@
 @property (nonatomic, retain) NSString*             server;
 @property (nonatomic, assign) id<TalkableDelegate>  delegate;
 @property (nonatomic, assign) BOOL                  debug;
+@property (nonatomic, assign) BOOL                  skipFirstInstallCheck;
+@property (nonatomic, assign) BOOL                  skipReinstallCheck;
+@property (nonatomic, assign) BOOL                  ignoreStoredDeviceUUID;
 
 + (Talkable*)manager;
 
@@ -38,6 +41,8 @@
 #pragma mark - [Handlers]
 
 - (BOOL)handleOpenURL:(NSURL*)url;
+
+- (BOOL)handleURLParams:(NSDictionary* _Nonnull)urlParams;
 
 #pragma mark - [Integration]
 

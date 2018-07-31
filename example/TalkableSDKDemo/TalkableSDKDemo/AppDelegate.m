@@ -20,6 +20,9 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     [Talkable manager].debug = YES;
+    [Talkable manager].skipFirstInstallCheck = YES;
+    [Talkable manager].skipReinstallCheck = YES;
+    [Talkable manager].ignoreStoredDeviceUUID = YES;
     [[Talkable manager] setApiKey:TALKABLE_API_KEY andSiteSlug:TALKABLE_SITE_SLUG server:TALKABLE_SERVER];
     return YES;
 }
