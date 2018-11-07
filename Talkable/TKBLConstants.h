@@ -46,7 +46,7 @@ FOUNDATION_EXPORT NSString* TKBLAffiliateMemberPersonCustomPropertiesKey;
 
 FOUNDATION_EXPORT NSString* TKBLPurchaseKey;
 FOUNDATION_EXPORT NSString* TKBLPurchaseOrderNumberKey;
-FOUNDATION_EXPORT NSString* TKBLPurchaseOrderDateKey;
+FOUNDATION_EXPORT NSString* TKBLPurchaseOrderDateKey __deprecated;
 FOUNDATION_EXPORT NSString* TKBLPurchaseCouponCodeKey;
 FOUNDATION_EXPORT NSString* TKBLPurchaseSubtotalKey;
 FOUNDATION_EXPORT NSString* TKBLPurchaseEmailKey;
