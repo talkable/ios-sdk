@@ -46,12 +46,13 @@ NSString*   TKBLInstallRegisteredKey    = @"tkbl_install_registered";
 
 + (NSDictionary*)featuresInfo {
     return @{
-        @"send_sms":            [NSNumber numberWithBool:[self canSendSMS]],
-        @"copy_to_clipboard":   [NSNumber numberWithBool:YES],
-        @"share_via_facebook":  [NSNumber numberWithBool:[self canShareVia:SLServiceTypeFacebook]],
-        @"share_via_twitter":   [NSNumber numberWithBool:[self canShareVia:SLServiceTypeTwitter]],
-        @"share_via_facebook_messenger":  [NSNumber numberWithBool:[self isFacebookMessangerInstalled]],
-        @"sdk_version":         TKBLVersion,
+        @"send_sms":                        [NSNumber numberWithBool:[self canSendSMS]],
+        @"copy_to_clipboard":               [NSNumber numberWithBool:YES],
+        @"share_via_native_mail":           [NSNumber numberWithBool:[self canSendNativeMail]],
+        @"share_via_facebook":              [NSNumber numberWithBool:[self canShareVia:SLServiceTypeFacebook]],
+        @"share_via_twitter":               [NSNumber numberWithBool:[self canShareVia:SLServiceTypeTwitter]],
+        @"share_via_facebook_messenger":    [NSNumber numberWithBool:[self isFacebookMessangerInstalled]],
+        @"sdk_version":                     TKBLVersion,
     };
 }
 
@@ -69,6 +70,10 @@ NSString*   TKBLInstallRegisteredKey    = @"tkbl_install_registered";
 
 + (BOOL)canShareVia:()channel {
     return [SLComposeViewController class] != nil && [SLComposeViewController isAvailableForServiceType:channel];
+}
+
++ (BOOL)canSendNativeMail {
+    return [MFMailComposeViewController class] != nil && [MFMailComposeViewController canSendMail];
 }
 
 

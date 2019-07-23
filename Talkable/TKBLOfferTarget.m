@@ -11,7 +11,7 @@
 #import "TKBLOfferTarget.h"
 #import "Talkable.h"
 #import "TKBLHelper.h"
-#import "TKBLSmsWatcher.h"
+#import "TKBLMessageUIWatcher.h"
 #import "TKBLContactsLoader.h"
 #import "UIViewControllerExt.h"
 
@@ -33,6 +33,20 @@
 }
 
 #pragma mark - [Talkable Messages]
+
+- (void)tkblShareOfferViaNativeMail:(NSDictionary*)params sender:(id)sender {
+    if ([MFMailComposeViewController canSendMail]) {
+        MFMailComposeViewController* ctrl = [[MFMailComposeViewController alloc] init];
+        [ctrl setSubject:[params objectForKey:@"subject"]];
+        [ctrl setMessageBody:[params objectForKey:@"message"] isHTML:NO];
+        TKBLMessageUIWatcher* watcher = [[TKBLMessageUIWatcher alloc] init];
+        watcher.successCompletionHandler = ^(void){
+            [self shareSucceeded:(WKWebView*)sender withChannel:TKBLShareChannelNativeMail];
+        };
+        ctrl.mailComposeDelegate = watcher;
+        [[UIViewController currentViewController] presentViewController:ctrl animated:YES completion:nil];
+    }
+}
 
 - (void)tkblShareOfferViaFacebook:(NSDictionary*)params sender:(id)sender {
     [self shareViaChannel:TKBLShareChannelFacebook withParams:params andSender:sender];
@@ -94,7 +108,7 @@
         [controller setRecipients:recipientsList];
     }
     
-    TKBLSmsWatcher* watcher = [[TKBLSmsWatcher alloc] init];
+    TKBLMessageUIWatcher* watcher = [[TKBLMessageUIWatcher alloc] init];
     watcher.successCompletionHandler = ^(void){
         [self shareSucceeded:(WKWebView*)sender withChannel:TKBLShareChannelSMS];
     };

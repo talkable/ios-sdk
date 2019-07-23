@@ -6,10 +6,10 @@
 //  Copyright (c) 2015 Talkable. All rights reserved.
 //
 
-#import "TKBLSmsWatcher.h"
+#import "TKBLMessageUIWatcher.h"
 
-@implementation TKBLSmsWatcher {
-    __strong TKBLSmsWatcher* _retained;
+@implementation TKBLMessageUIWatcher {
+    __strong TKBLMessageUIWatcher* _retained;
 }
 
 @synthesize successCompletionHandler = _successCompletionHandler;
@@ -27,6 +27,18 @@
 - (void)messageComposeViewController:(MFMessageComposeViewController*)controller
                  didFinishWithResult:(MessageComposeResult)result {
     if (MessageComposeResultSent == result) {
+        _successCompletionHandler();
+    }
+    [controller dismissViewControllerAnimated:YES completion:nil];
+    _retained = nil;
+}
+
+#pragma mark - [MFMailComposeViewControllerDelegate]
+
+- (void)mailComposeController:(MFMailComposeViewController *)controller
+          didFinishWithResult:(MFMailComposeResult)result
+                        error:(NSError *)error {
+    if (MFMailComposeResultSent == result) {
         _successCompletionHandler();
     }
     [controller dismissViewControllerAnimated:YES completion:nil];

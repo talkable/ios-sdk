@@ -89,6 +89,7 @@ NSString* TKBLShareChannelFacebookMessage               = @"facebook_message";
 NSString* TKBLShareChannelTwitter                       = @"twitter";
 NSString* TKBLShareChannelSMS                           = @"sms";
 NSString* TKBLShareChannelOther                         = @"other";
+NSString* TKBLShareChannelNativeMail                    = @"direct_email_native";
 NSString* TKBLShareMessage                              = @"message";
 NSString* TKBLShareRecipients                           = @"recipients";
 NSString* TKBLShareImage                                = @"image";
