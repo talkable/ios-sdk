@@ -20,5 +20,6 @@
 + (NSDictionary*)featuresInfo;
 
 + (BOOL)isFacebookMessangerInstalled;
++ (BOOL)isFacebookSharingUsingSocialFrameworkAvailable;
 
 @end

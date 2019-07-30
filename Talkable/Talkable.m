@@ -71,8 +71,8 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 }
 
 + (BOOL)talkableSupported {
-    if (NSFoundationVersionNumber < NSFoundationVersionNumber_iOS_8_0) {
-        NSLog(@"TalkableSDK suports iOS8.0 and later.");
+    if (NSFoundationVersionNumber < NSFoundationVersionNumber_iOS_9_0) {
+        NSLog(@"TalkableSDK suports iOS9.0 and later.");
         return NO;
     }
     
@@ -735,8 +735,8 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     webView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin;
     [self restoreOriginalUserAgent];
     
-    TKBLOfferTarget* targer = [self offerTargetFor:webView];
-    [webView.configuration.userContentController addScriptMessageHandler:targer name:@"talkableiOSHub"];
+    TKBLOfferTarget* target = [self offerTargetFor:webView];
+    [webView.configuration.userContentController addScriptMessageHandler:target name:@"talkableiOSHub"];
     
     return webView;
 }

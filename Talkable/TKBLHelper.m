@@ -9,6 +9,7 @@
 #import <MessageUI/MessageUI.h>
 #import <Social/Social.h>
 
+#import "Talkable.h"
 #import "TKBLHelper.h"
 #import "TKBLConstants.h"
 
@@ -49,8 +50,8 @@ NSString*   TKBLInstallRegisteredKey    = @"tkbl_install_registered";
         @"send_sms":                        [NSNumber numberWithBool:[self canSendSMS]],
         @"copy_to_clipboard":               [NSNumber numberWithBool:YES],
         @"share_via_native_mail":           [NSNumber numberWithBool:[self canSendNativeMail]],
-        @"share_via_facebook":              [NSNumber numberWithBool:[self canShareVia:SLServiceTypeFacebook]],
-        @"share_via_twitter":               [NSNumber numberWithBool:[self canShareVia:SLServiceTypeTwitter]],
+        @"share_via_facebook":              [NSNumber numberWithBool:[self canShareViaFacebook]],
+        @"share_via_twitter":               [NSNumber numberWithBool:[self isTwitterSharingImplemented]],
         @"share_via_facebook_messenger":    [NSNumber numberWithBool:[self isFacebookMessangerInstalled]],
         @"sdk_version":                     TKBLVersion,
     };
@@ -62,15 +63,32 @@ NSString*   TKBLInstallRegisteredKey    = @"tkbl_install_registered";
     return [app canOpenURL:[NSURL URLWithString:@"fb-messenger://share"]];
 }
 
++ (BOOL)isFacebookSharingUsingSocialFrameworkAvailable {
+    // [SLComposeViewController isAvailableForServiceType:] always returns false
+    // but Facebook sharing still works if Facebook app is installed
+    return [SLComposeViewController class] != nil &&
+        [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"fbauth2://"]];;
+}
+
 #pragma mark - [Private]
 
 + (BOOL)canSendSMS {
     return [MFMessageComposeViewController class] != nil && [MFMessageComposeViewController canSendText];
 }
 
-+ (BOOL)canShareVia:()channel {
-    return [SLComposeViewController class] != nil && [SLComposeViewController isAvailableForServiceType:channel];
++ (BOOL)canShareViaFacebook {
+    return [self isFacebookSharingImplemented] || [self isFacebookSharingUsingSocialFrameworkAvailable];
 }
+
++ (BOOL)isFacebookSharingImplemented {
+    return [[Talkable manager].delegate respondsToSelector:@selector(showFacebookShareDialogWithParams:completion:)] ||
+    [[Talkable manager].delegate respondsToSelector:@selector(showFacebookShareDialogWithParams:delegate:)];
+}
+
++ (BOOL)isTwitterSharingImplemented {
+    return [[Talkable manager].delegate respondsToSelector:@selector(showTwitterShareDialogWithParams:completion:)];
+}
+
 
 + (BOOL)canSendNativeMail {
     return [MFMailComposeViewController class] != nil && [MFMailComposeViewController canSendMail];

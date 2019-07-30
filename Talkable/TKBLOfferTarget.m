@@ -14,6 +14,7 @@
 #import "TKBLMessageUIWatcher.h"
 #import "TKBLContactsLoader.h"
 #import "UIViewControllerExt.h"
+#import "TKBLFBSharingWatcher.h"
 
 @implementation TKBLOfferTarget {
     WKWebView*   _webView;
@@ -49,11 +50,27 @@
 }
 
 - (void)tkblShareOfferViaFacebook:(NSDictionary*)params sender:(id)sender {
-    [self shareViaChannel:TKBLShareChannelFacebook withParams:params andSender:sender];
+    void (^completionHandler)() = ^void() {
+        [self shareSucceeded:(WKWebView*)sender withChannel:TKBLShareChannelFacebook];
+    };
+    if ([[Talkable manager].delegate respondsToSelector:@selector(showFacebookShareDialogWithParams:completion:)]) {
+        [[Talkable manager].delegate showFacebookShareDialogWithParams:params completion:completionHandler];
+    } else if ([[Talkable manager].delegate respondsToSelector:@selector(showFacebookShareDialogWithParams:delegate:)]) {
+        TKBLFBSharingWatcher* watcher = [[TKBLFBSharingWatcher alloc] init];
+        watcher.successCompletionHandler = completionHandler;
+        [[Talkable manager].delegate showFacebookShareDialogWithParams:params delegate:watcher];
+    } else if ([TKBLHelper isFacebookSharingUsingSocialFrameworkAvailable]) {
+        [self shareOnFacebookUsingSocialFrameworkWithParams:params completion:completionHandler];
+    }
 }
 
 - (void)tkblShareOfferViaTwitter:(NSDictionary*)params sender:(id)sender {
-    [self shareViaChannel:TKBLShareChannelTwitter withParams:params andSender:sender];
+    void (^completionHandler)() = ^void() {
+        [self shareSucceeded:sender withChannel:TKBLShareChannelTwitter];
+    };
+    if ([[Talkable manager].delegate respondsToSelector:@selector(showTwitterShareDialogWithParams:completion:)]) {
+        [[Talkable manager].delegate showTwitterShareDialogWithParams:params completion:completionHandler];
+    }
 }
 
 - (void)tkblShareOfferViaFacebookMessage:(NSDictionary*)params sender:(id)sender {
@@ -220,18 +237,18 @@
     [webView evaluateJavaScript:script completionHandler:nil];
 }
 
-- (void)shareViaChannel:(NSString*)channel withParams:(NSDictionary*)params andSender:(id)sender {
+- (void)shareOnFacebookUsingSocialFrameworkWithParams:(NSDictionary*)params completion:(void (^)())completionHandler {
     if (!params)
         return;
     
+    TKBLLog(@"Facebook sharing is not configured. Falling back to deprectaced Social.framework. Refer to https://docs.talkable.com/ios_sdk/social_sharing.html for details", nil);
+    
     if ([SLComposeViewController class] == nil) {
-        TKBLLog(@"Social.framework is not added to your project. Check http://docs.talkable.com/ios_sdk/getting_started.html for more details.", nil);
-        [self publishFeaturesInfo:sender];
+        TKBLLog(@"Social.framework is not added to your project. Check https://docs.talkable.com/ios_sdk/getting_started.html for more details.", nil);
         return;
     }
-
-    SLComposeViewController* shareController  = [self shareController:channel];
     
+    SLComposeViewController* shareController  = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
     NSString* claimURL = [params objectForKey:TKBLOfferClaimUrlKey];
     if (claimURL) {
         [shareController addURL:[NSURL URLWithString:claimURL]];
@@ -244,7 +261,7 @@
     
     [shareController setCompletionHandler:^(SLComposeViewControllerResult result) {
         if (result == SLComposeViewControllerResultDone) {
-            [self shareSucceeded:(WKWebView*)sender withChannel:channel];
+            completionHandler();
         }
     }];
     
@@ -286,15 +303,6 @@
     [controller setExcludedActivityTypes:@[UIActivityTypePostToFacebook, UIActivityTypePostToTwitter]];
     
     [[UIViewController currentViewController] presentViewController:controller animated:YES completion:nil];
-}
-
-- (SLComposeViewController*)shareController:(NSString*)channel {
-    NSString* mappedChannel = [[self channelMap] objectForKey:channel];
-    return [SLComposeViewController composeViewControllerForServiceType:mappedChannel];
-}
-
-- (NSDictionary*)channelMap {
-    return @{TKBLShareChannelTwitter: SLServiceTypeTwitter, TKBLShareChannelFacebook: SLServiceTypeFacebook};
 }
 
 @end
