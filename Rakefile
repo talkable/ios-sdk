@@ -8,8 +8,8 @@ TMP_DIR         = 'tmp'
 DEMO_DIR        = 'example/TalkableSDKDemo'
 SDK_ARCHIVE     = "#{BUILD_DIR}/talkable_ios_sdk.zip"
 
-AWS_KEY         = 'AKIAJO2XLL4WTAL3QLRQ'
-AWS_SECRET      = 'XrQxWEitMUCCNeFrhH8mPoYeIXZiDGTIDkUtO/EF'
+AWS_KEY         = 'AKIATIIUNDYPQ44V4GFD'
+AWS_SECRET      = '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'
 AWS_REGION      = 'us-east-1'
 AWS_CREDENTIALS = Aws::Credentials.new(AWS_KEY, AWS_SECRET)
 AWS_BUCKET_NAME = 'talkable-downloads'
