@@ -6,7 +6,7 @@
 	<dict>
 		<key>Headers/TKBLConstants.h</key>
 		<data>
-		PFSHo+rCucCEFNy7sB+NwSzrROs=
+		NzFGGfju3oCf3rgFtbR5/F72SwY=
 		</data>
 		<key>Headers/TKBLTypes.h</key>
 		<data>
@@ -14,11 +14,11 @@
 		</data>
 		<key>Headers/Talkable.h</key>
 		<data>
-		zh1zLR3BrT+zjUMHPG6YbkreVNw=
+		721yqk83Tww5mqmWPi1SOgqYq8M=
 		</data>
 		<key>Headers/TalkableDelegate.h</key>
 		<data>
-		W0vumk2p4j0GaL+IiHnMEhlY89A=
+		tongcZSCVv60j4mdchNT8oFfhC8=
 		</data>
 		<key>Headers/TalkableSDK.h</key>
 		<data>
@@ -26,7 +26,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		JOk/cLd8GGPEUlWycQ/T1wDQxOs=
+		soJ7ADQaMujmlwV3RVy3hazUScE=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -39,11 +39,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			PFSHo+rCucCEFNy7sB+NwSzrROs=
+			NzFGGfju3oCf3rgFtbR5/F72SwY=
 			</data>
 			<key>hash2</key>
 			<data>
-			vaDCCuJ1UibHIakEanA8HzFB7JNdqMlJjqz+zdZ/GXE=
+			Lz5V915rR+F//lisux5T5hX+LDqBcyafIRarTeJZmhU=
 			</data>
 		</dict>
 		<key>Headers/TKBLTypes.h</key>
@@ -61,22 +61,22 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			zh1zLR3BrT+zjUMHPG6YbkreVNw=
+			721yqk83Tww5mqmWPi1SOgqYq8M=
 			</data>
 			<key>hash2</key>
 			<data>
-			UPK/kpLJGW09ltcGknINfdATHIfyqqLNJxsBtzO1dF0=
+			yqRW8jtSOXyC8gTmCWKdZM+qmYwy50Mkx1NqOnugA9Y=
 			</data>
 		</dict>
 		<key>Headers/TalkableDelegate.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			W0vumk2p4j0GaL+IiHnMEhlY89A=
+			tongcZSCVv60j4mdchNT8oFfhC8=
 			</data>
 			<key>hash2</key>
 			<data>
-			4++2Gzy0m7typlcP8ue2h6TO5offNdgrVQINNfsjtKs=
+			WZNW6sQLtgL6D4Efn/IRuGO5b+GFKJh9o8fPwLVben8=
 			</data>
 		</dict>
 		<key>Headers/TalkableSDK.h</key>
@@ -104,7 +104,7 @@
 	</dict>
 	<key>rules</key>
 	<dict>
-		<key>^</key>
+		<key>^.*</key>
 		<true/>
 		<key>^.*\.lproj/</key>
 		<dict>
@@ -135,24 +135,12 @@
 			<key>weight</key>
 			<real>11</real>
 		</dict>
-		<key>^</key>
-		<dict>
-			<key>weight</key>
-			<real>20</real>
-		</dict>
 		<key>^(.*/)?\.DS_Store$</key>
 		<dict>
 			<key>omit</key>
 			<true/>
 			<key>weight</key>
 			<real>2000</real>
-		</dict>
-		<key>^(Frameworks|SharedFrameworks|PlugIns|Plug-ins|XPCServices|Helpers|MacOS|Library/(Automator|Spotlight|LoginItems))/</key>
-		<dict>
-			<key>nested</key>
-			<true/>
-			<key>weight</key>
-			<real>10</real>
 		</dict>
 		<key>^.*</key>
 		<true/>
@@ -188,13 +176,6 @@
 			<true/>
 			<key>weight</key>
 			<real>20</real>
-		</dict>
-		<key>^[^/]+$</key>
-		<dict>
-			<key>nested</key>
-			<true/>
-			<key>weight</key>
-			<real>10</real>
 		</dict>
 		<key>^embedded\.provisionprofile$</key>
 		<dict>

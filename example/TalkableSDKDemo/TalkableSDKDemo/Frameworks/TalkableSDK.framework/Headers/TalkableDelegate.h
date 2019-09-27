@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 Talkable. All rights reserved.
 //
 
-#import <Social/Social.h>
 #import "TKBLTypes.h"
 
 @protocol TalkableDelegate <NSObject>
@@ -20,5 +19,9 @@
 - (BOOL)shouldPresentTalkableOfferViewController:(UIViewController*)controller;
 - (UIViewController*)viewControllerForPresentingTalkableOfferViewController;
 - (NSString*)titleForTalkableOfferViewController:(UIViewController*)controller;
+
+- (void)showFacebookShareDialogWithParams:(NSDictionary*)params delegate:(id)delegate;
+- (void)showFacebookShareDialogWithParams:(NSDictionary*)params completion:(void (^)())completionHandler;
+- (void)showTwitterShareDialogWithParams:(NSDictionary*)params completion:(void (^)())completionHandler;
 
 @end
