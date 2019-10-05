@@ -74,8 +74,8 @@
 }
 
 - (void)tkblShareOfferViaFacebookMessage:(NSDictionary*)params sender:(id)sender {
-    if (![TKBLHelper isFacebookMessangerInstalled]) {
-        TKBLLog(@"Facebook Messanger is not installed. Check http://docs.talkable.com/ios_sdk/getting_started.html#configuration for more details about using Facebook Messanger as a sharing channel.", nil);
+    if (![TKBLHelper isFacebookMessengerInstalled]) {
+        TKBLLog(@"Facebook Messenger is not installed. Check http://docs.talkable.com/ios_sdk/getting_started.html#configuration for more details about using Facebook Messanger as a sharing channel.", nil);
         [self publishFeaturesInfo:sender];
         return;
     }
@@ -92,9 +92,35 @@
     
 }
 
+- (void)tkblShareOfferViaWhatsapp:(NSDictionary*)params sender:(id)sender {
+    if (![TKBLHelper isWhatsAppInstalled]) {
+        TKBLLog(@"WhatsApp is not installed. Check http://docs.talkable.com/ios_sdk/getting_started.html#configuration for more details about using WhatsApp as a sharing channel.", nil);
+        [self publishFeaturesInfo:sender];
+        return;
+    }
+    
+    NSString* message = [params objectForKey:TKBLShareMessage];
+    if (!message) {
+        message = [NSString string];
+    }
+    
+    NSString* claimURL = [params objectForKey:TKBLOfferClaimUrlKey];
+    if (claimURL && ![message containsString:claimURL]) {
+        message = [NSString stringWithFormat:@"%@ %@", message, claimURL];
+    }
+    
+    NSString* escapedMessage = [message stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
+    UIApplication* app = [UIApplication sharedApplication];
+    
+    // There is no way to check whether the user shared a message or not
+    [self shareSucceeded:(WKWebView*)sender withChannel:TKBLShareChannelWhatsApp];
+    
+    [app openURL:[NSURL URLWithString:[NSString stringWithFormat:@"whatsapp://send?text=%@", escapedMessage]]];
+}
+
 - (void)tkblShareOfferViaSms:(NSDictionary*)params sender:(id)sender {
     if (![MFMessageComposeViewController canSendText]) {
-        TKBLLog(@"Current device does'nt support SMS sending", nil);
+        TKBLLog(@"Current device doesn't support SMS sending", nil);
         [self publishFeaturesInfo:sender];
         return;
     }
@@ -241,7 +267,7 @@
     if (!params)
         return;
     
-    TKBLLog(@"Facebook sharing is not configured. Falling back to deprectaced Social.framework. Refer to https://docs.talkable.com/ios_sdk/social_sharing.html for details", nil);
+    TKBLLog(@"Facebook sharing is not configured. Falling back to deprecated Social.framework. Refer to https://docs.talkable.com/ios_sdk/social_sharing.html for details", nil);
     
     if ([SLComposeViewController class] == nil) {
         TKBLLog(@"Social.framework is not added to your project. Check https://docs.talkable.com/ios_sdk/getting_started.html for more details.", nil);

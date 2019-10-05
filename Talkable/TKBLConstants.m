@@ -87,6 +87,7 @@ NSString* TKBLShareChannel                              = @"channel";
 NSString* TKBLShareChannelFacebook                      = @"facebook";
 NSString* TKBLShareChannelFacebookMessage               = @"facebook_message";
 NSString* TKBLShareChannelTwitter                       = @"twitter";
+NSString* TKBLShareChannelWhatsApp                      = @"whatsapp";
 NSString* TKBLShareChannelSMS                           = @"sms";
 NSString* TKBLShareChannelOther                         = @"other";
 NSString* TKBLShareChannelNativeMail                    = @"direct_email_native";

@@ -52,15 +52,22 @@ NSString*   TKBLInstallRegisteredKey    = @"tkbl_install_registered";
         @"share_via_native_mail":           [NSNumber numberWithBool:[self canSendNativeMail]],
         @"share_via_facebook":              [NSNumber numberWithBool:[self canShareViaFacebook]],
         @"share_via_twitter":               [NSNumber numberWithBool:[self isTwitterSharingImplemented]],
-        @"share_via_facebook_messenger":    [NSNumber numberWithBool:[self isFacebookMessangerInstalled]],
+        @"share_via_facebook_messenger":    [NSNumber numberWithBool:[self isFacebookMessengerInstalled]],
+        @"share_via_whatsapp":              [NSNumber numberWithBool:[self isWhatsAppInstalled]],
         @"sdk_version":                     TKBLVersion,
     };
 }
 
-+ (BOOL)isFacebookMessangerInstalled {
++ (BOOL)isFacebookMessengerInstalled {
     UIApplication* app = [UIApplication sharedApplication];
     // In iOS 9 you must whitelist any URL schemes your App wants to query in Info.plist under the LSApplicationQueriesSchemes
     return [app canOpenURL:[NSURL URLWithString:@"fb-messenger://share"]];
+}
+
++ (BOOL)isWhatsAppInstalled {
+    UIApplication* app = [UIApplication sharedApplication];
+    // In iOS 9 you must whitelist any URL schemes your App wants to query in Info.plist under the LSApplicationQueriesSchemes
+    return [app canOpenURL:[NSURL URLWithString:@"whatsapp://send"]];
 }
 
 + (BOOL)isFacebookSharingUsingSocialFrameworkAvailable {
@@ -93,6 +100,5 @@ NSString*   TKBLInstallRegisteredKey    = @"tkbl_install_registered";
 + (BOOL)canSendNativeMail {
     return [MFMailComposeViewController class] != nil && [MFMailComposeViewController canSendMail];
 }
-
 
 @end
