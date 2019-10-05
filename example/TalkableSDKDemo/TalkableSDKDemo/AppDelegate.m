@@ -22,7 +22,7 @@
     [Talkable manager].debug = YES;
     [Talkable manager].skipFirstInstallCheck = YES;
     [Talkable manager].skipReinstallCheck = YES;
-    [Talkable manager].ignoreStoredDeviceUUID = YES;
+//    [Talkable manager].ignoreStoredDeviceIdentity = YES;
     [[Talkable manager] setApiKey:TALKABLE_API_KEY andSiteSlug:TALKABLE_SITE_SLUG server:TALKABLE_SERVER];
     return YES;
 }

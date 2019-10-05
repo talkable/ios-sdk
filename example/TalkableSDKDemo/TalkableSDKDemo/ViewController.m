@@ -94,7 +94,6 @@
 - (IBAction)testPurchase:(id)sender {
     NSDictionary* params = @{TKBLPurchaseKey: @{
       TKBLPurchaseOrderNumberKey: self.orderNumberField.text,  //@"100130", // REQUIRED - Order number
-      TKBLPurchaseOrderDateKey: [NSDate date], // REQUIRED - Order Date and Time (ISO 8601 formatted datetime)
       TKBLPurchaseEmailKey: self.emailField.text, //@"customer@example.com", // REQUIRED - Customer Email Address
       TKBLPurchaseSubtotalKey: [NSNumber numberWithDouble:[self.subtotalField.text doubleValue]], //[NSNumber numberWithDouble:22.33], // REQUIRED - Purchase Subtotal
       TKBLPurchaseCouponCodeKey: self.couponField.text, //@"", // REQUIRED - Coupon code used at checkout, multiple coupons allowed as array: @[@"SAVE20", @"FREE-SHIPPING"]. Pass @"" if there is no coupon code.
