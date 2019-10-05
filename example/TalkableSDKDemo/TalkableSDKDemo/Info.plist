@@ -39,6 +39,7 @@
 		<string>tkbl-talkable-ios-demo</string>
 		<string>fb-messenger</string>
 		<string>fbauth2</string>
+		<string>whatsapp</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
