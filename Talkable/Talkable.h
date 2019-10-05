@@ -23,7 +23,7 @@
 @property (nonatomic, assign) BOOL                  debug;
 @property (nonatomic, assign) BOOL                  skipFirstInstallCheck;
 @property (nonatomic, assign) BOOL                  skipReinstallCheck;
-@property (nonatomic, assign) BOOL                  ignoreStoredDeviceUUID;
+@property (nonatomic, assign) BOOL                  ignoreStoredDeviceIdentity;
 
 + (Talkable*)manager;
 

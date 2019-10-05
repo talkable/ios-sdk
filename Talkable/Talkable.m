@@ -52,7 +52,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     TKBLKeychainHelper*             _keychain;
 }
 
-@synthesize apiKey, siteSlug = _siteSlug, delegate, server = _server, debug, skipFirstInstallCheck, skipReinstallCheck, ignoreStoredDeviceUUID;
+@synthesize apiKey, siteSlug = _siteSlug, delegate, server = _server, debug, skipFirstInstallCheck, skipReinstallCheck, ignoreStoredDeviceIdentity;
 
 #pragma mark - [Singleton]
 
@@ -142,7 +142,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     
     if (!_uuid) _uuid = [self uuidFromKeychain:@"tkbl_uuid"];
     if (!_uuid) _uuid = [self uuidFromPref:@"tkbl_uuid"];
-    if (!_uuid) _uuid = [self uuidFromServer];
+    if (!_uuid) _uuid = [self generateUUID];
     if (_uuid) [self syncUUID:_uuid forKey:@"tkbl_uuid"];
     
     return _uuid;
@@ -151,10 +151,8 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 - (NSString*)deviceIdentifier {
     if (_deviceIdentifier) return _deviceIdentifier;
     
-    if (!self.debug || !self.ignoreStoredDeviceUUID) {
-        if (!_deviceIdentifier) _deviceIdentifier = [self uuidFromKeychain:@"tkbl_device_id"];
-        if (!_deviceIdentifier) _deviceIdentifier = [self uuidFromPref:@"tkbl_device_id"];
-    }
+    if (!_deviceIdentifier) _deviceIdentifier = [self uuidFromKeychain:@"tkbl_device_id"];
+    if (!_deviceIdentifier) _deviceIdentifier = [self uuidFromPref:@"tkbl_device_id"];
     if (!_deviceIdentifier) _deviceIdentifier = [self generateUUID];
     if (_deviceIdentifier) [self syncUUID:_deviceIdentifier forKey:@"tkbl_device_id"];
     
@@ -575,6 +573,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 }
 
 - (NSString*)uuidFromKeychain:(NSString*)key; {
+    if (self.debug && self.ignoreStoredDeviceIdentity) return nil;
     NSData* data = [[self keychain] dataForKey:key];
     return data ? [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] : nil;
 }
@@ -588,6 +587,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 }
 
 - (NSString*)uuidFromPref:(NSString*)key {
+    if (self.debug && self.ignoreStoredDeviceIdentity) return nil;
     return [[[NSUserDefaults standardUserDefaults] dictionaryForKey:key] objectForKey:self.server];
 }
 
@@ -698,22 +698,6 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 
 - (void)logAPIRequest:(NSString*)urlString withMethod:(NSString*)method andParameters:(id)parameters {
     TKBLLog(@"%@ request to %@ with parameters: %@", method, urlString, parameters);
-}
-
-- (NSString*)uuidFromServer {
-    NSString* params = [NSString stringWithFormat:@"%@=%@&%@=%@", TKBLApiKey, self.apiKey, TKBLSiteSlug, self.siteSlug];
-    NSString* path = [NSString stringWithFormat:@"/visitors?%@", params];
-    
-    
-    NSMutableURLRequest* request = [self serverRequest:[NSURL URLWithString:[self urlForAPI:path]] withHttpMethod:@"POST" userAgent:[self apiUserAgent]];
-    
-    NSData* responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-    if (!responseData)
-        return nil;
-    
-    NSDictionary* response = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:nil];
-    
-    return [[response objectForKey:@"result"] objectForKey:@"uuid"];
 }
 
 - (void)trackVisit:(NSString*)visitorOfferId {
