@@ -16,60 +16,60 @@
 
 @interface Talkable : NSObject
 
-@property (nonatomic, retain) NSString*             apiKey;
-@property (nonatomic, retain) NSString*             siteSlug;
-@property (nonatomic, retain) NSString*             server;
-@property (nonatomic, assign) id<TalkableDelegate>  delegate;
-@property (nonatomic, assign) BOOL                  debug;
-@property (nonatomic, assign) BOOL                  skipFirstInstallCheck;
-@property (nonatomic, assign) BOOL                  skipReinstallCheck;
-@property (nonatomic, assign) BOOL                  ignoreStoredDeviceIdentity;
+@property (nonatomic, retain) NSString* _Nullable             apiKey;
+@property (nonatomic, retain) NSString* _Nullable             siteSlug;
+@property (nonatomic, retain) NSString* _Nullable             server;
+@property (nonatomic, assign) id<TalkableDelegate> _Nullable  delegate;
+@property (nonatomic, assign) BOOL                            debug;
+@property (nonatomic, assign) BOOL                            skipFirstInstallCheck;
+@property (nonatomic, assign) BOOL                            skipReinstallCheck;
+@property (nonatomic, assign) BOOL                            ignoreStoredDeviceIdentity;
 
-+ (Talkable*)manager;
++ (Talkable* _Nullable)manager;
 
-- (void)setApiKey:(NSString*)apiKey andSiteSlug:(NSString*)siteSlug;
-- (void)setApiKey:(NSString*)apiKey andSiteSlug:(NSString*)siteSlug server:(NSString*)server;
+- (void)setApiKey:(NSString* _Nullable)apiKey andSiteSlug:(NSString* _Nullable)siteSlug;
+- (void)setApiKey:(NSString* _Nullable)apiKey andSiteSlug:(NSString* _Nullable)siteSlug server:(NSString* _Nullable)server;
 
-- (NSString*)visitorUUID;
-- (NSString*)deviceIdentifier;
+- (NSString* _Nullable)visitorUUID;
+- (NSString* _Nullable)deviceIdentifier;
 
-- (void)registerCoupon:(NSString*)coupon;
-- (NSString*)coupon;
+- (void)registerCoupon:(NSString* _Nullable)coupon;
+- (NSString* _Nullable)coupon;
 
-- (void)registerURLScheme:(NSString*)urlScheme __deprecated;
+- (void)registerURLScheme:(NSString* _Nullable)urlScheme __deprecated;
 
 #pragma mark - [Handlers]
 
-- (BOOL)handleOpenURL:(NSURL*)url;
+- (BOOL)handleOpenURL:(NSURL* _Nullable)url;
 
 - (BOOL)handleURLParams:(NSDictionary* _Nonnull)urlParams;
 
 #pragma mark - [Integration]
 
-- (void)registerOrigin:(TKBLOriginType)type params:(NSDictionary*)params;
+- (void)registerOrigin:(TKBLOriginType)type params:(NSDictionary* _Nullable)params;
 
 #pragma mark - [API]
 
-- (void)createOrigin:(NSDictionary*)params withHandler:(TKBLCompletionHandler)handler;
+- (void)createOrigin:(NSDictionary* _Nullable)params withHandler:(TKBLCompletionHandler _Nullable)handler;
 
-- (void)retrieveRewardsWithHandler:(TKBLCompletionHandler)handler;
-- (void)retrieveRewards:(NSDictionary*)params withHandler:(TKBLCompletionHandler)handler;
+- (void)retrieveRewardsWithHandler:(TKBLCompletionHandler _Nullable)handler;
+- (void)retrieveRewards:(NSDictionary* _Nullable)params withHandler:(TKBLCompletionHandler _Nullable)handler;
 
-- (void)retrieveOffer:(NSString*)shortUrlCode withHandler:(TKBLCompletionHandler)handler;
-- (void)retrieveOffer:(NSString*)shortUrlCode withParams:(NSDictionary*)params andHandler:(TKBLCompletionHandler)handler;
+- (void)retrieveOffer:(NSString* _Nullable)shortUrlCode withHandler:(TKBLCompletionHandler _Nullable)handler;
+- (void)retrieveOffer:(NSString* _Nullable)shortUrlCode withParams:(NSDictionary* _Nullable)params andHandler:(TKBLCompletionHandler _Nullable)handler;
 
-- (void)createShare:(NSString*)shortUrlCode channel:(NSString*)channel withHandler:(TKBLCompletionHandler)handler __deprecated;
-- (void)createShare:(NSString*)shortUrlCode channel:(NSString*)channel withParams:(NSDictionary*)params andHandler:(TKBLCompletionHandler)handler __deprecated;
+- (void)createShare:(NSString* _Nullable)shortUrlCode channel:(NSString* _Nullable)channel withHandler:(TKBLCompletionHandler _Nullable)handler __deprecated;
+- (void)createShare:(NSString* _Nullable)shortUrlCode channel:(NSString* _Nullable)channel withParams:(NSDictionary* _Nullable)params andHandler:(TKBLCompletionHandler _Nullable)handler __deprecated;
 
-- (void)createSocialShare:(NSString*)shortUrlCode channel:(NSString*)channel withHandler:(TKBLCompletionHandler)handler;
-- (void)createSocialShare:(NSString*)shortUrlCode channel:(NSString*)channel withParams:(NSDictionary*)params andHandler:(TKBLCompletionHandler)handler;
+- (void)createSocialShare:(NSString* _Nullable)shortUrlCode channel:(NSString* _Nullable)channel withHandler:(TKBLCompletionHandler _Nullable)handler;
+- (void)createSocialShare:(NSString* _Nullable)shortUrlCode channel:(NSString* _Nullable)channel withParams:(NSDictionary* _Nullable)params andHandler:(TKBLCompletionHandler _Nullable)handler;
 
-- (void)createEmailShare:(NSString*)shortUrlCode recipients:(NSString*)recipients withHandler:(TKBLCompletionHandler)handler;
-- (void)createEmailShare:(NSString*)shortUrlCode recipients:(NSString*)recipients withParams:(NSDictionary*)params andHandler:(TKBLCompletionHandler)handler;
+- (void)createEmailShare:(NSString* _Nullable)shortUrlCode recipients:(NSString* _Nullable)recipients withHandler:(TKBLCompletionHandler _Nullable)handler;
+- (void)createEmailShare:(NSString* _Nullable)shortUrlCode recipients:(NSString* _Nullable)recipients withParams:(NSDictionary* _Nullable)params andHandler:(TKBLCompletionHandler _Nullable)handler;
 
 #pragma mark - [Sharing]
 
-- (SLComposeViewController*)socialShare:(NSDictionary*)params __deprecated;
-- (UIActivityViewController*)nativeShare:(NSDictionary*)params;
+- (SLComposeViewController* _Nullable)socialShare:(NSDictionary* _Nullable)params __deprecated;
+- (UIActivityViewController* _Nullable)nativeShare:(NSDictionary* _Nullable)params;
 
 @end

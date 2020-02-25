@@ -485,7 +485,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     
     if (!serviceType) {
         TKBLLog(@"Using default chanel - %@", TKBLShareChannelFacebook);
-        serviceType = SLServiceTypeFacebook,
+        (void)(serviceType = SLServiceTypeFacebook),
         channel = TKBLShareChannelFacebook;
     }
     
@@ -746,8 +746,8 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     NSURLComponents* components = [NSURLComponents componentsWithString:self.server];
     components.path = [NSString stringWithFormat:@"/public/%@/%@/%@", self.siteSlug, @"products", @"create"];
     NSString* query = [self buildQueryFromDictonary:@{TKBLProductKey: params} andPrefix:nil];
-    NSString* percentEncodedQuery = [[query stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]
-                                     stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
+    NSString* percentEncodedQuery = [query stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+    
     components.percentEncodedQuery = percentEncodedQuery;
     return components.URL;
 }
@@ -761,8 +761,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     components.path = [NSString stringWithFormat:@"/public/%@/%@/%@", self.siteSlug, [self pathForType:type], action] ;
     
     NSString* query = [self buildQueryFromDictonary:params andPrefix:nil excludingKeys:excludedKeys];
-    NSString* percentEncodedQuery = [[query stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]
-                                     stringByReplacingOccurrencesOfString:@"+" withString:@"%2B"];
+    NSString* percentEncodedQuery = [query stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     components.percentEncodedQuery = percentEncodedQuery;
     
     return components.URL;

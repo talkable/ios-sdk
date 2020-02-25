@@ -50,7 +50,7 @@
 }
 
 - (void)tkblShareOfferViaFacebook:(NSDictionary*)params sender:(id)sender {
-    void (^completionHandler)() = ^void() {
+    void (^completionHandler)(void) = ^void() {
         [self shareSucceeded:(WKWebView*)sender withChannel:TKBLShareChannelFacebook];
     };
     if ([[Talkable manager].delegate respondsToSelector:@selector(showFacebookShareDialogWithParams:completion:)]) {
@@ -65,7 +65,7 @@
 }
 
 - (void)tkblShareOfferViaTwitter:(NSDictionary*)params sender:(id)sender {
-    void (^completionHandler)() = ^void() {
+    void (^completionHandler)(void) = ^void() {
         [self shareSucceeded:sender withChannel:TKBLShareChannelTwitter];
     };
     if ([[Talkable manager].delegate respondsToSelector:@selector(showTwitterShareDialogWithParams:completion:)]) {
@@ -263,7 +263,7 @@
     [webView evaluateJavaScript:script completionHandler:nil];
 }
 
-- (void)shareOnFacebookUsingSocialFrameworkWithParams:(NSDictionary*)params completion:(void (^)())completionHandler {
+- (void)shareOnFacebookUsingSocialFrameworkWithParams:(NSDictionary*)params completion:(void (^)(void))completionHandler {
     if (!params)
         return;
     

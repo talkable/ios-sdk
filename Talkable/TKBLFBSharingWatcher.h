@@ -22,20 +22,20 @@
  @param sharer The FBSDKSharing that completed.
  @param results The results from the sharer.  This may be nil or empty.
  */
-- (void)sharer:(id)sharer didCompleteWithResults:(NSDictionary<NSString *, id> *)results;
+- (void)sharer:(id _Nullable)sharer didCompleteWithResults:(NSDictionary<NSString *, id> *_Nullable)results;
 
 /**
  Sent to the delegate when the sharer encounters an error.
  @param sharer The FBSDKSharing that completed.
  @param error The error.
  */
-- (void)sharer:(id)sharer didFailWithError:(NSError *)error;
+- (void)sharer:(id _Nullable)sharer didFailWithError:(NSError *_Nullable)error;
 
 /**
  Sent to the delegate when the sharer is cancelled.
  @param sharer The FBSDKSharing that completed.
  */
-- (void)sharerDidCancel:(id)sharer;
+- (void)sharerDidCancel:(id _Nullable)sharer;
 
 @end
 
