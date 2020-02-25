@@ -12,9 +12,10 @@
 #import "Talkable.h"
 #import "TKBLHelper.h"
 #import "TKBLMessageUIWatcher.h"
-#import "TKBLContactsLoader.h"
+//#import "TKBLContactsLoader.h"
 #import "UIViewControllerExt.h"
 #import "TKBLFBSharingWatcher.h"
+#import <TalkableSDK/TalkableSDK-Swift.h>
 
 @implementation TKBLOfferTarget {
     WKWebView*   _webView;
@@ -171,10 +172,10 @@
 }
 
 - (void)tkblImportContacts:(NSDictionary*)params sender:(id)sender {
-    [[TKBLContactsLoader loader] loadContactsWithComplitionHandler:^(NSArray* contacts) {
+    [[ContactsLoader new] loadContactsWithComplition:^(NSArray<NSDictionary<NSString *,id> *> * _Nonnull contacts) {
         TKBLLog(@"Imported contacts - %@", contacts);
         NSData* data = [NSJSONSerialization dataWithJSONObject:@{@"contacts":contacts} options:0 error:nil];
-        NSString* json =  [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        NSString* json = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         if ([json length] > 0) {
             NSString* script = [NSString stringWithFormat:@"Talkable.publish('contacts_imported', %@)", json];
             [(WKWebView*)sender evaluateJavaScript:script completionHandler:nil];
