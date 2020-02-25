@@ -40,7 +40,7 @@ NSString*   TKBLFailureReasonOriginAlreadyExists        = @"ORIGIN_ALREADY_EXIST
 NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRIBUTES";
 
 @implementation Talkable {
-    AFHTTPRequestOperationManager*  _networkClient;
+    AFHTTPSessionManager*           _networkClient;
     NSString*                       _userAgent;
     NSString*                       _apiUserAgent;
     NSString*                       _originalUserAgent;
@@ -264,8 +264,8 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     
     NSURLRequest* request = [self serverRequest:requestURL];
     
-    [[NSURLSession sharedSession] dataTaskWithRequest:request
-                                    completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable networkError) {
+    [[[NSURLSession sharedSession] dataTaskWithRequest:request
+                                     completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable networkError) {
         NSInteger errorCode = 0;
         NSString* errorLocalizedDescription = nil;
         NSString* errorFailureReason = TKBLFailureReasonRequestError;
@@ -300,54 +300,55 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
             NSError* error = [NSError errorWithDomain:TKBLErrorDomain
                                                  code:errorCode
                                              userInfo:@{
-                                                        NSLocalizedDescriptionKey: errorLocalizedDescription,
-                                                        NSLocalizedFailureReasonErrorKey: errorFailureReason
-                                                        }];
+                                                 NSLocalizedDescriptionKey: errorLocalizedDescription,
+                                                 NSLocalizedFailureReasonErrorKey: errorFailureReason
+                                             }];
             [self notifyRegisterOrigin:type didFailWithError:error];
         } else {
-            TKBLOfferViewController* controller = [[TKBLOfferViewController alloc] init];
-            
-            WKWebView* webView = [self buildWebView];
-            [self notifyOriginDidRegister:type withWebView:webView];
-            
-            BOOL shouldPresent = YES;
-            if ([self.delegate respondsToSelector:@selector(shouldPresentTalkableOfferViewController:)]) {
-                shouldPresent = [self.delegate shouldPresentTalkableOfferViewController:controller];
-            }
-            
-            if (shouldPresent) {
-                [webView setNavigationDelegate:controller];
-                CGRect frame = webView.frame;
-                frame = controller.view.bounds;
-                webView.frame = frame;
-                [controller.view addSubview:webView];
-                [self presentOfferViewController:controller];
-            }
-            
-            NSStringEncoding encoding = CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding((CFStringRef)response.textEncodingName));
-            [webView loadHTMLString:[[NSString alloc] initWithData:data encoding:encoding] baseURL:requestURL];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                TKBLOfferViewController* controller = [[TKBLOfferViewController alloc] init];
+                
+                WKWebView* webView = [self buildWebView];
+                [self notifyOriginDidRegister:type withWebView:webView];
+                
+                BOOL shouldPresent = YES;
+                if ([self.delegate respondsToSelector:@selector(shouldPresentTalkableOfferViewController:)]) {
+                    shouldPresent = [self.delegate shouldPresentTalkableOfferViewController:controller];
+                }
+                
+                if (shouldPresent) {
+                    [webView setNavigationDelegate:controller];
+                    CGRect frame = webView.frame;
+                    frame = controller.view.bounds;
+                    webView.frame = frame;
+                    [controller.view addSubview:webView];
+                    [self presentOfferViewController:controller];
+                }
+                
+                NSStringEncoding encoding = CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding((CFStringRef)response.textEncodingName));
+                [webView loadHTMLString:[[NSString alloc] initWithData:data encoding:encoding] baseURL:requestURL];
+            });
         }
-    }];
+    }] resume];
 }
 
 - (void)registerProduct:(NSDictionary*)productParams {
     NSURL* url = [self createProductRequestURLWithParams:productParams];
     
-    
-    [[NSURLSession sharedSession] dataTaskWithRequest:[self serverRequest:url]
-                                    completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable networkError) {
-    
-       NSString* resultDescription = [NSString new];
-       if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
-           NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
-           resultDescription = [NSHTTPURLResponse localizedStringForStatusCode:httpResponse.statusCode];
-       } else {
-           resultDescription = networkError ? networkError.localizedDescription : @"Invalid Response";
-       }
-       TKBLLog(@"Create product request resulted in: `%@` to URL: %@",
-               resultDescription,
-               url.absoluteString);
-   }];
+    [[[NSURLSession sharedSession] dataTaskWithRequest:[self serverRequest:url]
+                                     completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable networkError) {
+        
+        NSString* resultDescription = [NSString new];
+        if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
+            NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
+            resultDescription = [NSHTTPURLResponse localizedStringForStatusCode:httpResponse.statusCode];
+        } else {
+            resultDescription = networkError ? networkError.localizedDescription : @"Invalid Response";
+        }
+        TKBLLog(@"Create product request resulted in: `%@` to URL: %@",
+                resultDescription,
+                url.absoluteString);
+    }] resume];
 }
 
 #pragma mark - [API]
@@ -376,11 +377,12 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     
     NSString* urlString = [self urlForAPI:@"/origins"];
     [self logAPIRequest:urlString withMethod:@"POST" andParameters:parameters];
-    [[self networkClient] POST:urlString parameters:parameters success:^(AFHTTPRequestOperation*operation, id responseObject) {
+    
+    [[self networkClient] POST:urlString parameters:parameters headers:nil constructingBodyWithBlock:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [self processSuccessfulResponse:responseObject withHandler:handler];
-    } failure:^(AFHTTPRequestOperation* operation, NSError* networkError) {
-        [self processFailedResponse:operation.responseObject
-                   withNetworkError:networkError
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [self processFailedResponse:task.response
+                   withNetworkError:error
                      andWithHandler:handler];
     }];
 }
@@ -399,11 +401,12 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     
     NSString* urlString = [self urlForAPI:@"/rewards"];
     [self logAPIRequest:urlString withMethod:@"GET" andParameters:parameters];
-    [[self networkClient] GET:urlString parameters:parameters success:^(AFHTTPRequestOperation* operation, id responseObject) {
+    
+    [[self networkClient] GET:urlString parameters:parameters headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [self processSuccessfulResponse:responseObject withHandler:handler];
-    } failure:^(AFHTTPRequestOperation* operation, NSError* networkError) {
-        [self processFailedResponse:operation.responseObject
-                   withNetworkError:networkError
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [self processFailedResponse:task.response
+                   withNetworkError:error
                      andWithHandler:handler];
     }];
 }
@@ -418,11 +421,12 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     
     NSString* urlString = [self urlForAPI:path];
     [self logAPIRequest:urlString withMethod:@"GET" andParameters:parameters];
-    [[self networkClient] GET:urlString parameters:parameters success:^(AFHTTPRequestOperation* operation, id responseObject) {
+    
+    [[self networkClient] GET:urlString parameters:parameters headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [self processSuccessfulResponse:responseObject withHandler:handler];
-    } failure:^(AFHTTPRequestOperation* operation, NSError* networkError) {
-        [self processFailedResponse:operation.responseObject
-                   withNetworkError:networkError
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [self processFailedResponse:task.response
+                   withNetworkError:error
                      andWithHandler:handler];
     }];
 }
@@ -446,11 +450,12 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     
     NSString* urlString = [self urlForAPI:path];
     [self logAPIRequest:urlString withMethod:@"POST" andParameters:parameters];
-    [[self networkClient] POST:urlString parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    
+    [[self networkClient] POST:urlString parameters:parameters headers:nil constructingBodyWithBlock:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [self processSuccessfulResponse:responseObject withHandler:handler];
-    } failure:^(AFHTTPRequestOperation* operation, NSError* networkError) {
-        [self processFailedResponse:operation.responseObject
-                   withNetworkError:networkError
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [self processFailedResponse:task.response
+                   withNetworkError:error
                      andWithHandler:handler];
     }];
 }
@@ -466,12 +471,13 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     
     NSString* urlString = [self urlForAPI:path];
     [self logAPIRequest:urlString withMethod:@"POST" andParameters:parameters];
-    [[self networkClient] POST:urlString parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        [self processSuccessfulResponse:responseObject withHandler:handler];
-    } failure:^(AFHTTPRequestOperation* operation, NSError* networkError) {
-        [self processFailedResponse:operation.responseObject
-                   withNetworkError:networkError
-                     andWithHandler:handler];
+    
+    [[self networkClient] POST:urlString parameters:parameters headers:nil constructingBodyWithBlock:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+           [self processSuccessfulResponse:responseObject withHandler:handler];
+       } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+           [self processFailedResponse:task.response
+                      withNetworkError:error
+                        andWithHandler:handler];
     }];
 }
 
@@ -674,13 +680,14 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     }
 }
 
-- (AFHTTPRequestOperationManager*)networkClient {
+- (AFHTTPSessionManager*)networkClient {
     if (!_networkClient) {
-        _networkClient = [[AFHTTPRequestOperationManager alloc] init];
+        _networkClient = [AFHTTPSessionManager manager];
         [_networkClient.requestSerializer setValue:[self apiUserAgent] forHTTPHeaderField:@"User-Agent"];
         [_networkClient.requestSerializer setValue:[[NSString alloc] initWithFormat:@"Bearer %@", self.apiKey]
                                           forHTTPHeaderField:@"Authorization"];
     }
+    
     return _networkClient;
 }
 
@@ -703,7 +710,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     NSString* path = [NSString stringWithFormat:@"/visitor_offers/%@/track_visit", visitorOfferId];
     NSString* urlString = [self urlForAPI:path];
     
-    [[self networkClient] PUT:urlString parameters:parameters success:nil failure:nil];
+    [[self networkClient] PUT:urlString parameters:parameters headers:nil success:nil failure:nil];
 }
 
 - (WKWebView*)buildWebView {
