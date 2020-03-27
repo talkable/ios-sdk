@@ -4,3 +4,8 @@ framework module TalkableSDK {
   export *
   module * { export * }
 }
+
+module TalkableSDK.Swift {
+    header "TalkableSDK-Swift.h"
+    requires objc
+}

@@ -21,7 +21,7 @@
 - (NSString*)titleForTalkableOfferViewController:(UIViewController*)controller;
 
 - (void)showFacebookShareDialogWithParams:(NSDictionary*)params delegate:(id)delegate;
-- (void)showFacebookShareDialogWithParams:(NSDictionary*)params completion:(void (^)())completionHandler;
-- (void)showTwitterShareDialogWithParams:(NSDictionary*)params completion:(void (^)())completionHandler;
+- (void)showFacebookShareDialogWithParams:(NSDictionary*)params completion:(void (^)(void))completionHandler;
+- (void)showTwitterShareDialogWithParams:(NSDictionary*)params completion:(void (^)(void))completionHandler;
 
 @end

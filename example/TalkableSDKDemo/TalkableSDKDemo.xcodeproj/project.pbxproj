@@ -20,6 +20,7 @@
 		7A4FFCEB1AEA91AB00995DF0 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7A4FFCEA1AEA91AB00995DF0 /* Images.xcassets */; };
 		7A4FFCEE1AEA91AB00995DF0 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7A4FFCEC1AEA91AB00995DF0 /* LaunchScreen.xib */; };
 		7A4FFCFA1AEA91AB00995DF0 /* TalkableSDKDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A4FFCF91AEA91AB00995DF0 /* TalkableSDKDemoTests.m */; };
+		7A5E28B4242E0B030062C042 /* Empty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A5E28B3242E0B030062C042 /* Empty.swift */; };
 		7A6DD7C91C3FC13900C5E71D /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A6DD7C81C3FC13900C5E71D /* SafariServices.framework */; };
 		7A83196C1B3AF54300EF6445 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A83196B1B3AF54300EF6445 /* AddressBook.framework */; };
 		7A83196E1B3AF54A00EF6445 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A83196D1B3AF54A00EF6445 /* MessageUI.framework */; };
@@ -56,6 +57,8 @@
 		7A4FFCF31AEA91AB00995DF0 /* TalkableSDKDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TalkableSDKDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A4FFCF81AEA91AB00995DF0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7A4FFCF91AEA91AB00995DF0 /* TalkableSDKDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TalkableSDKDemoTests.m; sourceTree = "<group>"; };
+		7A5E28B0242E0A330062C042 /* TalkableSDKDemo-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TalkableSDKDemo-Bridging-Header.h"; sourceTree = "<group>"; };
+		7A5E28B3242E0B030062C042 /* Empty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Empty.swift; sourceTree = "<group>"; };
 		7A6DD7C81C3FC13900C5E71D /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
 		7A83196B1B3AF54300EF6445 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
 		7A83196D1B3AF54A00EF6445 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
@@ -139,6 +142,8 @@
 				7A4FFCE71AEA91AB00995DF0 /* Main.storyboard */,
 				7A4FFCEA1AEA91AB00995DF0 /* Images.xcassets */,
 				7A4FFCEC1AEA91AB00995DF0 /* LaunchScreen.xib */,
+				7A5E28B0242E0A330062C042 /* TalkableSDKDemo-Bridging-Header.h */,
+				7A5E28B3242E0B030062C042 /* Empty.swift */,
 				7A4FFCDD1AEA91AB00995DF0 /* Supporting Files */,
 			);
 			path = TalkableSDKDemo;
@@ -220,6 +225,7 @@
 					7A4FFCD91AEA91AB00995DF0 = {
 						CreatedOnToolsVersion = 6.1.1;
 						DevelopmentTeam = 97R9ZGB9VS;
+						LastSwiftMigration = 1140;
 					};
 					7A4FFCF21AEA91AB00995DF0 = {
 						CreatedOnToolsVersion = 6.1.1;
@@ -272,6 +278,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7A4FFCE61AEA91AB00995DF0 /* ViewController.m in Sources */,
+				7A5E28B4242E0B030062C042 /* Empty.swift in Sources */,
 				7A4FFCE31AEA91AB00995DF0 /* AppDelegate.m in Sources */,
 				7A4FFCE01AEA91AB00995DF0 /* main.m in Sources */,
 			);
@@ -422,6 +429,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
@@ -434,6 +442,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.talkable.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "TalkableSDKDemo/TalkableSDKDemo-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -441,6 +452,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
@@ -453,12 +465,15 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.talkable.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "TalkableSDKDemo/TalkableSDKDemo-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
 		7A4FFD011AEA91AB00995DF0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -479,6 +494,7 @@
 		7A4FFD021AEA91AB00995DF0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
