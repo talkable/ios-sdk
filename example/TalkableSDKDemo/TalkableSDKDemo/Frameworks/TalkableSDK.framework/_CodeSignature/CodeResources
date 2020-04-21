@@ -22,7 +22,7 @@
 		</data>
 		<key>Headers/TalkableSDK-Swift.h</key>
 		<data>
-		l7kwkEC89HSIuDPoQ7YAnc2ZTOg=
+		xzETumQeSazXOvwnCqV3tCjl058=
 		</data>
 		<key>Headers/TalkableSDK.h</key>
 		<data>
@@ -30,47 +30,67 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		2hnnClMB4RjOuj0RH4gXy+Q/wdw=
+		Ggiw7Rn8Km4r6j+FuI9aFCn06Wk=
+		</data>
+		<key>Modules/TalkableSDK.swiftmodule/Project/arm.swiftsourceinfo</key>
+		<data>
+		HiFEawYrL8dabyQPP9tE6bEy5R8=
+		</data>
+		<key>Modules/TalkableSDK.swiftmodule/Project/arm64-apple-ios.swiftsourceinfo</key>
+		<data>
+		hFgZwogXtppNx7O+gY4/ETlOKmY=
+		</data>
+		<key>Modules/TalkableSDK.swiftmodule/Project/arm64.swiftsourceinfo</key>
+		<data>
+		hFgZwogXtppNx7O+gY4/ETlOKmY=
+		</data>
+		<key>Modules/TalkableSDK.swiftmodule/Project/armv7-apple-ios.swiftsourceinfo</key>
+		<data>
+		HiFEawYrL8dabyQPP9tE6bEy5R8=
+		</data>
+		<key>Modules/TalkableSDK.swiftmodule/Project/armv7.swiftsourceinfo</key>
+		<data>
+		HiFEawYrL8dabyQPP9tE6bEy5R8=
 		</data>
 		<key>Modules/TalkableSDK.swiftmodule/arm.swiftdoc</key>
 		<data>
-		pOzp7RZBCuFliWAuT18q21TFHo4=
+		3FlV+rJIeJKNLbjbUp1DaDrhqzY=
 		</data>
 		<key>Modules/TalkableSDK.swiftmodule/arm.swiftmodule</key>
 		<data>
-		x3aIcnETEeQxR3dzgS25lRL2Qq8=
+		/RRkMHatDhJeDIIJmqFEDQqDmbI=
 		</data>
 		<key>Modules/TalkableSDK.swiftmodule/arm64-apple-ios.swiftdoc</key>
 		<data>
-		ucUOm3KTEzzTcqNNO6Spu05ECPA=
+		PD/t8yQPfAzirkqU8Sb7xC+n0Fw=
 		</data>
 		<key>Modules/TalkableSDK.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<data>
-		Omb2l4rH/5eFc8Iaq6f80h0qXu4=
+		YZG0G1CSx2+tfrtntHiuNHJEkFY=
 		</data>
 		<key>Modules/TalkableSDK.swiftmodule/arm64.swiftdoc</key>
 		<data>
-		ucUOm3KTEzzTcqNNO6Spu05ECPA=
+		PD/t8yQPfAzirkqU8Sb7xC+n0Fw=
 		</data>
 		<key>Modules/TalkableSDK.swiftmodule/arm64.swiftmodule</key>
 		<data>
-		Omb2l4rH/5eFc8Iaq6f80h0qXu4=
+		YZG0G1CSx2+tfrtntHiuNHJEkFY=
 		</data>
 		<key>Modules/TalkableSDK.swiftmodule/armv7-apple-ios.swiftdoc</key>
 		<data>
-		pOzp7RZBCuFliWAuT18q21TFHo4=
+		3FlV+rJIeJKNLbjbUp1DaDrhqzY=
 		</data>
 		<key>Modules/TalkableSDK.swiftmodule/armv7-apple-ios.swiftmodule</key>
 		<data>
-		x3aIcnETEeQxR3dzgS25lRL2Qq8=
+		/RRkMHatDhJeDIIJmqFEDQqDmbI=
 		</data>
 		<key>Modules/TalkableSDK.swiftmodule/armv7.swiftdoc</key>
 		<data>
-		pOzp7RZBCuFliWAuT18q21TFHo4=
+		3FlV+rJIeJKNLbjbUp1DaDrhqzY=
 		</data>
 		<key>Modules/TalkableSDK.swiftmodule/armv7.swiftmodule</key>
 		<data>
-		x3aIcnETEeQxR3dzgS25lRL2Qq8=
+		/RRkMHatDhJeDIIJmqFEDQqDmbI=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -127,11 +147,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			l7kwkEC89HSIuDPoQ7YAnc2ZTOg=
+			xzETumQeSazXOvwnCqV3tCjl058=
 			</data>
 			<key>hash2</key>
 			<data>
-			Jzvg1a4BWqrut8whCSNK9h/RUJNWwrL7qs047rMwXwM=
+			VkgPydnKNgEp1TDsTpSEwDhngBKnzinpFAm+cUeLKYU=
 			</data>
 		</dict>
 		<key>Headers/TalkableSDK.h</key>
@@ -145,114 +165,169 @@
 			XcTkqdXd6CFy9erKAa7SQtHW8G5f5NQpBXU0ZLawQas=
 			</data>
 		</dict>
+		<key>Modules/TalkableSDK.swiftmodule/Project/arm.swiftsourceinfo</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			HiFEawYrL8dabyQPP9tE6bEy5R8=
+			</data>
+			<key>hash2</key>
+			<data>
+			qQ/loerQsGtAQ2q1Qqf7Zs0KLzjrBr6UGEFhcWCjV/o=
+			</data>
+		</dict>
+		<key>Modules/TalkableSDK.swiftmodule/Project/arm64-apple-ios.swiftsourceinfo</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			hFgZwogXtppNx7O+gY4/ETlOKmY=
+			</data>
+			<key>hash2</key>
+			<data>
+			icghvfQzC55+/K4EiIRjRaONu0C8rMc3oswnxGmylwY=
+			</data>
+		</dict>
+		<key>Modules/TalkableSDK.swiftmodule/Project/arm64.swiftsourceinfo</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			hFgZwogXtppNx7O+gY4/ETlOKmY=
+			</data>
+			<key>hash2</key>
+			<data>
+			icghvfQzC55+/K4EiIRjRaONu0C8rMc3oswnxGmylwY=
+			</data>
+		</dict>
+		<key>Modules/TalkableSDK.swiftmodule/Project/armv7-apple-ios.swiftsourceinfo</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			HiFEawYrL8dabyQPP9tE6bEy5R8=
+			</data>
+			<key>hash2</key>
+			<data>
+			qQ/loerQsGtAQ2q1Qqf7Zs0KLzjrBr6UGEFhcWCjV/o=
+			</data>
+		</dict>
+		<key>Modules/TalkableSDK.swiftmodule/Project/armv7.swiftsourceinfo</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			HiFEawYrL8dabyQPP9tE6bEy5R8=
+			</data>
+			<key>hash2</key>
+			<data>
+			qQ/loerQsGtAQ2q1Qqf7Zs0KLzjrBr6UGEFhcWCjV/o=
+			</data>
+		</dict>
 		<key>Modules/TalkableSDK.swiftmodule/arm.swiftdoc</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			pOzp7RZBCuFliWAuT18q21TFHo4=
+			3FlV+rJIeJKNLbjbUp1DaDrhqzY=
 			</data>
 			<key>hash2</key>
 			<data>
-			pOGgAsVNG3UHDvZ1kKeQAc6Q4ZYkS8W+q1D/b6/EkTk=
+			I5qi3ptLK9Jej8kZTFYyZkZyPogAB+K4PleEQN+sHwc=
 			</data>
 		</dict>
 		<key>Modules/TalkableSDK.swiftmodule/arm.swiftmodule</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			x3aIcnETEeQxR3dzgS25lRL2Qq8=
+			/RRkMHatDhJeDIIJmqFEDQqDmbI=
 			</data>
 			<key>hash2</key>
 			<data>
-			THeSgkoRBJpxlKKx85FtyxkR0VnIz7j478L1+cvXBRA=
+			U99m4pN8LYbTBTEoqkElP/hqHz341W487GYRByug5tg=
 			</data>
 		</dict>
 		<key>Modules/TalkableSDK.swiftmodule/arm64-apple-ios.swiftdoc</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			ucUOm3KTEzzTcqNNO6Spu05ECPA=
+			PD/t8yQPfAzirkqU8Sb7xC+n0Fw=
 			</data>
 			<key>hash2</key>
 			<data>
-			WyGLQnSOd9SKMiwsEv6p7UFaXvq/I5Zlqow8baflDdE=
+			uvVMq2vpanlHfz9N7/KMVG+NMG2y6nsva1ZLbrgmcMk=
 			</data>
 		</dict>
 		<key>Modules/TalkableSDK.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			Omb2l4rH/5eFc8Iaq6f80h0qXu4=
+			YZG0G1CSx2+tfrtntHiuNHJEkFY=
 			</data>
 			<key>hash2</key>
 			<data>
-			j8f9BSJNgjp4cZZ9yhpbBpe2w0993ikqb4owCN2OcGU=
+			nJH2M4OX+kS6AzLLAqBmxRHcivfwj0epVhlLptedUls=
 			</data>
 		</dict>
 		<key>Modules/TalkableSDK.swiftmodule/arm64.swiftdoc</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			ucUOm3KTEzzTcqNNO6Spu05ECPA=
+			PD/t8yQPfAzirkqU8Sb7xC+n0Fw=
 			</data>
 			<key>hash2</key>
 			<data>
-			WyGLQnSOd9SKMiwsEv6p7UFaXvq/I5Zlqow8baflDdE=
+			uvVMq2vpanlHfz9N7/KMVG+NMG2y6nsva1ZLbrgmcMk=
 			</data>
 		</dict>
 		<key>Modules/TalkableSDK.swiftmodule/arm64.swiftmodule</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			Omb2l4rH/5eFc8Iaq6f80h0qXu4=
+			YZG0G1CSx2+tfrtntHiuNHJEkFY=
 			</data>
 			<key>hash2</key>
 			<data>
-			j8f9BSJNgjp4cZZ9yhpbBpe2w0993ikqb4owCN2OcGU=
+			nJH2M4OX+kS6AzLLAqBmxRHcivfwj0epVhlLptedUls=
 			</data>
 		</dict>
 		<key>Modules/TalkableSDK.swiftmodule/armv7-apple-ios.swiftdoc</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			pOzp7RZBCuFliWAuT18q21TFHo4=
+			3FlV+rJIeJKNLbjbUp1DaDrhqzY=
 			</data>
 			<key>hash2</key>
 			<data>
-			pOGgAsVNG3UHDvZ1kKeQAc6Q4ZYkS8W+q1D/b6/EkTk=
+			I5qi3ptLK9Jej8kZTFYyZkZyPogAB+K4PleEQN+sHwc=
 			</data>
 		</dict>
 		<key>Modules/TalkableSDK.swiftmodule/armv7-apple-ios.swiftmodule</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			x3aIcnETEeQxR3dzgS25lRL2Qq8=
+			/RRkMHatDhJeDIIJmqFEDQqDmbI=
 			</data>
 			<key>hash2</key>
 			<data>
-			THeSgkoRBJpxlKKx85FtyxkR0VnIz7j478L1+cvXBRA=
+			U99m4pN8LYbTBTEoqkElP/hqHz341W487GYRByug5tg=
 			</data>
 		</dict>
 		<key>Modules/TalkableSDK.swiftmodule/armv7.swiftdoc</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			pOzp7RZBCuFliWAuT18q21TFHo4=
+			3FlV+rJIeJKNLbjbUp1DaDrhqzY=
 			</data>
 			<key>hash2</key>
 			<data>
-			pOGgAsVNG3UHDvZ1kKeQAc6Q4ZYkS8W+q1D/b6/EkTk=
+			I5qi3ptLK9Jej8kZTFYyZkZyPogAB+K4PleEQN+sHwc=
 			</data>
 		</dict>
 		<key>Modules/TalkableSDK.swiftmodule/armv7.swiftmodule</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			x3aIcnETEeQxR3dzgS25lRL2Qq8=
+			/RRkMHatDhJeDIIJmqFEDQqDmbI=
 			</data>
 			<key>hash2</key>
 			<data>
-			THeSgkoRBJpxlKKx85FtyxkR0VnIz7j478L1+cvXBRA=
+			U99m4pN8LYbTBTEoqkElP/hqHz341W487GYRByug5tg=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
