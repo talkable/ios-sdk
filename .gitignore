@@ -1,0 +1,13 @@
+# iOS/OSX (XCode)
+build
+tmp
+xcuserdata
+project.xcworkspace
+Intermediates
+.DS_Store
+
+example/TalkableSDKDemo/TalkableSDKDemo/TalkableServerConfig.h
+
+.pivotalrc
+.ruby-gemset
+.ruby-version
