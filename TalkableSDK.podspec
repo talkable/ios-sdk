@@ -15,7 +15,7 @@ Pod::Spec.new do |spec|
     - Twitter
     - SMS
     - by copying a direct Offer link
-    - Track sales via the App and reward Advocate if a sale was driven thourgh someone’s claim link
+  - Track sales via the App and reward Advocate if a sale was driven thourgh someone’s claim link
                    DESC
 
   spec.homepage     = "https://github.com/talkable/ios-sdk"
