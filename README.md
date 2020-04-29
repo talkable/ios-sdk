@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/cocoapods/l/TalkableSDK.svg?style=flat-square)](http://cocoapods.org/pods/TalkableSDK)
 [![Platform](https://img.shields.io/cocoapods/p/TalkableSDK.svg?style=flat-square)](http://cocoapods.org/pods/TalkableSDK)
 
-TalkableSDK makes it easy to integrate Talkable referral functionality into iOS apps.
+Talkable SDK makes it easy to integrate Talkable referral functionality into iOS apps.
 
 ## Installation
 
