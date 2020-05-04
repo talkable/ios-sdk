@@ -6,17 +6,17 @@ Pod::Spec.new do |spec|
   spec.summary      = "Talkable SDK makes it easy to integrate Talkable referral functionality into your apps."
 
   spec.description  = <<-DESC
-  Once integrated you can use the following Talkable capabilities:
+    Once integrated you can use the following Talkable capabilities:
 
-  - Display Advocate Share Page (the page itself is built inside Talkable)
-  - Share Offer via:
-    - Email
-    - Facebook
-    - Twitter
-    - SMS
-    - by copying a direct Offer link
-  - Track sales via the App and reward Advocate if a sale was driven thourgh someone’s claim link
-                   DESC
+    - Display Advocate Share Page (the page itself is built inside Talkable)
+    - Share Offer via:
+      - Email
+      - Facebook
+      - Twitter
+      - SMS
+      - by copying a direct Offer link
+    - Track sales via the App and reward Advocate if a sale was driven thourgh someone’s claim link
+  DESC
 
   spec.homepage     = "https://github.com/talkable/ios-sdk"
   spec.license      = { :type => 'MIT' }
