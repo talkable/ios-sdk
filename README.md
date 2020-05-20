@@ -7,7 +7,6 @@
 Talkable SDK makes it easy to integrate Talkable referral functionality into iOS apps.
 
 ## Requirements
-- [x] Xcode 11.
 - [x] iOS 9 or higher.
 
 ## Installation
