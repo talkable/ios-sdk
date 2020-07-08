@@ -8,11 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
-NSString* TKBLContactFirstNameKey;
-NSString* TKBLContactLastNameKey;
-NSString* TKBLContactFullNameKey;
-NSString* TKBLContactEmailKey;
-NSString* TKBLContactPhoneNumberKey;
+FOUNDATION_EXPORT NSString* TKBLContactFirstNameKey;
+FOUNDATION_EXPORT NSString* TKBLContactLastNameKey;
+FOUNDATION_EXPORT NSString* TKBLContactFullNameKey;
+FOUNDATION_EXPORT NSString* TKBLContactEmailKey;
+FOUNDATION_EXPORT NSString* TKBLContactPhoneNumberKey;
 
 @interface TKBLContactsLoader : NSObject
 
