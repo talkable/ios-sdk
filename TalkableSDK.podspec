@@ -1,6 +1,4 @@
-
 Pod::Spec.new do |spec|
-
   spec.name         = "TalkableSDK"
   spec.version      = "1.4.10"
   spec.summary      = "Talkable SDK makes it easy to integrate Talkable referral functionality into your apps."
@@ -19,7 +17,7 @@ Pod::Spec.new do |spec|
   DESC
 
   spec.homepage     = "https://github.com/talkable/ios-sdk"
-  spec.license      = { :type => 'MIT' }
+  spec.license      = { :type => 'MIT', :file => 'LICENSE' }
   spec.author             = "Talkable"
   spec.social_media_url   = "https://twitter.com/talkable"
 
