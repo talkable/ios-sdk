@@ -18,7 +18,7 @@ Talkable SDK makes it easy to integrate Talkable referral functionality into iOS
 $ gem install cocoapods
 ```
 
-To integrate TalkableSDK into your Xcode project using CocoaPods, specify it in your `Podfile`:
+To integrate TalkableSDK into your Xcode project using CocoaPods, specify it in your [`Podfile`](https://guides.cocoapods.org/using/the-podfile.html):
 
 ```ruby
 
