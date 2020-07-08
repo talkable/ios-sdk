@@ -21,15 +21,21 @@ $ gem install cocoapods
 To integrate TalkableSDK into your Xcode project using CocoaPods, specify it in your [`Podfile`](https://guides.cocoapods.org/using/the-podfile.html):
 
 ```ruby
-
 pod 'TalkableSDK'
-
 ```
 
 Then, run the following command:
 
 ```bash
 $ pod install
+```
+
+## Manual building
+
+To build the SDK manually, run the following command:
+
+```bash
+$ rake archive
 ```
 
 ## Documentation
