@@ -24,8 +24,8 @@ Pod::Spec.new do |spec|
   spec.platform     = :ios, "9.0"
 
   spec.source       = { :git => "https://github.com/talkable/ios-sdk.git", :tag => "#{spec.version}" }
-  spec.source_files  = "Talkable/**/*.{h,m}", "3rdParty/**/*.{h,m}"
-
+  spec.source_files  = "Talkable/**/*.{h,m}"
+  spec.dependency 'AFNetworking', '~> 2.5.4'
   spec.ios.frameworks = "UIKit", "AddressBook", "WebKit", "Social", "MessageUI", "Foundation", "Security", "SafariServices"
 
   spec.requires_arc = true
