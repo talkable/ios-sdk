@@ -32,18 +32,18 @@ NSString* TKBLContactPhoneNumberKey     = @"phone_number";
     }
     CFErrorRef error = NULL;
     ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, &error);
-    
+
     if (!addressBook) {
         TKBLLog(@"error while loading contacts - %@", CFBridgingRelease(error));
         return;
     }
-    
+
     ABAddressBookRequestAccessWithCompletion(addressBook, ^(bool granted, CFErrorRef error) {
         if (error)
             TKBLLog(@"error while loading contacts - %@", CFBridgingRelease(error));
 
         if (granted) {
-            NSArray* contacts = [self grabContactsFromAdressBook:addressBook];
+            NSArray* contacts = [self grabContactsFromAddressBook:addressBook];
             dispatch_async(dispatch_get_main_queue(), ^{
                 complitionHandler(contacts);
             });
@@ -64,26 +64,26 @@ NSString* TKBLContactPhoneNumberKey     = @"phone_number";
     return;
 }
 
-- (NSArray*)grabContactsFromAdressBook:(ABAddressBookRef)addressBook {
+- (NSArray*)grabContactsFromAddressBook:(ABAddressBookRef)addressBook {
     NSMutableArray* contacts = [NSMutableArray array];
-    
+
     NSArray* abContacts = CFBridgingRelease(ABAddressBookCopyArrayOfAllPeople(addressBook));
     for (int i = 0; i < [abContacts count]; i++) {
         ABRecordRef abContact = (__bridge ABRecordRef)abContacts[i];
-        
+
         NSString* firstName = CFBridgingRelease(ABRecordCopyValue(abContact, kABPersonFirstNameProperty));
         NSString* lastName  = CFBridgingRelease(ABRecordCopyValue(abContact, kABPersonLastNameProperty));
         NSString *fullName = firstName ? [[NSArray arrayWithObjects:firstName, lastName, nil] componentsJoinedByString:@" "] : [lastName copy];
-        
+
         NSMutableArray* phoneNumbers = [NSMutableArray array];
         ABMultiValueRef abPhoneNumbers = ABRecordCopyValue(abContact, kABPersonPhoneProperty);
         for (CFIndex phone_idx = 0; phone_idx < ABMultiValueGetCount(abPhoneNumbers); phone_idx++) {
             NSString* phoneNumber = CFBridgingRelease(ABMultiValueCopyValueAtIndex(abPhoneNumbers, phone_idx));
             [phoneNumbers addObject:phoneNumber];
-            
+
         }
         CFRelease(abPhoneNumbers);
-        
+
         NSMutableArray* emails = [NSMutableArray array];
         ABMultiValueRef abEmails = ABRecordCopyValue(abContact, kABPersonEmailProperty);
         for (CFIndex email_idx = 0; email_idx < ABMultiValueGetCount(abEmails); email_idx++) {
@@ -91,8 +91,7 @@ NSString* TKBLContactPhoneNumberKey     = @"phone_number";
             [emails addObject:email];
         }
         CFRelease(abEmails);
-        
-        
+
         [contacts addObject:@{
             TKBLContactFirstNameKey: firstName ? firstName : [NSNull null],
             TKBLContactLastNameKey: lastName ? lastName : [NSNull null],
@@ -103,6 +102,5 @@ NSString* TKBLContactPhoneNumberKey     = @"phone_number";
     }
     return [NSArray arrayWithArray:contacts];
 }
-
 
 @end

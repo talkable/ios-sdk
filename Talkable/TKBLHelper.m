@@ -26,11 +26,11 @@ NSString*   TKBLInstallRegisteredKey    = @"tkbl_install_registered";
     NSURL *documentsDirRoot = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
     NSDictionary* documentsDirAttributes = [manager attributesOfItemAtPath:documentsDirRoot.path error:nil];
     NSDate* creationDate = [documentsDirAttributes fileCreationDate];
-    
+
     NSString* bundleRoot = [[NSBundle mainBundle] bundlePath];
     NSDictionary* bundleAttributes = [manager attributesOfItemAtPath:bundleRoot error:nil];
     NSDate* modificationDate = [bundleAttributes fileModificationDate];
-    
+
     return ABS([modificationDate timeIntervalSinceDate:creationDate]) > 60;
 }
 
@@ -95,7 +95,6 @@ NSString*   TKBLInstallRegisteredKey    = @"tkbl_install_registered";
 + (BOOL)isTwitterSharingImplemented {
     return [[Talkable manager].delegate respondsToSelector:@selector(showTwitterShareDialogWithParams:completion:)];
 }
-
 
 + (BOOL)canSendNativeMail {
     return [MFMailComposeViewController class] != nil && [MFMailComposeViewController canSendMail];
