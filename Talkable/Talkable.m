@@ -58,7 +58,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 
 + (Talkable*)manager {
     if (![self talkableSupported]) return nil;
-    
+
     static Talkable* sharedManager = nil;
     if (sharedManager == nil) {
         @synchronized(self) {
@@ -75,18 +75,18 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
         NSLog(@"TalkableSDK suports iOS9.0 and later.");
         return NO;
     }
-    
+
     TKBLObjCChecker* checker = [[TKBLObjCChecker alloc] init];
     if (![checker flagExist]) {
         NSLog(@"Add -ObjC to Other Linker Flags to use TalkableSDK. More details at https://developer.apple.com/library/ios/qa/qa1490/_index.html");
         return NO;
     }
-    
+
     if ([WKWebView class] == nil) {
         NSLog(@"TalkableSDK needs WebKit.framework. It is not added to your project. Check http://docs.talkable.com/ios_sdk/getting_started.html for more details.");
         return NO;
     }
-    
+
     return YES;
 }
 
@@ -127,7 +127,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     if (!aApiKey || !aSiteSlug) {
         [self raiseException:NSInvalidArgumentException withMessage:@"You can not use nil for apiKey and siteSlug"];
     }
-    
+
     self.apiKey     = aApiKey;
     self.siteSlug   = aSiteSlug;
     self.server     = aServer ? aServer : TKBL_DEFAULT_SERVER;
@@ -139,23 +139,23 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 
 - (NSString*)visitorUUID {
     if (_uuid) return _uuid;
-    
+
     if (!_uuid) _uuid = [self uuidFromKeychain:@"tkbl_uuid"];
     if (!_uuid) _uuid = [self uuidFromPref:@"tkbl_uuid"];
     if (!_uuid) _uuid = [self generateUUID];
     if (_uuid) [self syncUUID:_uuid forKey:@"tkbl_uuid"];
-    
+
     return _uuid;
 }
 
 - (NSString*)deviceIdentifier {
     if (_deviceIdentifier) return _deviceIdentifier;
-    
+
     if (!_deviceIdentifier) _deviceIdentifier = [self uuidFromKeychain:@"tkbl_device_id"];
     if (!_deviceIdentifier) _deviceIdentifier = [self uuidFromPref:@"tkbl_device_id"];
     if (!_deviceIdentifier) _deviceIdentifier = [self generateUUID];
     if (_deviceIdentifier) [self syncUUID:_deviceIdentifier forKey:@"tkbl_device_id"];
-    
+
     return _deviceIdentifier;
 }
 
@@ -201,13 +201,13 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 
 - (void)registerOrigin:(TKBLOriginType)type params:(NSDictionary*)params {
     [self verifyApiKeyAndSiteSlug];
-    
+
     NSMutableDictionary* talkableParams = [NSMutableDictionary dictionaryWithDictionary:params];
     NSString* uuid = [self visitorUUID];
     if (uuid) {
         [talkableParams setObject:uuid forKey:@"current_visitor_uuid"];
     }
-    
+
     NSArray* originKeys = @[TKBLOriginKey, TKBLAffiliateMemberKey, TKBLPurchaseKey, TKBLEventKey];
     NSArray* filtered = [talkableParams objectsForKeys:originKeys notFoundMarker:[NSNull null]];
     NSUInteger idx = [filtered indexOfObjectPassingTest:^BOOL(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -237,16 +237,16 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
         }
     }
     [talkableParams setObject:originParams forKey:TKBLOriginKey];
-    
+
     NSString* webUUID = [self webUUID];
     if (webUUID) {
         [originParams setObject:webUUID forKey:@"alternative_visitor_uuid"];
     }
-    
+
     if (![originParams objectForKey:TKBLOriginTrafficSourceKey]) {
         [originParams setObject:@"ios" forKey:TKBLOriginTrafficSourceKey];
     }
-    
+
     if (![talkableParams objectForKey:TKBLCampaignTags]) {
         if (TKBLAffiliateMember == type) {
             [talkableParams setObject:@"ios-invite" forKey:TKBLCampaignTags];
@@ -254,16 +254,16 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
             [talkableParams setObject:@"ios-post-purchase" forKey:TKBLCampaignTags];
         }
     }
-    
+
     NSURL* requestURL = [self requestURL:type params:talkableParams excludingKeys: @[
                                                                                      TKBLPurchaseOrderItemTitleKey,
                                                                                      TKBLPurchaseOrderItemUrlKey,
                                                                                      TKBLPurchaseOrderItemImageUrlKey
                                                                                      ]];
     if (![self shouldRegisterOrigin:type withURL:requestURL]) return;
-    
+
     NSMutableURLRequest* request = [self serverRequest:requestURL];
-    
+
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:
@@ -296,7 +296,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
                  errorLocalizedDescription = NSLocalizedString([[NSString alloc] initWithData:errorMsgDecodedData encoding:NSUTF8StringEncoding], nil);
              }
          }
-         
+
          if (errorCode) {
              TKBLLog(@"%@: %@", errorFailureReason, errorLocalizedDescription);
              NSError* error = [NSError errorWithDomain:TKBLErrorDomain
@@ -308,15 +308,15 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
              [self notifyRegisterOrigin:type didFailWithError:error];
          } else {
              TKBLOfferViewController* controller = [[TKBLOfferViewController alloc] init];
-             
+
              WKWebView* webView = [self buildWebView];
              [self notifyOriginDidRegister:type withWebView:webView];
-             
+
              BOOL shouldPresent = YES;
              if ([self.delegate respondsToSelector:@selector(shouldPresentTalkableOfferViewController:)]) {
                  shouldPresent = [self.delegate shouldPresentTalkableOfferViewController:controller];
              }
-             
+
              if (shouldPresent) {
                  [webView setNavigationDelegate:controller];
                  CGRect frame = webView.frame;
@@ -325,7 +325,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
                  [controller.view addSubview:webView];
                  [self presentOfferViewController:controller];
              }
-             
+
              NSStringEncoding encoding = CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding((CFStringRef)response.textEncodingName));
              [webView loadHTMLString:[[NSString alloc] initWithData:responseData encoding:encoding] baseURL:requestURL];
          }
@@ -357,25 +357,25 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 - (void)createOrigin:(NSDictionary*)params withHandler:(TKBLCompletionHandler)handler {
     NSMutableDictionary* parameters = [self paramsForAPI:params];
     NSMutableDictionary* data = [NSMutableDictionary dictionaryWithDictionary:[params objectForKey:TKBLOriginDataKey]];
-    
+
     NSString* uuid = [self visitorUUID];
     if (![data objectForKey:TKBLOriginUUIDKey] && uuid) {
         [data setObject:uuid forKey:TKBLOriginUUIDKey];
     }
-    
+
     if (![data objectForKey:TKBLOriginTrafficSourceKey]) {
         [data setObject:@"ios" forKey:TKBLOriginTrafficSourceKey];
     }
-    
+
     NSString* webUUID = [self webUUID];
     if (webUUID) {
         [data setObject:webUUID forKey:@"alternative_visitor_uuid"];
     }
-    
+
     [data setObject:@"current" forKey:@"ip_address"];
-    
+
     [parameters setObject:data forKey:TKBLOriginDataKey];
-    
+
     NSString* urlString = [self urlForAPI:@"/origins"];
     [self logAPIRequest:urlString withMethod:@"POST" andParameters:parameters];
     [[self networkClient] POST:urlString parameters:parameters success:^(AFHTTPRequestOperation*operation, id responseObject) {
@@ -393,12 +393,12 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 
 - (void)retrieveRewards:(NSDictionary*)params withHandler:(TKBLCompletionHandler)handler {
     NSMutableDictionary* parameters = [self paramsForAPI:params];
-    
+
     NSString* uuid = [self visitorUUID];
     if (![parameters objectForKey:TKBLVisitorUUID] && uuid) {
         [parameters setObject:uuid forKey:TKBLVisitorUUID];
     }
-    
+
     NSString* urlString = [self urlForAPI:@"/rewards"];
     [self logAPIRequest:urlString withMethod:@"GET" andParameters:parameters];
     [[self networkClient] GET:urlString parameters:parameters success:^(AFHTTPRequestOperation* operation, id responseObject) {
@@ -417,7 +417,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 - (void)retrieveOffer:(NSString*)shortUrlCode withParams:(NSDictionary*)params andHandler:(TKBLCompletionHandler)handler {
     NSString* path = [NSString stringWithFormat:@"/offers/%@", shortUrlCode];
     NSDictionary* parameters = [self paramsForAPI:params];
-    
+
     NSString* urlString = [self urlForAPI:path];
     [self logAPIRequest:urlString withMethod:@"GET" andParameters:parameters];
     [[self networkClient] GET:urlString parameters:parameters success:^(AFHTTPRequestOperation* operation, id responseObject) {
@@ -445,7 +445,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     NSString* path = [NSString stringWithFormat:@"/offers/%@/shares/social", shortUrlCode];
     NSMutableDictionary* parameters = [self paramsForAPI:params];
     [parameters setObject:channel forKey:TKBLShareChannel];
-    
+
     NSString* urlString = [self urlForAPI:path];
     [self logAPIRequest:urlString withMethod:@"POST" andParameters:parameters];
     [[self networkClient] POST:urlString parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -465,7 +465,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     NSString* path = [NSString stringWithFormat:@"/offers/%@/shares/email", shortUrlCode];
     NSMutableDictionary* parameters = [self paramsForAPI:params];
     [parameters setObject:recipients forKey:TKBLShareRecipients];
-    
+
     NSString* urlString = [self urlForAPI:path];
     [self logAPIRequest:urlString withMethod:@"POST" andParameters:parameters];
     [[self networkClient] POST:urlString parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -482,27 +482,27 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 - (SLComposeViewController*)socialShare:(NSDictionary*)params {
     NSString* channel = [params objectForKey:TKBLShareChannel];
     NSString* serviceType = [self mapChanel:channel];
-    
+
     if (!serviceType) {
         TKBLLog(@"Using default chanel - %@", TKBLShareChannelFacebook);
         (void)(serviceType = SLServiceTypeFacebook),
         channel = TKBLShareChannelFacebook;
     }
-    
+
     SLComposeViewController* controller = [SLComposeViewController composeViewControllerForServiceType:serviceType];
-    
+
     id claimURL = [params objectForKey:TKBLOfferClaimUrlKey];
     if ([claimURL isKindOfClass:[NSString class]]) {
         [controller addURL:[NSURL URLWithString:claimURL]];
     } else if ([claimURL isKindOfClass:[NSURL class]]) {
         [controller addURL:claimURL];
     }
-    
+
     NSString* message = [params objectForKey:TKBLShareMessage];
     if (message) {
         [controller setInitialText:message];
     }
-    
+
     id image = [params objectForKey:TKBLShareImage];
     if ([image isKindOfClass:[UIImage class]]) {
         [controller addImage:image];
@@ -512,7 +512,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
         if (requestedImage)
             [controller addImage:requestedImage];
     }
-    
+
     NSString* offerShortUrlCode = [params objectForKey:TKBLOfferShortUrlCodeKey];
     if (offerShortUrlCode) {
         [controller setCompletionHandler:^(SLComposeViewControllerResult result){
@@ -523,7 +523,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     } else {
         TKBLLog(@"Specify %@ key or create share manually.", TKBLOfferShortUrlCodeKey);
     }
-    
+
     return controller;
 }
 
@@ -535,14 +535,14 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     } else if ([claimURL isKindOfClass:[NSURL class]]) {
         url = claimURL;
     }
-    
+
     if (!url) {
         TKBLLog(@"Specify %@ key as NSURL object", TKBLOfferClaimUrlKey);
         return nil;
     }
-    
+
     UIActivityViewController* controller = [[UIActivityViewController alloc] initWithActivityItems:@[claimURL] applicationActivities:nil];
-    
+
     NSString* offerShortUrlCode = [params objectForKey:TKBLOfferShortUrlCodeKey];
     if (offerShortUrlCode) {
         [controller setCompletionWithItemsHandler:^(NSString* activityType, BOOL completed, NSArray* returnedItems, NSError*activityError) {
@@ -583,7 +583,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     [uuids setObject:uuid forKey:self.server];
     [[NSUserDefaults standardUserDefaults] setValue:uuids forKey:key];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    
+
 }
 
 - (NSString*)uuidFromPref:(NSString*)key {
@@ -610,7 +610,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
         [self retryRegisterInstall];
         return;
     }
-    
+
     NSDictionary* originParams = @{
         TKBLOriginTypeKey: TKBLOriginTypeEvent,
         TKBLOriginDataKey: @{
@@ -618,7 +618,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
             TKBLEventNumberKey: [self deviceIdentifier]
         }
     };
-    
+
     [self createOrigin:originParams withHandler:^(NSDictionary* response, NSError* error) {
         if (error) {
             [self retryRegisterInstall];
@@ -704,24 +704,24 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     NSMutableDictionary* parameters = [self paramsForAPI:nil];
     NSString* path = [NSString stringWithFormat:@"/visitor_offers/%@/track_visit", visitorOfferId];
     NSString* urlString = [self urlForAPI:path];
-    
+
     [[self networkClient] PUT:urlString parameters:parameters success:nil failure:nil];
 }
 
 - (WKWebView*)buildWebView {
     [self registerCustomUserAgent];
-    
+
     WKWebViewConfiguration* webConfig = [[WKWebViewConfiguration alloc] init];
     WKUserContentController* contentController = [[WKUserContentController alloc] init];
     WKWebView* webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:webConfig];
     [webConfig setUserContentController:contentController];
-    
+
     webView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin;
     [self restoreOriginalUserAgent];
-    
+
     TKBLOfferTarget* target = [self offerTargetFor:webView];
     [webView.configuration.userContentController addScriptMessageHandler:target name:@"talkableiOSHub"];
-    
+
     return webView;
 }
 
@@ -745,9 +745,9 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 - (NSURL*)createProductRequestURLWithParams:(NSDictionary*)params {
     NSURLComponents* components = [NSURLComponents componentsWithString:self.server];
     components.path = [NSString stringWithFormat:@"/public/%@/%@/%@", self.siteSlug, @"products", @"create"];
-    NSString* query = [self buildQueryFromDictonary:@{TKBLProductKey: params} andPrefix:nil];
+    NSString* query = [self buildQueryFromDictionary:@{TKBLProductKey: params} andPrefix:nil];
     NSString* percentEncodedQuery = [query stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-    
+
     components.percentEncodedQuery = percentEncodedQuery;
     return components.URL;
 }
@@ -759,11 +759,11 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
         action = @"new";
     }
     components.path = [NSString stringWithFormat:@"/public/%@/%@/%@", self.siteSlug, [self pathForType:type], action] ;
-    
-    NSString* query = [self buildQueryFromDictonary:params andPrefix:nil excludingKeys:excludedKeys];
+
+    NSString* query = [self buildQueryFromDictionary:params andPrefix:nil excludingKeys:excludedKeys];
     NSString* percentEncodedQuery = [query stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     components.percentEncodedQuery = percentEncodedQuery;
-    
+
     return components.URL;
 }
 
@@ -779,11 +779,11 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:url];
     [request setHTTPMethod:httpMethod];
     [request setValue:userAgent forHTTPHeaderField:@"User-Agent"];
-    
+
     if ([self featuresJsonString]) {
         [request setValue:[self featuresJsonString] forHTTPHeaderField:@"X-Talkable-Native-Features"];
     }
-    
+
     return request;
 }
 
@@ -829,8 +829,8 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
             userAgent = [webView stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
         }
         if (userAgent) {
-            NSString* userAgentSufix = [NSString stringWithFormat:@"Talkable iOS/%@", TKBLVersion];
-            _userAgent = [NSString stringWithFormat:@"%@;%@", userAgent, userAgentSufix];
+            NSString* userAgentSuffix = [NSString stringWithFormat:@"Talkable iOS/%@", TKBLVersion];
+            _userAgent = [NSString stringWithFormat:@"%@;%@", userAgent, userAgentSuffix];
         }
     }
     return _userAgent;
@@ -864,7 +864,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     }
 }
 
-- (NSString*)buildQueryFromDictonary:(NSDictionary*)params andPrefix:(NSString*)prefix excludingKeys:(NSArray*)excludedKeys {
+- (NSString*)buildQueryFromDictionary:(NSDictionary*)params andPrefix:(NSString*)prefix excludingKeys:(NSArray*)excludedKeys {
     NSMutableArray* items = [NSMutableArray arrayWithCapacity:[params count]];
     [params enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL* stop) {
         if (![key isKindOfClass:[NSString class]]) {
@@ -878,8 +878,8 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     return [items componentsJoinedByString:@"&"];
 }
 
-- (NSString*)buildQueryFromDictonary:(NSDictionary*)params andPrefix:(NSString*)prefix {
-    return [self buildQueryFromDictonary:params andPrefix:prefix excludingKeys:nil];
+- (NSString*)buildQueryFromDictionary:(NSDictionary*)params andPrefix:(NSString*)prefix {
+    return [self buildQueryFromDictionary:params andPrefix:prefix excludingKeys:nil];
 }
 
 - (NSString*)buildQueryFromArray:(NSArray*)params andPrefix:(NSString*)prefix excludingNestedDictionaryKeys:(NSArray*)excludedKeys {
@@ -900,7 +900,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 
 - (void)addKeyName:(NSString*)keyName value:(id)value toArray:(NSMutableArray*)items excludingKeys:(NSArray*)excludedKeys {
     if ([value isKindOfClass:[NSDictionary class]]) {
-        [items addObject:[self buildQueryFromDictonary:value andPrefix:keyName excludingKeys:excludedKeys]];
+        [items addObject:[self buildQueryFromDictionary:value andPrefix:keyName excludingKeys:excludedKeys]];
     } else if ([value isKindOfClass:[NSArray class]]) {
         [items addObject:[self buildQueryFromArray:value andPrefix:keyName excludingNestedDictionaryKeys:excludedKeys]];
     } else {
@@ -921,7 +921,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
         NSLocale* enUSPOSIXLocale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
         [dateFormatter setLocale:enUSPOSIXLocale];
         [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
-        
+
         stringValue = [dateFormatter stringFromDate:value]; // iso8601
     } else {
         [self raiseException:NSInvalidArgumentException withMessage:[NSString stringWithFormat:@"Invalid class %@ for parameter value.", NSStringFromClass([value class])]];
@@ -957,21 +957,21 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 
 - (BOOL)handleUrlParam:(NSString*)param withValue:(NSString*)value {
     BOOL handled = NO;
-    
+
     // Visitor Offer
     if ([[param lowercaseString] isEqualToString:TKBLVisitorOfferKey]) {
         [self storeObject:value forKey:TKBLVisitorOfferKey];
         [self trackVisit:value];
         handled = YES;
     }
-    
+
     // Visitor Web UUID
     if ([[param lowercaseString] isEqualToString:TKBLVisitorWebUUIDKey]) {
         [self storeWebUUID:value];
         handled = YES;
         [self scheduleRegisterInstall:0.0];
     }
-    
+
     // Coupon
     NSCharacterSet* charactersToRemove = [[NSCharacterSet alphanumericCharacterSet] invertedSet];
     NSString* trimedParam = [[param componentsSeparatedByCharactersInSet:charactersToRemove] componentsJoinedByString:@""];
@@ -981,7 +981,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
         [self registerCoupon:value];
         handled = YES;
     }
-    
+
     return handled;
 }
 

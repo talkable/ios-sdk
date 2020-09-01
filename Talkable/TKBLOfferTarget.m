@@ -75,21 +75,21 @@
 
 - (void)tkblShareOfferViaFacebookMessage:(NSDictionary*)params sender:(id)sender {
     if (![TKBLHelper isFacebookMessengerInstalled]) {
-        TKBLLog(@"Facebook Messenger is not installed. Check http://docs.talkable.com/ios_sdk/getting_started.html#configuration for more details about using Facebook Messanger as a sharing channel.", nil);
+        TKBLLog(@"Facebook Messenger is not installed. Check http://docs.talkable.com/ios_sdk/getting_started.html#configuration for more details about using Facebook Messenger as a sharing channel.", nil);
         [self publishFeaturesInfo:sender];
         return;
     }
-    
-    // There is no way to pass a text to fb messanger, only an url.
+
+    // There is no way to pass a text to fb messenger, only an url.
     NSString* claimURL = [params objectForKey:TKBLOfferClaimUrlKey];
     NSString* escapedClaimURL = [claimURL stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
     UIApplication* app = [UIApplication sharedApplication];
-    
+
     // There is no way to check whether user shared a message or not
     [self shareSucceeded:(WKWebView*)sender withChannel:TKBLShareChannelFacebookMessage];
-    
+
     [app openURL:[NSURL URLWithString:[NSString stringWithFormat:@"fb-messenger://share?link=%@", escapedClaimURL]]];
-    
+
 }
 
 - (void)tkblShareOfferViaWhatsapp:(NSDictionary*)params sender:(id)sender {
@@ -98,23 +98,23 @@
         [self publishFeaturesInfo:sender];
         return;
     }
-    
+
     NSString* message = [params objectForKey:TKBLShareMessage];
     if (!message) {
         message = [NSString string];
     }
-    
+
     NSString* claimURL = [params objectForKey:TKBLOfferClaimUrlKey];
     if (claimURL && ![message containsString:claimURL]) {
         message = [NSString stringWithFormat:@"%@ %@", message, claimURL];
     }
-    
+
     NSString* escapedMessage = [message stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
     UIApplication* app = [UIApplication sharedApplication];
-    
+
     // There is no way to check whether the user shared a message or not
     [self shareSucceeded:(WKWebView*)sender withChannel:TKBLShareChannelWhatsApp];
-    
+
     [app openURL:[NSURL URLWithString:[NSString stringWithFormat:@"whatsapp://send?text=%@", escapedMessage]]];
 }
 
@@ -124,17 +124,17 @@
         [self publishFeaturesInfo:sender];
         return;
     }
-    
+
     NSString* message = [params objectForKey:TKBLShareMessage];
     if (!message) {
         message = [NSString string];
     }
-    
+
     NSString* claimURL = [params objectForKey:TKBLOfferClaimUrlKey];
     if (claimURL && ![message containsString:claimURL]) {
         message = [NSString stringWithFormat:@"%@ %@", message, claimURL];
     }
-    
+
     id recipients = [params objectForKey:TKBLShareRecipients];
     NSArray* recipientsList = nil;
     if (recipients) {
@@ -144,13 +144,13 @@
             recipientsList = [(NSString*)recipients componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@",;"]];
         }
     }
-    
+
     MFMessageComposeViewController* controller = [[MFMessageComposeViewController alloc] init];
     [controller setBody:message];
     if (recipientsList) {
         [controller setRecipients:recipientsList];
     }
-    
+
     TKBLMessageUIWatcher* watcher = [[TKBLMessageUIWatcher alloc] init];
     watcher.successCompletionHandler = ^(void){
         [self shareSucceeded:(WKWebView*)sender withChannel:TKBLShareChannelSMS];
@@ -195,7 +195,7 @@
         decisionHandler(WKNavigationActionPolicyCancel);
         return;
     }
-    
+
     decisionHandler(WKNavigationActionPolicyAllow);
 }
 
@@ -229,7 +229,7 @@
         [messageComponents addObject:[obj capitalizedString]];
     }];
     SEL msgSelector = NSSelectorFromString([NSString stringWithFormat:@"tkbl%@:sender:", [messageComponents componentsJoinedByString:@""]]);
-    
+
     return msgSelector;
 }
 
@@ -240,7 +240,7 @@
         TKBLLog(@"message params - %@", params);
         [userInfo setValue:params forKey:TKBLMessageParamsKey];
     }
-    
+
     [[NSNotificationCenter defaultCenter] postNotificationName:TKBLDidPublishMessageNotification
                                                         object:sender
                                                       userInfo:userInfo];
@@ -254,7 +254,7 @@
         IMP imp = [self methodForSelector:msgSelector];
         void (*func)(id, SEL, NSDictionary*, id) = (void*)imp;
         func(self, msgSelector, params, sender);
-        
+
     }
 }
 
@@ -266,33 +266,33 @@
 - (void)shareOnFacebookUsingSocialFrameworkWithParams:(NSDictionary*)params completion:(void (^)(void))completionHandler {
     if (!params)
         return;
-    
+
     TKBLLog(@"Facebook sharing is not configured. Falling back to deprecated Social.framework. Refer to https://docs.talkable.com/ios_sdk/social_sharing.html for details", nil);
-    
+
     if ([SLComposeViewController class] == nil) {
         TKBLLog(@"Social.framework is not added to your project. Check https://docs.talkable.com/ios_sdk/getting_started.html for more details.", nil);
         return;
     }
-    
+
     SLComposeViewController* shareController  = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
     NSString* claimURL = [params objectForKey:TKBLOfferClaimUrlKey];
     if (claimURL) {
         [shareController addURL:[NSURL URLWithString:claimURL]];
     }
-    
+
     NSString* message = [params objectForKey:TKBLShareMessage];
     if (message) {
         [shareController setInitialText:message];
     }
-    
+
     [shareController setCompletionHandler:^(SLComposeViewControllerResult result) {
         if (result == SLComposeViewControllerResultDone) {
             completionHandler();
         }
     }];
-    
+
     [[UIViewController currentViewController] presentViewController:shareController animated:YES completion:nil];
-    
+
 }
 
 - (void)publishFeaturesInfo:(id)sender {
@@ -305,29 +305,29 @@
 
 - (void)shareViaLinkWithParams:(NSDictionary*)params andSender:(id)sender {
     NSMutableArray* activityItems = [NSMutableArray array];
-    
+
     NSString* message = [params objectForKey:TKBLShareMessage];
     if (message) {
         [activityItems addObject:message];
     }
-    
+
     NSString* claimURL = [params objectForKey:TKBLOfferClaimUrlKey];
     if (claimURL) {
         [activityItems addObject:[NSURL URLWithString:claimURL]];
     }
-    
+
     if ([activityItems count] == 0) return;
-    
+
     UIActivityViewController* controller = [[UIActivityViewController alloc] initWithActivityItems:activityItems applicationActivities:nil];
-    
+
     [controller setCompletionWithItemsHandler:^(NSString* activityType, BOOL completed, NSArray* returnedItems, NSError*activityError) {
         if (!completed) return;
         [self shareSucceeded:(WKWebView*)sender withChannel:TKBLShareChannelOther];
-        
+
     }];
-    
+
     [controller setExcludedActivityTypes:@[UIActivityTypePostToFacebook, UIActivityTypePostToTwitter]];
-    
+
     [[UIViewController currentViewController] presentViewController:controller animated:YES completion:nil];
 }
 
