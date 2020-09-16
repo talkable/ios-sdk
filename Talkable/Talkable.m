@@ -829,8 +829,8 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
             systemVersion = [systemVersion stringByReplacingOccurrencesOfString:@"." withString:@"_"];
             userAgent = [NSString stringWithFormat:@"%@ OS %@ webview", systemName, systemVersion];
         }
-        NSString* userAgentSufix = [NSString stringWithFormat:@"Talkable iOS/%@", TKBLVersion];
-        _userAgent = [NSString stringWithFormat:@"%@;%@", userAgent, userAgentSufix];
+        NSString* userAgentSuffix = [NSString stringWithFormat:@"Talkable iOS/%@", TKBLVersion];
+        _userAgent = [NSString stringWithFormat:@"%@;%@", userAgent, userAgentSuffix];
     }
     return _userAgent;
 }
