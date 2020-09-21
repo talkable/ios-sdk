@@ -295,19 +295,18 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
             }
         }
         
-        if (errorCode) {
-            TKBLLog(@"%@: %@", errorFailureReason, errorLocalizedDescription);
-            NSError* error = [NSError errorWithDomain:TKBLErrorDomain
-                                                 code:errorCode
-                                             userInfo:@{
-                                                 NSLocalizedDescriptionKey: errorLocalizedDescription,
-                                                 NSLocalizedFailureReasonErrorKey: errorFailureReason
-                                             }];
-            dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (errorCode) {
+                TKBLLog(@"%@: %@", errorFailureReason, errorLocalizedDescription);
+                NSError* error = [NSError errorWithDomain:TKBLErrorDomain
+                                                     code:errorCode
+                                                 userInfo:@{
+                                                     NSLocalizedDescriptionKey: errorLocalizedDescription,
+                                                     NSLocalizedFailureReasonErrorKey: errorFailureReason
+                                                 }];
+                
                 [self notifyRegisterOrigin:type didFailWithError:error];
-            });
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
+            } else {
                 TKBLOfferViewController* controller = [[TKBLOfferViewController alloc] init];
                 
                 WKWebView* webView = [self buildWebView];
@@ -329,8 +328,8 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
                 
                 NSStringEncoding encoding = CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding((CFStringRef)response.textEncodingName));
                 [webView loadHTMLString:[[NSString alloc] initWithData:data encoding:encoding] baseURL:requestURL];
-            });
-        }
+            }
+        });
     }] resume] ;
 }
 
