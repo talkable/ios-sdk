@@ -449,16 +449,16 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     NSMutableDictionary* parameters = [self paramsForAPI:params];
     [parameters setObject:channel forKey:TKBLShareChannel];
 
-     NSString* urlString = [self urlForAPI:path];
-       [self logAPIRequest:urlString withMethod:@"POST" andParameters:parameters];
+    NSString* urlString = [self urlForAPI:path];
+    [self logAPIRequest:urlString withMethod:@"POST" andParameters:parameters];
        
-       [[self networkClient] POST:urlString parameters:parameters headers:nil constructingBodyWithBlock:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-           [self processSuccessfulResponse:responseObject withHandler:handler];
-       } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-           [self processFailedResponse:task.response
-                      withNetworkError:error
-                        andWithHandler:handler];
-       }];
+    [[self networkClient] POST:urlString parameters:parameters headers:nil constructingBodyWithBlock:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        [self processSuccessfulResponse:responseObject withHandler:handler];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [self processFailedResponse:task.response
+                   withNetworkError:error
+                     andWithHandler:handler];
+    }];
 }
 
 - (void)createEmailShare:(NSString*)shortUrlCode recipients:(NSString *)recipients withHandler:(TKBLCompletionHandler)handler {
@@ -474,12 +474,13 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     [self logAPIRequest:urlString withMethod:@"POST" andParameters:parameters];
     
     [[self networkClient] POST:urlString parameters:parameters headers:nil constructingBodyWithBlock:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-           [self processSuccessfulResponse:responseObject withHandler:handler];
-       } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-           [self processFailedResponse:task.response
-                      withNetworkError:error
-                        andWithHandler:handler];
-    }];}
+        [self processSuccessfulResponse:responseObject withHandler:handler];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [self processFailedResponse:task.response
+                   withNetworkError:error
+                     andWithHandler:handler];
+    }];
+}
 
 #pragma mark - [Sharing]
 
