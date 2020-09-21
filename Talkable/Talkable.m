@@ -263,7 +263,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     if (![self shouldRegisterOrigin:type withURL:requestURL]) return;
 
     NSURLRequest* request = [self serverRequest:requestURL];
-    
+
     [[[NSURLSession sharedSession] dataTaskWithRequest:request
                                      completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable networkError) {
         NSInteger errorCode = 0;
@@ -294,29 +294,29 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
                 errorLocalizedDescription = NSLocalizedString([[NSString alloc] initWithData:errorMsgDecodedData encoding:NSUTF8StringEncoding], nil);
             }
         }
-        
+
         dispatch_async(dispatch_get_main_queue(), ^{
             if (errorCode) {
                 TKBLLog(@"%@: %@", errorFailureReason, errorLocalizedDescription);
                 NSError* error = [NSError errorWithDomain:TKBLErrorDomain
                                                      code:errorCode
                                                  userInfo:@{
-                                                     NSLocalizedDescriptionKey: errorLocalizedDescription,
-                                                     NSLocalizedFailureReasonErrorKey: errorFailureReason
-                                                 }];
-                
+                                                            NSLocalizedDescriptionKey: errorLocalizedDescription,
+                                                            NSLocalizedFailureReasonErrorKey: errorFailureReason
+                                                            }];
+
                 [self notifyRegisterOrigin:type didFailWithError:error];
             } else {
                 TKBLOfferViewController* controller = [[TKBLOfferViewController alloc] init];
-                
+
                 WKWebView* webView = [self buildWebView];
                 [self notifyOriginDidRegister:type withWebView:webView];
-                
+
                 BOOL shouldPresent = YES;
                 if ([self.delegate respondsToSelector:@selector(shouldPresentTalkableOfferViewController:)]) {
                     shouldPresent = [self.delegate shouldPresentTalkableOfferViewController:controller];
                 }
-                
+
                 if (shouldPresent) {
                     [webView setNavigationDelegate:controller];
                     CGRect frame = webView.frame;
@@ -325,7 +325,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
                     [controller.view addSubview:webView];
                     [self presentOfferViewController:controller];
                 }
-                
+
                 NSStringEncoding encoding = CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding((CFStringRef)response.textEncodingName));
                 [webView loadHTMLString:[[NSString alloc] initWithData:data encoding:encoding] baseURL:requestURL];
             }
@@ -335,10 +335,9 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 
 - (void)registerProduct:(NSDictionary*)productParams {
     NSURL* url = [self createProductRequestURLWithParams:productParams];
-    
+
     [[[NSURLSession sharedSession] dataTaskWithRequest:[self serverRequest:url]
                                      completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable networkError) {
-        
         NSString* resultDescription = [NSString new];
         if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
             NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
