@@ -303,7 +303,9 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
                                                  NSLocalizedDescriptionKey: errorLocalizedDescription,
                                                  NSLocalizedFailureReasonErrorKey: errorFailureReason
                                              }];
-            [self notifyRegisterOrigin:type didFailWithError:error];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self notifyRegisterOrigin:type didFailWithError:error];
+            });
         } else {
             dispatch_async(dispatch_get_main_queue(), ^{
                 TKBLOfferViewController* controller = [[TKBLOfferViewController alloc] init];
