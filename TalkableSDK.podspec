@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = "TalkableSDK"
-  spec.version      = "1.4.10"
+  spec.version      = "1.4.11"
   spec.summary      = "Talkable SDK makes it easy to integrate Talkable referral functionality into your apps."
 
   spec.description  = <<-DESC
@@ -25,7 +25,7 @@ Pod::Spec.new do |spec|
 
   spec.source       = { :git => "https://github.com/talkable/ios-sdk.git", :tag => "#{spec.version}" }
   spec.source_files  = "Talkable/**/*.{h,m}"
-  spec.dependency 'AFNetworking', '~> 2.5.4'
+  spec.dependency 'AFNetworking', '~> 4.0'
   spec.ios.frameworks = "UIKit", "AddressBook", "WebKit", "Social", "MessageUI", "Foundation", "Security", "SafariServices"
 
   spec.requires_arc = true
