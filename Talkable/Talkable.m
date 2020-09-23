@@ -824,14 +824,13 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     if (!_userAgent) {
         NSString* userAgent = [self originalUserAgent];
         if (!userAgent) {
-            UIWebView*  webView = [[UIWebView alloc] init];
-            [webView loadHTMLString:@"<html></html>" baseURL:nil];
-            userAgent = [webView stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
+            NSString* systemName = [[UIDevice currentDevice] model];
+            NSString* systemVersion = [[UIDevice currentDevice] systemVersion];
+            systemVersion = [systemVersion stringByReplacingOccurrencesOfString:@"." withString:@"_"];
+            userAgent = [NSString stringWithFormat:@"%@ OS %@ webview", systemName, systemVersion];
         }
-        if (userAgent) {
-            NSString* userAgentSuffix = [NSString stringWithFormat:@"Talkable iOS/%@", TKBLVersion];
-            _userAgent = [NSString stringWithFormat:@"%@;%@", userAgent, userAgentSuffix];
-        }
+        NSString* userAgentSuffix = [NSString stringWithFormat:@"Talkable iOS/%@", TKBLVersion];
+        _userAgent = [NSString stringWithFormat:@"%@;%@", userAgent, userAgentSuffix];
     }
     return _userAgent;
 }
