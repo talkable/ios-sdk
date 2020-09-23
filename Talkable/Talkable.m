@@ -262,94 +262,93 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
                                                                                      ]];
     if (![self shouldRegisterOrigin:type withURL:requestURL]) return;
 
-    NSMutableURLRequest* request = [self serverRequest:requestURL];
+    NSURLRequest* request = [self serverRequest:requestURL];
 
-    [NSURLConnection sendAsynchronousRequest:request
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:
-     ^(NSURLResponse* response, NSData* responseData, NSError* networkError) {
-         NSInteger errorCode = 0;
-         NSString* errorLocalizedDescription = nil;
-         NSString* errorFailureReason = TKBLFailureReasonRequestError;
-         if (networkError || ![response isKindOfClass: [NSHTTPURLResponse class]]) {
-             errorCode = TKBLNetworkError;
-             errorLocalizedDescription = networkError ? networkError.localizedDescription : @"Invalid Response";
-         } else {
-             NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
-             if (httpResponse.allHeaderFields[TKBLHeaderErrorCode]) {
-                 errorFailureReason = httpResponse.allHeaderFields[TKBLHeaderErrorCode];
-             }
-             if (httpResponse.statusCode >= 500) {
-                 errorCode = TKBLApiError;
-                 errorLocalizedDescription = NSLocalizedString(@"Trouble reaching Talkable servers, please try again later", nil);
-             } else if (httpResponse.statusCode >= 400) {
-                 errorCode = TKBLRequestError;
-                 errorLocalizedDescription = NSLocalizedString(@"Request can't be processed", nil);
-             } else if (errorFailureReason != TKBLFailureReasonRequestError) {
-                 if (errorFailureReason == TKBLFailureReasonSiteNotFound) {
-                     errorCode = TKBLRequestError;
-                 } else {
-                     errorCode = TKBLCampaignError;
-                 }
-                 NSData* errorMsgDecodedData = [[NSData alloc] initWithBase64EncodedString:httpResponse.allHeaderFields[TKBLHeaderErrorMessage] ?: @""
-                                                                                   options:NSDataBase64DecodingIgnoreUnknownCharacters];
-                 errorLocalizedDescription = NSLocalizedString([[NSString alloc] initWithData:errorMsgDecodedData encoding:NSUTF8StringEncoding], nil);
-             }
-         }
+    [[[NSURLSession sharedSession] dataTaskWithRequest:request
+                                     completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable networkError) {
+        NSInteger errorCode = 0;
+        NSString* errorLocalizedDescription = nil;
+        NSString* errorFailureReason = TKBLFailureReasonRequestError;
+        if (networkError || ![response isKindOfClass: [NSHTTPURLResponse class]]) {
+            errorCode = TKBLNetworkError;
+            errorLocalizedDescription = networkError ? networkError.localizedDescription : @"Invalid Response";
+        } else {
+            NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
+            if (httpResponse.allHeaderFields[TKBLHeaderErrorCode]) {
+                errorFailureReason = httpResponse.allHeaderFields[TKBLHeaderErrorCode];
+            }
+            if (httpResponse.statusCode >= 500) {
+                errorCode = TKBLApiError;
+                errorLocalizedDescription = NSLocalizedString(@"Trouble reaching Talkable servers, please try again later", nil);
+            } else if (httpResponse.statusCode >= 400) {
+                errorCode = TKBLRequestError;
+                errorLocalizedDescription = NSLocalizedString(@"Request can't be processed", nil);
+            } else if (errorFailureReason != TKBLFailureReasonRequestError) {
+                if (errorFailureReason == TKBLFailureReasonSiteNotFound) {
+                    errorCode = TKBLRequestError;
+                } else {
+                    errorCode = TKBLCampaignError;
+                }
+                NSData* errorMsgDecodedData = [[NSData alloc] initWithBase64EncodedString:httpResponse.allHeaderFields[TKBLHeaderErrorMessage] ?: @""
+                                                                                  options:NSDataBase64DecodingIgnoreUnknownCharacters];
+                errorLocalizedDescription = NSLocalizedString([[NSString alloc] initWithData:errorMsgDecodedData encoding:NSUTF8StringEncoding], nil);
+            }
+        }
 
-         if (errorCode) {
-             TKBLLog(@"%@: %@", errorFailureReason, errorLocalizedDescription);
-             NSError* error = [NSError errorWithDomain:TKBLErrorDomain
-                                                  code:errorCode
-                                              userInfo:@{
-                                                         NSLocalizedDescriptionKey: errorLocalizedDescription,
-                                                         NSLocalizedFailureReasonErrorKey: errorFailureReason
-                                                         }];
-             [self notifyRegisterOrigin:type didFailWithError:error];
-         } else {
-             TKBLOfferViewController* controller = [[TKBLOfferViewController alloc] init];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (errorCode) {
+                TKBLLog(@"%@: %@", errorFailureReason, errorLocalizedDescription);
+                NSError* error = [NSError errorWithDomain:TKBLErrorDomain
+                                                     code:errorCode
+                                                 userInfo:@{
+                                                            NSLocalizedDescriptionKey: errorLocalizedDescription,
+                                                            NSLocalizedFailureReasonErrorKey: errorFailureReason
+                                                            }];
 
-             WKWebView* webView = [self buildWebView];
-             [self notifyOriginDidRegister:type withWebView:webView];
+                [self notifyRegisterOrigin:type didFailWithError:error];
+            } else {
+                TKBLOfferViewController* controller = [[TKBLOfferViewController alloc] init];
 
-             BOOL shouldPresent = YES;
-             if ([self.delegate respondsToSelector:@selector(shouldPresentTalkableOfferViewController:)]) {
-                 shouldPresent = [self.delegate shouldPresentTalkableOfferViewController:controller];
-             }
+                WKWebView* webView = [self buildWebView];
+                [self notifyOriginDidRegister:type withWebView:webView];
 
-             if (shouldPresent) {
-                 [webView setNavigationDelegate:controller];
-                 CGRect frame = webView.frame;
-                 frame = controller.view.bounds;
-                 webView.frame = frame;
-                 [controller.view addSubview:webView];
-                 [self presentOfferViewController:controller];
-             }
+                BOOL shouldPresent = YES;
+                if ([self.delegate respondsToSelector:@selector(shouldPresentTalkableOfferViewController:)]) {
+                    shouldPresent = [self.delegate shouldPresentTalkableOfferViewController:controller];
+                }
 
-             NSStringEncoding encoding = CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding((CFStringRef)response.textEncodingName));
-             [webView loadHTMLString:[[NSString alloc] initWithData:responseData encoding:encoding] baseURL:requestURL];
-         }
-     }];
+                if (shouldPresent) {
+                    [webView setNavigationDelegate:controller];
+                    CGRect frame = webView.frame;
+                    frame = controller.view.bounds;
+                    webView.frame = frame;
+                    [controller.view addSubview:webView];
+                    [self presentOfferViewController:controller];
+                }
+
+                NSStringEncoding encoding = CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding((CFStringRef)response.textEncodingName));
+                [webView loadHTMLString:[[NSString alloc] initWithData:data encoding:encoding] baseURL:requestURL];
+            }
+        });
+    }] resume] ;
 }
 
 - (void)registerProduct:(NSDictionary*)productParams {
     NSURL* url = [self createProductRequestURLWithParams:productParams];
-    [NSURLConnection sendAsynchronousRequest:[self serverRequest:url]
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse * _Nullable response,
-                                               NSData * _Nullable data,
-                                               NSError * _Nullable connectionError) {
-       NSString* resultDescription = [NSString new];
-       if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
-           NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
-           resultDescription = [NSHTTPURLResponse localizedStringForStatusCode:httpResponse.statusCode];
-       } else {
-           resultDescription = connectionError ? connectionError.localizedDescription : @"Invalid Response";
-       }
-       TKBLLog(@"Create product request resulted in: `%@` to URL: %@",
-               resultDescription,
-               url.absoluteString);
-   }];
+
+    [[[NSURLSession sharedSession] dataTaskWithRequest:[self serverRequest:url]
+                                     completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable networkError) {
+        NSString* resultDescription = [NSString new];
+        if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
+            NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
+            resultDescription = [NSHTTPURLResponse localizedStringForStatusCode:httpResponse.statusCode];
+        } else {
+            resultDescription = networkError ? networkError.localizedDescription : @"Invalid Response";
+        }
+        TKBLLog(@"Create product request resulted in: `%@` to URL: %@",
+                resultDescription,
+                url.absoluteString);
+    }] resume];
 }
 
 #pragma mark - [API]
