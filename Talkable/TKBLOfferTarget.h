@@ -8,7 +8,7 @@
 
 #import <WebKit/WebKit.h>
 
-@interface TKBLOfferTarget: NSObject <WKNavigationDelegate, WKScriptMessageHandler>
+@interface TKBLOfferTarget: NSObject <WKScriptMessageHandler>
 
 - (id)initWithWebView:(WKWebView*)webView;
 

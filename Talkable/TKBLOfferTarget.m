@@ -186,19 +186,6 @@
     [self publishFeaturesInfo:sender];
 }
 
-#pragma mark - [WKNavigationDelegate]
-
-- (void)webView:(WKWebView*)webView decidePolicyForNavigationAction:(WKNavigationAction*)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
-    if (navigationAction.navigationType == WKNavigationTypeLinkActivated &&
-        ![self isAnchorNavigation:webView.URL to:navigationAction.request.URL]) {
-        [[UIApplication sharedApplication] openURL:[navigationAction.request URL]];
-        decisionHandler(WKNavigationActionPolicyCancel);
-        return;
-    }
-
-    decisionHandler(WKNavigationActionPolicyAllow);
-}
-
 #pragma mark - [WKScriptMessageHandler]
 
 - (void)userContentController:(WKUserContentController*)userContentController didReceiveScriptMessage:(WKScriptMessage*)message {
@@ -213,15 +200,6 @@
 }
 
 #pragma mark - [Private]
-
-- (BOOL)isAnchorNavigation:(NSURL*)currentURL to:(NSURL*)requestedURL {
-    return [[self urlStringWithoutAnchor:currentURL] isEqualToString:[self urlStringWithoutAnchor:requestedURL]];
-}
-
-- (NSString*)urlStringWithoutAnchor:(NSURL*)url {
-    NSString* anchor = [NSString stringWithFormat:@"#%@", url.fragment];
-    return [url.absoluteString stringByReplacingOccurrencesOfString:anchor withString:@""];
-}
 
 - (SEL)selectorFromMessage:(NSString*)message {
     NSMutableArray* messageComponents = [NSMutableArray array];
