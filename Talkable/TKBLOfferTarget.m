@@ -171,7 +171,7 @@
 }
 
 - (void)tkblImportContacts:(NSDictionary*)params sender:(id)sender {
-    [[TKBLContactsLoader loader] loadContactsWithComplitionHandler:^(NSArray* contacts) {
+    [[TKBLContactsLoader new] loadContactsWithComplitionHandler:^(NSArray *contacts) {
         TKBLLog(@"Imported contacts - %@", contacts);
         NSData* data = [NSJSONSerialization dataWithJSONObject:@{@"contacts":contacts} options:0 error:nil];
         NSString* json =  [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];

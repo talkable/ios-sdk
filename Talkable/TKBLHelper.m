@@ -77,6 +77,16 @@ NSString*   TKBLInstallRegisteredKey    = @"tkbl_install_registered";
         [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"fbauth2://"]];;
 }
 
++ (UIViewController*) topMostController {
+    UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
+
+    while (topController.presentedViewController) {
+        topController = topController.presentedViewController;
+    }
+
+    return topController;
+}
+
 #pragma mark - [Private]
 
 + (BOOL)canSendSMS {
