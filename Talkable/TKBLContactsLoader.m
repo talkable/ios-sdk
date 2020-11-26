@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <AddressBook/AddressBook.h>
 #import <Contacts/Contacts.h>
 
 #import "TKBLContactsLoader.h"
