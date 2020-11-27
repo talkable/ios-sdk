@@ -720,6 +720,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     WKWebView* webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:webConfig];
     [webConfig setUserContentController:contentController];
 
+    webView.allowsLinkPreview = false;
     webView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin;
     [self restoreOriginalUserAgent];
 
