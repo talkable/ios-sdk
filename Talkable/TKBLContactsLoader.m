@@ -21,12 +21,12 @@ NSString* TKBLContactPhoneNumberKey     = @"phone_number";
 
 @implementation TKBLContactsLoader
 
-- (void)loadContactsWithComplitionHandler:(void(^)(NSArray* contacts))complitionHandler {
-    [self requestForAccessWithComplition:^(BOOL granted) {
+- (void)loadContactsWithcompletionHandler:(void(^)(NSArray* contacts))completionHandler {
+    [self requestForAccessWithcompletion:^(BOOL granted) {
         if (granted) {
             NSArray *contacts = [self grabContacts];
             dispatch_async(dispatch_get_main_queue(), ^{
-                complitionHandler(contacts);
+                completionHandler(contacts);
             });
         } else {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -37,7 +37,7 @@ NSString* TKBLContactPhoneNumberKey     = @"phone_number";
 }
 
 - (void)presentPermissionAlert {
-    NSString *message = NSLocalizedString(@"This app requires access to your contacts to function properly. Please visit to the Privacy section in the Settings app.", nil);
+    NSString *message = NSLocalizedString(@"This app requires access to your contacts to function properly. Please visit the Privacy section in the Settings app.", nil);
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:message preferredStyle:UIAlertControllerStyleAlert];
 
     UIAlertAction *action = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
@@ -75,7 +75,7 @@ NSString* TKBLContactPhoneNumberKey     = @"phone_number";
             } else if (firstName == nil){
                 fullName = [NSString stringWithFormat:@"%@", lastName];
             } else {
-                fullName = [NSString stringWithFormat:@"%@ %@",firstName, lastName];
+                fullName = [NSString stringWithFormat:@"%@ %@", firstName, lastName];
             }
 
             for (CNLabeledValue *label in contact.phoneNumbers) {
@@ -103,13 +103,13 @@ NSString* TKBLContactPhoneNumberKey     = @"phone_number";
     return [NSArray arrayWithArray:contacts];
 }
 
-- (void)requestForAccessWithComplition:(void(^)(BOOL granted))complitionHandler {
+- (void)requestForAccessWithcompletion:(void(^)(BOOL granted))completionHandler {
     CNAuthorizationStatus status = [CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts];
     CNContactStore *store = [[CNContactStore alloc] init];
     
     switch (status) {
         case CNAuthorizationStatusAuthorized:
-            complitionHandler(YES);
+            completionHandler(YES);
             
             break;
         case CNAuthorizationStatusRestricted:
@@ -120,7 +120,7 @@ NSString* TKBLContactPhoneNumberKey     = @"phone_number";
                     TKBLLog(@"error while loading contacts - %@", [error localizedDescription]);
                 }
                 
-                complitionHandler(granted);
+                completionHandler(granted);
             }];
             
             break;
