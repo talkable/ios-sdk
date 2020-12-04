@@ -16,6 +16,6 @@ FOUNDATION_EXPORT NSString* TKBLContactPhoneNumberKey;
 
 @interface TKBLContactsLoader : NSObject
 
-- (void)loadContactsWithcompletionHandler:(void(^)(NSArray* contacts))completionHandler;
+- (void)loadContactsWithCompletionHandler:(void(^)(NSArray* contacts))completionHandler;
 
 @end

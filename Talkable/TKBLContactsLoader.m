@@ -21,8 +21,8 @@ NSString* TKBLContactPhoneNumberKey     = @"phone_number";
 
 @implementation TKBLContactsLoader
 
-- (void)loadContactsWithcompletionHandler:(void(^)(NSArray* contacts))completionHandler {
-    [self requestForAccessWithcompletion:^(BOOL granted) {
+- (void)loadContactsWithCompletionHandler:(void(^)(NSArray* contacts))completionHandler {
+    [self requestForAccessWithCompletion:^(BOOL granted) {
         if (granted) {
             NSArray *contacts = [self grabContacts];
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -63,19 +63,18 @@ NSString* TKBLContactPhoneNumberKey     = @"phone_number";
         if (error) {
             TKBLLog(@"error while loading contacts - %@", [error localizedDescription]);
         } else {
-            ;
             NSString *fullName;
             NSString *firstName = contact.givenName;
             NSString *lastName = contact.familyName;
             NSMutableArray *phoneNumbers = [NSMutableArray new];
             NSMutableArray *emailAddresses = [NSMutableArray new];
 
-            if (lastName == nil) {
-                fullName = [NSString stringWithFormat:@"%@", firstName];
-            } else if (firstName == nil){
-                fullName = [NSString stringWithFormat:@"%@", lastName];
-            } else {
+            if (firstName != nil && lastName != nil) {
                 fullName = [NSString stringWithFormat:@"%@ %@", firstName, lastName];
+            } else if (firstName != nil) {
+                fullName = [NSString stringWithFormat:@"%@", firstName];
+            } else if (lastName != nil) {
+                fullName = [NSString stringWithFormat:@"%@", lastName];
             }
 
             for (CNLabeledValue *label in contact.phoneNumbers) {
@@ -103,7 +102,7 @@ NSString* TKBLContactPhoneNumberKey     = @"phone_number";
     return [NSArray arrayWithArray:contacts];
 }
 
-- (void)requestForAccessWithcompletion:(void(^)(BOOL granted))completionHandler {
+- (void)requestForAccessWithCompletion:(void(^)(BOOL granted))completionHandler {
     CNAuthorizationStatus status = [CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts];
     CNContactStore *store = [[CNContactStore alloc] init];
     
