@@ -75,6 +75,19 @@
     [self didFailNavigation:webView withError:error];
 }
 
+- (void)webView:(WKWebView*)webView decidePolicyForNavigationAction:(WKNavigationAction*)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+    if (navigationAction.navigationType == WKNavigationTypeLinkActivated) {
+        NSURL *url = navigationAction.request.URL;
+        UIApplication *app = [UIApplication sharedApplication];
+        if (![self isAnchorNavigation:webView.URL to:url] && [app canOpenURL:url]) {
+            [app openURL:url];
+            decisionHandler(WKNavigationActionPolicyCancel);
+            return;
+        }
+    }
+    decisionHandler(WKNavigationActionPolicyAllow);
+}
+
 #pragma mark - [Notifications]
 
 - (void)publishMessageNotification:(NSNotification*)ntf {
@@ -93,6 +106,17 @@
             }];
         }
     }
+}
+
+#pragma mark - [Private]
+
+- (BOOL)isAnchorNavigation:(NSURL*)currentURL to:(NSURL*)requestedURL {
+    return [[self urlStringWithoutAnchor:currentURL] isEqualToString:[self urlStringWithoutAnchor:requestedURL]];
+}
+
+- (NSString*)urlStringWithoutAnchor:(NSURL*)url {
+    NSString* anchor = [NSString stringWithFormat:@"#%@", url.fragment];
+    return [url.absoluteString stringByReplacingOccurrencesOfString:anchor withString:@""];
 }
 
 @end
