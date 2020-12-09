@@ -23,4 +23,6 @@
 + (BOOL)isWhatsAppInstalled;
 + (BOOL)isFacebookSharingUsingSocialFrameworkAvailable;
 
++ (UIViewController*) topMostController;
+
 @end

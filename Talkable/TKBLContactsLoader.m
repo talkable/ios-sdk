@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <AddressBook/AddressBook.h>
+#import <Contacts/Contacts.h>
 
 #import "TKBLContactsLoader.h"
 #import "Talkable.h"
+#import "TKBLHelper.h"
 
 NSString* TKBLContactFirstNameKey       = @"first_name";
 NSString* TKBLContactLastNameKey        = @"last_name";
@@ -20,87 +21,109 @@ NSString* TKBLContactPhoneNumberKey     = @"phone_number";
 
 @implementation TKBLContactsLoader
 
-+ (instancetype)loader {
-    return [[self alloc] init];
-}
-
-- (void)loadContactsWithComplitionHandler:(void(^)(NSArray* contactList))complitionHandler {
-    ABAuthorizationStatus status = ABAddressBookGetAuthorizationStatus();
-    if (status == kABAuthorizationStatusDenied || status == kABAuthorizationStatusRestricted) {
-        [self notifyNeedPermissions];
-        return;
-    }
-    CFErrorRef error = NULL;
-    ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, &error);
-
-    if (!addressBook) {
-        TKBLLog(@"error while loading contacts - %@", CFBridgingRelease(error));
-        return;
-    }
-
-    ABAddressBookRequestAccessWithCompletion(addressBook, ^(bool granted, CFErrorRef error) {
-        if (error)
-            TKBLLog(@"error while loading contacts - %@", CFBridgingRelease(error));
-
+- (void)loadContactsWithCompletionHandler:(void(^)(NSArray* contacts))completionHandler {
+    [self requestForAccessWithCompletion:^(BOOL granted) {
         if (granted) {
-            NSArray* contacts = [self grabContactsFromAddressBook:addressBook];
+            NSArray *contacts = [self grabContacts];
             dispatch_async(dispatch_get_main_queue(), ^{
-                complitionHandler(contacts);
+                completionHandler(contacts);
             });
         } else {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self notifyNeedPermissions];
+                [self presentPermissionAlert];
             });
         }
-        CFRelease(addressBook);
-    });
+    }];
 }
 
-#pragma mark - [Private]
+- (void)presentPermissionAlert {
+    NSString *message = NSLocalizedString(@"This app requires access to your contacts to function properly. Please visit the Privacy section in the Settings app.", nil);
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:message preferredStyle:UIAlertControllerStyleAlert];
 
-- (void)notifyNeedPermissions {
-    NSString* message = NSLocalizedString(@"This app requires access to your contacts to function properly. Please visit to the Privacy section in the Settings app.", nil);
-    [[[UIAlertView alloc] initWithTitle:nil message:message delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
-    return;
+    UIAlertAction *action = [UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [alert dismissViewControllerAnimated:YES completion:nil];
+    }];
+
+    [alert addAction:action];
+    
+    [[TKBLHelper topMostController] presentViewController:alert animated:YES completion:nil];
 }
 
-- (NSArray*)grabContactsFromAddressBook:(ABAddressBookRef)addressBook {
+- (NSArray*)grabContacts {
+    NSArray *keys = @[CNContactFamilyNameKey,
+                      CNContactGivenNameKey,
+                      CNContactPhoneNumbersKey,
+                      CNContactEmailAddressesKey];
+    CNContactStore *store = [[CNContactStore alloc] init];
+    CNContactFetchRequest *request = [[CNContactFetchRequest alloc] initWithKeysToFetch:keys];
+    NSError *error;
     NSMutableArray* contacts = [NSMutableArray array];
+    
+    [store enumerateContactsWithFetchRequest:request error:&error usingBlock:^(CNContact * __nonnull contact, BOOL * __nonnull stop) {
+        if (error) {
+            TKBLLog(@"error while loading contacts - %@", [error localizedDescription]);
+        } else {
+            NSString *fullName;
+            NSString *firstName = contact.givenName;
+            NSString *lastName = contact.familyName;
+            NSMutableArray *phoneNumbers = [NSMutableArray new];
+            NSMutableArray *emailAddresses = [NSMutableArray new];
 
-    NSArray* abContacts = CFBridgingRelease(ABAddressBookCopyArrayOfAllPeople(addressBook));
-    for (int i = 0; i < [abContacts count]; i++) {
-        ABRecordRef abContact = (__bridge ABRecordRef)abContacts[i];
+            if (firstName != nil && lastName != nil) {
+                fullName = [NSString stringWithFormat:@"%@ %@", firstName, lastName];
+            } else if (firstName != nil) {
+                fullName = [NSString stringWithFormat:@"%@", firstName];
+            } else if (lastName != nil) {
+                fullName = [NSString stringWithFormat:@"%@", lastName];
+            }
 
-        NSString* firstName = CFBridgingRelease(ABRecordCopyValue(abContact, kABPersonFirstNameProperty));
-        NSString* lastName  = CFBridgingRelease(ABRecordCopyValue(abContact, kABPersonLastNameProperty));
-        NSString *fullName = firstName ? [[NSArray arrayWithObjects:firstName, lastName, nil] componentsJoinedByString:@" "] : [lastName copy];
-
-        NSMutableArray* phoneNumbers = [NSMutableArray array];
-        ABMultiValueRef abPhoneNumbers = ABRecordCopyValue(abContact, kABPersonPhoneProperty);
-        for (CFIndex phone_idx = 0; phone_idx < ABMultiValueGetCount(abPhoneNumbers); phone_idx++) {
-            NSString* phoneNumber = CFBridgingRelease(ABMultiValueCopyValueAtIndex(abPhoneNumbers, phone_idx));
-            [phoneNumbers addObject:phoneNumber];
-
+            for (CNLabeledValue *label in contact.phoneNumbers) {
+                NSString *phone = [label.value stringValue];
+                if ([phone length] > 0) {
+                    [phoneNumbers addObject:phone];
+                }
+            }
+            
+            for (CNLabeledValue *label in contact.emailAddresses) {
+                NSString *email = label.value;
+                if ([email length] > 0) {
+                    [emailAddresses addObject:email];
+                }
+            }
+            
+            [contacts addObject:@{TKBLContactFirstNameKey: firstName ? firstName : [NSNull null],
+                                  TKBLContactLastNameKey: lastName ? lastName : [NSNull null],
+                                  TKBLContactFullNameKey: fullName ? fullName  : [NSNull null],
+                                  TKBLContactEmailKey: emailAddresses,
+                                  TKBLContactPhoneNumberKey: phoneNumbers}];
         }
-        CFRelease(abPhoneNumbers);
-
-        NSMutableArray* emails = [NSMutableArray array];
-        ABMultiValueRef abEmails = ABRecordCopyValue(abContact, kABPersonEmailProperty);
-        for (CFIndex email_idx = 0; email_idx < ABMultiValueGetCount(abEmails); email_idx++) {
-            NSString* email = CFBridgingRelease(ABMultiValueCopyValueAtIndex(abEmails, email_idx));
-            [emails addObject:email];
-        }
-        CFRelease(abEmails);
-
-        [contacts addObject:@{
-            TKBLContactFirstNameKey: firstName ? firstName : [NSNull null],
-            TKBLContactLastNameKey: lastName ? lastName : [NSNull null],
-            TKBLContactFullNameKey: fullName ? fullName : [NSNull null],
-            TKBLContactEmailKey: emails,
-            TKBLContactPhoneNumberKey: phoneNumbers
-        }];
-    }
+    }];
+    
     return [NSArray arrayWithArray:contacts];
+}
+
+- (void)requestForAccessWithCompletion:(void(^)(BOOL granted))completionHandler {
+    CNAuthorizationStatus status = [CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts];
+    CNContactStore *store = [[CNContactStore alloc] init];
+    
+    switch (status) {
+        case CNAuthorizationStatusAuthorized:
+            completionHandler(YES);
+            
+            break;
+        case CNAuthorizationStatusRestricted:
+        case CNAuthorizationStatusDenied:
+        case CNAuthorizationStatusNotDetermined:
+            [store requestAccessForEntityType:CNEntityTypeContacts completionHandler:^(BOOL granted, NSError * _Nullable error) {
+                if (error) {
+                    TKBLLog(@"error while loading contacts - %@", [error localizedDescription]);
+                }
+                
+                completionHandler(granted);
+            }];
+            
+            break;
+    }
 }
 
 @end
