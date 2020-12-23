@@ -52,7 +52,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     TKBLKeychainHelper*             _keychain;
 }
 
-@synthesize apiKey, siteSlug = _siteSlug, delegate, server = _server, debug, skipFirstInstallCheck, skipReinstallCheck, ignoreStoredDeviceIdentity;
+@synthesize apiKey, siteSlug = _siteSlug, delegate, server = _server, debug, skipFirstInstallCheck, skipReinstallCheck, ignoreStoredDeviceIdentity, ignoreUrlScheme;
 
 #pragma mark - [Singleton]
 
@@ -671,6 +671,8 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 }
 
 - (void)checkUrlScheme {
+    if (ignoreUrlScheme) return;
+    
     NSString* scheme = [self applicationURLScheme];
     NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"%@://", scheme]];
     UIApplication* app = [UIApplication sharedApplication];
