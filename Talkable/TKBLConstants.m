@@ -23,6 +23,7 @@ NSString* TKBLMessageOfferClose                         = @"offer_close";
 NSString* TKBLMessageCouponIssued                       = @"coupon_issued";
 
 NSString* TKBLDidReceiveCouponCode                      = @"TKBLDidReceiveCouponCodeNotificationName";
+// Deprecated
 NSString* TKBLDidReceiveReward                          = @"TKBLDidReceiveRewordNotificationName";
 
 NSString* TKBLOriginKey                                 = @"o";

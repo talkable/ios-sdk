@@ -100,12 +100,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 }
 
 - (id)init {
-    if (self = [super init]) {
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(applicationDidBecomeActive:)
-                                                     name:UIApplicationDidBecomeActiveNotification
-                                                   object:nil];
-    }
+    self = [super init]
     return self;
 }
 
@@ -377,7 +372,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 
     NSString* urlString = [self urlForAPI:@"/origins"];
     [self logAPIRequest:urlString withMethod:@"POST" andParameters:parameters];
-    
+
     [[self networkClient] POST:urlString parameters:parameters headers:nil constructingBodyWithBlock:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [self processSuccessfulResponse:responseObject withHandler:handler];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -401,7 +396,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 
     NSString* urlString = [self urlForAPI:@"/rewards"];
     [self logAPIRequest:urlString withMethod:@"GET" andParameters:parameters];
-    
+
     [[self networkClient] GET:urlString parameters:parameters headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [self processSuccessfulResponse:responseObject withHandler:handler];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -421,7 +416,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 
     NSString* urlString = [self urlForAPI:path];
     [self logAPIRequest:urlString withMethod:@"GET" andParameters:parameters];
-    
+
     [[self networkClient] GET:urlString parameters:parameters headers:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [self processSuccessfulResponse:responseObject withHandler:handler];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -450,7 +445,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 
     NSString* urlString = [self urlForAPI:path];
     [self logAPIRequest:urlString withMethod:@"POST" andParameters:parameters];
-       
+
     [[self networkClient] POST:urlString parameters:parameters headers:nil constructingBodyWithBlock:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [self processSuccessfulResponse:responseObject withHandler:handler];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -471,7 +466,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 
     NSString* urlString = [self urlForAPI:path];
     [self logAPIRequest:urlString withMethod:@"POST" andParameters:parameters];
-    
+
     [[self networkClient] POST:urlString parameters:parameters headers:nil constructingBodyWithBlock:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         [self processSuccessfulResponse:responseObject withHandler:handler];
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -628,7 +623,6 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
             [self retryRegisterInstall];
         } else {
             [TKBLHelper registerInstall];
-            [self scheduleRetrieveRewards:0.0];
         }
     }];
 }
@@ -640,28 +634,6 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 - (void)scheduleRegisterInstall:(NSTimeInterval)delay {
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(registerInstallIfNeeded) object:nil];
     [self performSelector:@selector(registerInstallIfNeeded) withObject:nil afterDelay:delay];
-}
-
-#pragma mark - [Retrieve Rewards]
-
-- (void)retrieveRewardsIfNeeded {
-    [self retrieveRewardsWithHandler:^(NSDictionary* response, NSError* error) {
-        if (error) {
-            TKBLLog(@"%@", error.localizedDescription);
-        } else {
-            NSArray *rewards = (NSArray *)[response objectForKey:@"rewards"];
-            if ([rewards count] > 0) {
-                [rewards enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-                    [[NSNotificationCenter defaultCenter] postNotificationName:TKBLDidReceiveReward object:self userInfo:(NSDictionary*)obj];
-                }];
-            }
-        }
-    }];
-}
-
-- (void)scheduleRetrieveRewards:(NSTimeInterval)delay {
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(retrieveRewardsIfNeeded) object:nil];
-    [self performSelector:@selector(retrieveRewardsIfNeeded) withObject:nil afterDelay:delay];
 }
 
 #pragma mark - [Private]
@@ -1065,9 +1037,4 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
         [self.delegate registerOrigin:type didFailWithError:error];
     }
 }
-
-- (void)applicationDidBecomeActive:(NSNotification*)ntf {
-    [self scheduleRetrieveRewards:0.0];
-}
-
 @end
