@@ -32,7 +32,7 @@ task default: :build
 
 task :build do
   run "xcodebuild ONLY_ACTIVE_ARCH=NO -configuration #{CONFIGURATION} -sdk iphoneos clean build"
-  run "xcodebuild ONLY_ACTIVE_ARCH=NO -configuration #{CONFIGURATION} -sdk iphonesimulator VALID_ARCHS='i386 x86_64' build"
+  run "xcodebuild ONLY_ACTIVE_ARCH=NO -configuration #{CONFIGURATION} -sdk iphonesimulator VALID_ARCHS='i386 x86_64 arm64' build"
 end
 
 task lipo: :build do
