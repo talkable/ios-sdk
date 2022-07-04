@@ -10,24 +10,25 @@ Talkable SDK makes it easy to integrate Talkable referral functionality into iOS
 - [x] iOS 9 or higher.
 
 ## Installation
-### CocoaPods
 
-[CocoaPods](http://cocoapods.org) is a dependency manager for Cocoa projects. You can install it with the following command:
+Talkable supports multiple methods for installing the SDK in a project.
 
-```bash
-$ gem install cocoapods
+### Swift Package Manager
+
+Add Talkable SDK as a dependency to [`Package.swift`](https://www.swift.org/package-manager/) under `dependencies`:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/talkable/ios-sdk.git", .upToNextMajor(from: "1.4.12"))
+]
 ```
 
-To integrate TalkableSDK into your Xcode project using CocoaPods, specify it in your [`Podfile`](https://guides.cocoapods.org/using/the-podfile.html):
+### CocoaPods
+
+To integrate Talkable SDK into your Xcode project using CocoaPods, specify it in your [`Podfile`](https://guides.cocoapods.org/using/the-podfile.html):
 
 ```ruby
 pod 'TalkableSDK'
-```
-
-Then, run the following command:
-
-```bash
-$ pod install
 ```
 
 ## Manual building

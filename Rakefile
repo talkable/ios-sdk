@@ -27,6 +27,11 @@ module Rake
       run "cd #{TMP_DIR} && zip -r #{filename} ./*"
       File.join(TMP_DIR, filename)
     end
+
+    def info_text(text)
+      yellow_collor_code = 33
+      puts "\e[#{yellow_collor_code}m#{text}\e[0m"
+    end
   end
 end
 
@@ -66,4 +71,5 @@ task archive: :compress do
   puts '*'*20
   puts SDK_ARCHIVE
   puts '*'*20
+  info_text "NOTE: When updating the SDK version, make sure to actualize configuration in TalkableSDK.podspec and Package.swift files (version, checksum etc) and create a correspond release at Github."
 end
