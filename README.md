@@ -28,7 +28,7 @@ dependencies: [
 To integrate Talkable SDK into your Xcode project using CocoaPods, specify it in your [`Podfile`](https://guides.cocoapods.org/using/the-podfile.html):
 
 ```ruby
-pod 'TalkableSDK'
+pod 'TalkableSDK', '~> 1.4.12'
 ```
 
 ## Manual building
