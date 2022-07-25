@@ -77,14 +77,49 @@ NSString*   TKBLInstallRegisteredKey    = @"tkbl_install_registered";
         [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"fbauth2://"]];;
 }
 
-+ (UIViewController*) topMostController {
-    UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
++ (nullable UIViewController*)topMostController {
+    UIWindow *keyWindow = [self keyWindow];
+    if (!keyWindow) {
+        return nil;
+    }
+
+    UIViewController *topController = keyWindow.rootViewController;
+    if (!topController) {
+        return nil;
+    }
 
     while (topController.presentedViewController) {
         topController = topController.presentedViewController;
     }
 
     return topController;
+}
+
++ (nullable UIWindow*)keyWindow {
+    if (@available(iOS 15, *)) {
+        for (UIScene *scene in UIApplication.sharedApplication.connectedScenes) {
+            if ([scene isKindOfClass:[UIWindowScene class]] &&
+                scene.activationState == UISceneActivationStateForegroundActive) {
+                return ((UIWindowScene *)scene).keyWindow;
+            }
+        }
+    } else {
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_15_0
+        if (@available(iOS 13, *)) {
+            for (UIWindow *window in UIApplication.sharedApplication.windows) {
+                if (window.isKeyWindow) {
+                    return window;
+                }
+            }
+        } else {
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_13_0
+          return UIApplication.sharedApplication.keyWindow;
+#endif  // __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_13_0
+      }
+#endif  // __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_15_0
+    }
+    TKBLLog(@"Unable to get keyWindow", nil);
+    return nil;
 }
 
 #pragma mark - [Private]

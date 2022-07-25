@@ -23,6 +23,7 @@
 + (BOOL)isWhatsAppInstalled;
 + (BOOL)isFacebookSharingUsingSocialFrameworkAvailable;
 
-+ (UIViewController*) topMostController;
++ (nullable UIViewController*)topMostController;
++ (nullable UIWindow*)keyWindow;
 
 @end

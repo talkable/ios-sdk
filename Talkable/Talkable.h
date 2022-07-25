@@ -69,7 +69,6 @@
 
 #pragma mark - [Sharing]
 
-- (SLComposeViewController* _Nullable)socialShare:(NSDictionary* _Nullable)params __deprecated;
 - (UIActivityViewController* _Nullable)nativeShare:(NSDictionary* _Nullable)params;
 
 @end

@@ -7,12 +7,17 @@
 //
 
 #import "UIViewControllerExt.h"
+#import "TKBLHelper.h"
 
 @implementation UIViewController (TKBLExtension)
 
-+ (UIViewController*)currentViewController {
-	UIWindow* window = [[UIApplication sharedApplication] keyWindow];
-	UIViewController* rootViewController = [window rootViewController];
++ (nullable UIViewController*)currentViewController {
+    UIWindow* keyWindow = [TKBLHelper keyWindow];
+    if (!keyWindow) {
+        return nil;
+    }
+
+	UIViewController* rootViewController = [keyWindow rootViewController];
 	
 	UINavigationController* navigationController = [rootViewController isKindOfClass:[UINavigationController class]]
 		? (UINavigationController*)rootViewController
@@ -39,7 +44,14 @@
 		activityView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
 		activityView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 		
-		UIActivityIndicatorView* activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        UIActivityIndicatorView* activityIndicator = nil;
+        if (@available(iOS 13, *)) {
+            activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleLarge];
+            activityIndicator.color = [UIColor whiteColor];
+        } else {
+            activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        }
+
 		activityIndicator.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
 		activityIndicator.center = CGPointMake(CGRectGetMidX(activityView.bounds), CGRectGetMidY(activityView.bounds));
 		[activityView addSubview:activityIndicator];

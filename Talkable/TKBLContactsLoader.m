@@ -37,6 +37,11 @@ NSString* TKBLContactPhoneNumberKey     = @"phone_number";
 }
 
 - (void)presentPermissionAlert {
+    UIViewController *topController = [TKBLHelper topMostController];
+    if (!topController) {
+        return;
+    }
+
     NSString *message = NSLocalizedString(@"This app requires access to your contacts to function properly. Please visit the Privacy section in the Settings app.", nil);
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:message preferredStyle:UIAlertControllerStyleAlert];
 
@@ -45,8 +50,8 @@ NSString* TKBLContactPhoneNumberKey     = @"phone_number";
     }];
 
     [alert addAction:action];
-    
-    [[TKBLHelper topMostController] presentViewController:alert animated:YES completion:nil];
+
+    [topController presentViewController:alert animated:YES completion:nil];
 }
 
 - (NSArray*)grabContacts {
