@@ -12,7 +12,7 @@
 
 @interface UIViewController (TKBLExtension)
 
-+ (nullable UIViewController*)currentViewController;
++ (UIViewController* _Nullable)currentViewController;
 
 @end
 
