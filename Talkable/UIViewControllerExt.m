@@ -49,7 +49,9 @@
             activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleLarge];
             activityIndicator.color = [UIColor whiteColor];
         } else {
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_13_0
             activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+#endif  // __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_13_0
         }
 
 		activityIndicator.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;

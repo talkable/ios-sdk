@@ -93,7 +93,7 @@
     // There is no way to check whether user shared a message or not
     [self shareSucceeded:(WKWebView*)sender withChannel:TKBLShareChannelFacebookMessage];
 
-    [self openURL:[NSURL URLWithString:[NSString stringWithFormat:@"fb-messenger://share?link=%@", escapedClaimURL]]];
+    [TKBLHelper openURL:[NSURL URLWithString:[NSString stringWithFormat:@"fb-messenger://share?link=%@", escapedClaimURL]]];
 }
 
 - (void)tkblShareOfferViaWhatsapp:(NSDictionary*)params sender:(id)sender {
@@ -118,7 +118,7 @@
     // There is no way to check whether the user shared a message or not
     [self shareSucceeded:(WKWebView*)sender withChannel:TKBLShareChannelWhatsApp];
 
-    [self openURL:[NSURL URLWithString:[NSString stringWithFormat:@"whatsapp://send?text=%@", escapedMessage]]];
+    [TKBLHelper openURL:[NSURL URLWithString:[NSString stringWithFormat:@"whatsapp://send?text=%@", escapedMessage]]];
 }
 
 - (void)tkblShareOfferViaSms:(NSDictionary*)params sender:(id)sender {
@@ -264,7 +264,12 @@
         return;
     }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    // Will be reworked in PR-18567, ignore utill then
     SLComposeViewController* shareController  = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+#pragma clang diagnostic pop
+
     NSString* claimURL = [params objectForKey:TKBLOfferClaimUrlKey];
     if (claimURL) {
         [shareController addURL:[NSURL URLWithString:claimURL]];
@@ -326,14 +331,6 @@
     [currentViewController presentViewController:controller animated:YES completion:nil];
 }
 
-- (void)openURL:(NSURL *)url {
-    if (@available(iOS 10, *)) {
-        [UIApplication.sharedApplication openURL:url options:@{} completionHandler:nil];
-    } else {
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_10_0
-        [UIApplication.sharedApplication openURL:url];
-#endif  // __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_10_0
-    }
-}
+
 
 @end

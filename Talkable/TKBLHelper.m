@@ -17,7 +17,7 @@ NSString*   TKBLInstallRegisteredKey    = @"tkbl_install_registered";
 
 @implementation TKBLHelper
 
-+ (NSString*)currentAppVersion {
++ (NSString* _Nullable)currentAppVersion {
     return [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
 }
 
@@ -45,7 +45,7 @@ NSString*   TKBLInstallRegisteredKey    = @"tkbl_install_registered";
     return [pref boolForKey:TKBLInstallRegisteredKey];
 }
 
-+ (NSDictionary*)featuresInfo {
++ (NSDictionary* _Nonnull)featuresInfo {
     return @{
         @"send_sms":                        [NSNumber numberWithBool:[self canSendSMS]],
         @"copy_to_clipboard":               [NSNumber numberWithBool:YES],
@@ -77,7 +77,7 @@ NSString*   TKBLInstallRegisteredKey    = @"tkbl_install_registered";
         [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"fbauth2://"]];;
 }
 
-+ (nullable UIViewController*)topMostController {
++ (UIViewController* _Nullable)topMostController {
     UIWindow *keyWindow = [self keyWindow];
     if (!keyWindow) {
         return nil;
@@ -95,7 +95,7 @@ NSString*   TKBLInstallRegisteredKey    = @"tkbl_install_registered";
     return topController;
 }
 
-+ (nullable UIWindow*)keyWindow {
++ (UIWindow* _Nullable)keyWindow {
     if (@available(iOS 15, *)) {
         for (UIScene *scene in UIApplication.sharedApplication.connectedScenes) {
             if ([scene isKindOfClass:[UIWindowScene class]] &&
@@ -120,6 +120,16 @@ NSString*   TKBLInstallRegisteredKey    = @"tkbl_install_registered";
     }
     TKBLLog(@"Unable to get keyWindow", nil);
     return nil;
+}
+
++ (void)openURL:(NSURL* _Nonnull)url {
+    if (@available(iOS 10, *)) {
+        [UIApplication.sharedApplication openURL:url options:@{} completionHandler:nil];
+    } else {
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_10_0
+        [UIApplication.sharedApplication openURL:url];
+#endif  // __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_10_0
+    }
 }
 
 #pragma mark - [Private]
