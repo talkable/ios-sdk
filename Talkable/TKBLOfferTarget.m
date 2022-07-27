@@ -266,7 +266,7 @@
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    // Will be reworked in PR-18567, ignore utill then
+    // Will be reworked in PR-18567, ignore for now
     SLComposeViewController* shareController  = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
 #pragma clang diagnostic pop
 
