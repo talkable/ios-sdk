@@ -133,22 +133,16 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     self.server     = aServer ? aServer : TKBL_DEFAULT_SERVER;
 }
 
-- (void)setApiKey:(NSString*)aApiKey andSiteId:(NSString*)aSiteId server:(NSString*)aServer {
-    if (!aApiKey || !aSiteId) {
-        [self raiseException:NSInvalidArgumentException withMessage:@"You can not use nil for apiKey and siteId"];
-    }
-
-    self.apiKey     = aApiKey;
-    self.siteSlug   = aSiteId;
-    self.server     = aServer ? aServer : TKBL_DEFAULT_SERVER;
-}
-
 - (void)setApiKey:(NSString*)aApiKey andSiteSlug:(NSString*)aSiteSlug {
     [self setApiKey:aApiKey andSiteSlug:aSiteSlug server:TKBL_DEFAULT_SERVER];
 }
 
 - (void)setApiKey:(NSString*)aApiKey andSiteId:(NSString*)aSiteId {
     [self setApiKey:aApiKey andSiteSlug:aSiteId server:TKBL_DEFAULT_SERVER];
+}
+
+- (void)setApiKey:(NSString*)aApiKey andSiteId:(NSString*)aSiteId server:(NSString*)aServer {
+    [self setApiKey:aApiKey andSiteSlug:aSiteId server:aServer];
 }
 
 - (NSString*)visitorUUID {
