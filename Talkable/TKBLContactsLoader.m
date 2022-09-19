@@ -63,7 +63,7 @@ NSString* TKBLContactPhoneNumberKey     = @"phone_number";
     CNContactFetchRequest *request = [[CNContactFetchRequest alloc] initWithKeysToFetch:keys];
     NSError *error;
     NSMutableArray* contacts = [NSMutableArray array];
-    
+
     [store enumerateContactsWithFetchRequest:request error:&error usingBlock:^(CNContact * __nonnull contact, BOOL * __nonnull stop) {
         if (error) {
             TKBLLog(@"error while loading contacts - %@", [error localizedDescription]);
@@ -88,14 +88,14 @@ NSString* TKBLContactPhoneNumberKey     = @"phone_number";
                     [phoneNumbers addObject:phone];
                 }
             }
-            
+
             for (CNLabeledValue *label in contact.emailAddresses) {
                 NSString *email = label.value;
                 if ([email length] > 0) {
                     [emailAddresses addObject:email];
                 }
             }
-            
+
             [contacts addObject:@{TKBLContactFirstNameKey: firstName ? firstName : [NSNull null],
                                   TKBLContactLastNameKey: lastName ? lastName : [NSNull null],
                                   TKBLContactFullNameKey: fullName ? fullName  : [NSNull null],
@@ -103,18 +103,24 @@ NSString* TKBLContactPhoneNumberKey     = @"phone_number";
                                   TKBLContactPhoneNumberKey: phoneNumbers}];
         }
     }];
-    
+
     return [NSArray arrayWithArray:contacts];
 }
 
 - (void)requestForAccessWithCompletion:(void(^)(BOOL granted))completionHandler {
+    NSString* contactsPermissions = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSContactsUsageDescription"];
+    if (!contactsPermissions) {
+        TKBLLog(@"ERROR! \"NSContactsUsageDescription\" key has to be defined inside the plist for accessing contacts. Please add the key and re-run the application.");
+        return;
+    }
+
     CNAuthorizationStatus status = [CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts];
     CNContactStore *store = [[CNContactStore alloc] init];
-    
+
     switch (status) {
         case CNAuthorizationStatusAuthorized:
             completionHandler(YES);
-            
+
             break;
         case CNAuthorizationStatusRestricted:
         case CNAuthorizationStatusDenied:
@@ -123,10 +129,10 @@ NSString* TKBLContactPhoneNumberKey     = @"phone_number";
                 if (error) {
                     TKBLLog(@"error while loading contacts - %@", [error localizedDescription]);
                 }
-                
+
                 completionHandler(granted);
             }];
-            
+
             break;
     }
 }
