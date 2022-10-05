@@ -137,6 +137,14 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     [self setApiKey:aApiKey andSiteSlug:aSiteSlug server:TKBL_DEFAULT_SERVER];
 }
 
+- (void)setApiKey:(NSString*)aApiKey andSiteId:(NSString*)aSiteId {
+    [self setApiKey:aApiKey andSiteSlug:aSiteId server:TKBL_DEFAULT_SERVER];
+}
+
+- (void)setApiKey:(NSString*)aApiKey andSiteId:(NSString*)aSiteId server:(NSString*)aServer {
+    [self setApiKey:aApiKey andSiteSlug:aSiteId server:aServer];
+}
+
 - (NSString*)visitorUUID {
     if (_uuid) return _uuid;
 
@@ -483,54 +491,6 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 
 #pragma mark - [Sharing]
 
-- (SLComposeViewController*)socialShare:(NSDictionary*)params {
-    NSString* channel = [params objectForKey:TKBLShareChannel];
-    NSString* serviceType = [self mapChanel:channel];
-
-    if (!serviceType) {
-        TKBLLog(@"Using default chanel - %@", TKBLShareChannelFacebook);
-        (void)(serviceType = SLServiceTypeFacebook),
-        channel = TKBLShareChannelFacebook;
-    }
-
-    SLComposeViewController* controller = [SLComposeViewController composeViewControllerForServiceType:serviceType];
-
-    id claimURL = [params objectForKey:TKBLOfferClaimUrlKey];
-    if ([claimURL isKindOfClass:[NSString class]]) {
-        [controller addURL:[NSURL URLWithString:claimURL]];
-    } else if ([claimURL isKindOfClass:[NSURL class]]) {
-        [controller addURL:claimURL];
-    }
-
-    NSString* message = [params objectForKey:TKBLShareMessage];
-    if (message) {
-        [controller setInitialText:message];
-    }
-
-    id image = [params objectForKey:TKBLShareImage];
-    if ([image isKindOfClass:[UIImage class]]) {
-        [controller addImage:image];
-    } else if ([image isKindOfClass:[NSString class]]) {
-        NSData* imageData = [NSData dataWithContentsOfURL:[NSURL URLWithString:image]];
-        UIImage* requestedImage = [UIImage imageWithData:imageData];
-        if (requestedImage)
-            [controller addImage:requestedImage];
-    }
-
-    NSString* offerShortUrlCode = [params objectForKey:TKBLOfferShortUrlCodeKey];
-    if (offerShortUrlCode) {
-        [controller setCompletionHandler:^(SLComposeViewControllerResult result){
-            if (result == SLComposeViewControllerResultDone) {
-                [self createSocialShare:offerShortUrlCode channel:channel withHandler:nil];
-            }
-        }];
-    } else {
-        TKBLLog(@"Specify %@ key or create share manually.", TKBLOfferShortUrlCodeKey);
-    }
-
-    return controller;
-}
-
 - (UIActivityViewController*)nativeShare:(NSDictionary*)params {
     NSURL* url;
     id claimURL = [params objectForKey:TKBLOfferClaimUrlKey];
@@ -735,9 +695,14 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
     if ([self.delegate respondsToSelector:@selector(viewControllerForPresentingTalkableOfferViewController)]) {
         topViewController = [self.delegate viewControllerForPresentingTalkableOfferViewController];
     }
+
     if (!topViewController) {
         topViewController = [UIViewController currentViewController];
+        if (!topViewController) {
+            return;
+        }
     }
+
     if ([topViewController isKindOfClass:[UINavigationController class]]) {
         [(UINavigationController*)topViewController pushViewController:viewController animated:YES];
     } else if (topViewController.navigationController) {
@@ -931,14 +896,6 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
         [self raiseException:NSInvalidArgumentException withMessage:[NSString stringWithFormat:@"Invalid class %@ for parameter value.", NSStringFromClass([value class])]];
     }
     return stringValue;
-}
-
-- (NSDictionary*)channelMap {
-    return @{TKBLShareChannelTwitter: SLServiceTypeTwitter, TKBLShareChannelFacebook: SLServiceTypeFacebook};
-}
-
-- (NSString*)mapChanel:(NSString*)channel {
-    return [[self channelMap] objectForKey:channel];
 }
 
 - (NSString*)mapActivityType:(NSString*)activityType {

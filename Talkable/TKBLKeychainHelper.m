@@ -52,7 +52,7 @@
 - (NSMutableDictionary*)keychainItem:(NSString*)key {
     NSMutableDictionary* keychainItem = [[NSMutableDictionary alloc] init];
     keychainItem[(__bridge id)kSecClass] = (__bridge id)kSecClassGenericPassword;
-    keychainItem[(__bridge id)kSecAttrAccessible] = (__bridge id)kSecAttrAccessibleAlways;
+    keychainItem[(__bridge id)kSecAttrAccessible] = (__bridge id)kSecAttrAccessibleAfterFirstUnlock;
     keychainItem[(__bridge id)kSecAttrAccount] = key;
     keychainItem[(__bridge id)kSecAttrService] = _serviceName;
     return keychainItem;

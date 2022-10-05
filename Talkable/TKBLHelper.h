@@ -10,19 +10,21 @@
 
 @interface TKBLHelper : NSObject
 
-+ (NSString*)currentAppVersion;
++ (NSString* _Nullable)currentAppVersion;
 
 + (BOOL)wasAppUpdated;
 
 + (void)registerInstall;
 + (BOOL)installRegistered;
 
-+ (NSDictionary*)featuresInfo;
++ (NSDictionary* _Nonnull)featuresInfo;
 
 + (BOOL)isFacebookMessengerInstalled;
 + (BOOL)isWhatsAppInstalled;
 + (BOOL)isFacebookSharingUsingSocialFrameworkAvailable;
 
-+ (UIViewController*) topMostController;
++ (UIViewController* _Nullable)topMostController;
++ (UIWindow* _Nullable)keyWindow;
++ (void)openURL:(NSURL* _Nonnull)url;
 
 @end

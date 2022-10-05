@@ -8,6 +8,7 @@
 
 #import "TKBLOfferViewController.h"
 #import "TKBLOfferTarget.h"
+#import "TKBLHelper.h"
 #import "UIViewControllerExt.h"
 
 @implementation TKBLOfferViewController {
@@ -80,7 +81,7 @@
         NSURL *url = navigationAction.request.URL;
         UIApplication *app = [UIApplication sharedApplication];
         if (![self isAnchorNavigation:webView.URL to:url] && [app canOpenURL:url]) {
-            [app openURL:url];
+            [TKBLHelper openURL:url];
             decisionHandler(WKNavigationActionPolicyCancel);
             return;
         }

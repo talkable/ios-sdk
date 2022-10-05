@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = "TalkableSDK"
-  spec.version      = "1.4.13"
+  spec.version      = "1.4.14"
   spec.summary      = "Talkable SDK makes it easy to integrate Talkable referral functionality into your apps."
 
   spec.description  = <<-DESC

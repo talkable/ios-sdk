@@ -29,6 +29,8 @@
 
 - (void)setApiKey:(NSString* _Nullable)apiKey andSiteSlug:(NSString* _Nullable)siteSlug;
 - (void)setApiKey:(NSString* _Nullable)apiKey andSiteSlug:(NSString* _Nullable)siteSlug server:(NSString* _Nullable)server;
+- (void)setApiKey:(NSString* _Nonnull)apiKey andSiteId:(NSString* _Nonnull)siteId;
+- (void)setApiKey:(NSString* _Nonnull)apiKey andSiteId:(NSString* _Nonnull)siteId server:(NSString* _Nonnull)server;
 
 - (NSString* _Nullable)visitorUUID;
 - (NSString* _Nullable)deviceIdentifier;
@@ -69,7 +71,6 @@
 
 #pragma mark - [Sharing]
 
-- (SLComposeViewController* _Nullable)socialShare:(NSDictionary* _Nullable)params __deprecated;
 - (UIActivityViewController* _Nullable)nativeShare:(NSDictionary* _Nullable)params;
 
 @end

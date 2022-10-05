@@ -45,7 +45,13 @@
             [self shareSucceeded:(WKWebView*)sender withChannel:TKBLShareChannelNativeMail];
         };
         ctrl.mailComposeDelegate = watcher;
-        [[UIViewController currentViewController] presentViewController:ctrl animated:YES completion:nil];
+
+        UIViewController* currentViewController = [UIViewController currentViewController];
+        if (!currentViewController) {
+            return;
+        }
+
+        [currentViewController presentViewController:ctrl animated:YES completion:nil];
     }
 }
 
@@ -83,13 +89,11 @@
     // There is no way to pass a text to fb messenger, only an url.
     NSString* claimURL = [params objectForKey:TKBLOfferClaimUrlKey];
     NSString* escapedClaimURL = [claimURL stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
-    UIApplication* app = [UIApplication sharedApplication];
 
     // There is no way to check whether user shared a message or not
     [self shareSucceeded:(WKWebView*)sender withChannel:TKBLShareChannelFacebookMessage];
 
-    [app openURL:[NSURL URLWithString:[NSString stringWithFormat:@"fb-messenger://share?link=%@", escapedClaimURL]]];
-
+    [TKBLHelper openURL:[NSURL URLWithString:[NSString stringWithFormat:@"fb-messenger://share?link=%@", escapedClaimURL]]];
 }
 
 - (void)tkblShareOfferViaWhatsapp:(NSDictionary*)params sender:(id)sender {
@@ -110,18 +114,22 @@
     }
 
     NSString* escapedMessage = [message stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
-    UIApplication* app = [UIApplication sharedApplication];
 
     // There is no way to check whether the user shared a message or not
     [self shareSucceeded:(WKWebView*)sender withChannel:TKBLShareChannelWhatsApp];
 
-    [app openURL:[NSURL URLWithString:[NSString stringWithFormat:@"whatsapp://send?text=%@", escapedMessage]]];
+    [TKBLHelper openURL:[NSURL URLWithString:[NSString stringWithFormat:@"whatsapp://send?text=%@", escapedMessage]]];
 }
 
 - (void)tkblShareOfferViaSms:(NSDictionary*)params sender:(id)sender {
     if (![MFMessageComposeViewController canSendText]) {
         TKBLLog(@"Current device doesn't support SMS sending", nil);
         [self publishFeaturesInfo:sender];
+        return;
+    }
+
+    UIViewController* currentViewController = [UIViewController currentViewController];
+    if (!currentViewController) {
         return;
     }
 
@@ -156,15 +164,14 @@
         [self shareSucceeded:(WKWebView*)sender withChannel:TKBLShareChannelSMS];
     };
     controller.messageComposeDelegate = watcher;
-    [[UIViewController currentViewController] presentViewController:controller animated:YES completion:nil];
+
+    [currentViewController presentViewController:controller animated:YES completion:nil];
 }
 
 - (void)tkblPutToClipboard:(NSDictionary*)params sender:(id)sender {
     NSString* text = [params objectForKey:TKBLClipboardTextKey];
     if (text) {
-        UIPasteboard* pasteBoard = [UIPasteboard generalPasteboard];
-        pasteBoard.persistent = YES;
-        [pasteBoard setString:text];
+        [UIPasteboard generalPasteboard].string = text;
     } else {
         TKBLLog(@"Specify URL for key '%@'", TKBLClipboardTextKey);
     }
@@ -252,7 +259,17 @@
         return;
     }
 
+    UIViewController* currentViewController = [UIViewController currentViewController];
+    if (!currentViewController) {
+        return;
+    }
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    // Will be reworked in PR-18567, ignore for now
     SLComposeViewController* shareController  = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeFacebook];
+#pragma clang diagnostic pop
+
     NSString* claimURL = [params objectForKey:TKBLOfferClaimUrlKey];
     if (claimURL) {
         [shareController addURL:[NSURL URLWithString:claimURL]];
@@ -269,7 +286,7 @@
         }
     }];
 
-    [[UIViewController currentViewController] presentViewController:shareController animated:YES completion:nil];
+    [currentViewController presentViewController:shareController animated:YES completion:nil];
 
 }
 
@@ -282,6 +299,11 @@
 }
 
 - (void)shareViaLinkWithParams:(NSDictionary*)params andSender:(id)sender {
+    UIViewController* currentViewController = [UIViewController currentViewController];
+    if (!currentViewController) {
+        return;
+    }
+
     NSMutableArray* activityItems = [NSMutableArray array];
 
     NSString* message = [params objectForKey:TKBLShareMessage];
@@ -306,7 +328,7 @@
 
     [controller setExcludedActivityTypes:@[UIActivityTypePostToFacebook, UIActivityTypePostToTwitter]];
 
-    [[UIViewController currentViewController] presentViewController:controller animated:YES completion:nil];
+    [currentViewController presentViewController:controller animated:YES completion:nil];
 }
 
 @end
