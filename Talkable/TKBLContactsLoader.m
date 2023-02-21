@@ -110,7 +110,7 @@ NSString* TKBLContactPhoneNumberKey     = @"phone_number";
 - (void)requestForAccessWithCompletion:(void(^)(BOOL granted))completionHandler {
     NSString* contactsPermissions = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSContactsUsageDescription"];
     if (!contactsPermissions) {
-        TKBLLog(@"ERROR! \"NSContactsUsageDescription\" key has to be defined inside the plist for accessing contacts. Please add the key and re-run the application.");
+        TKBLLog(@"ERROR! \"NSContactsUsageDescription\" key has to be defined inside the plist for accessing contacts. Please add the key and re-run the application.", nil);
         return;
     }
 

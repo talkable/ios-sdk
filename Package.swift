@@ -2,9 +2,9 @@
 
 import PackageDescription
 
-let version = "1.4.14"
+let version = "1.4.15"
 // Checksum of the file at `sdkUrl` link. To generate: `swift package compute-checksum build/talkable_ios_sdk.zip`
-let checksum = "7504c070f794e803b4335eca8cc0c5a68410542a4f233647a2839bdaf5218d46"
+let checksum = "d893d6ea4b651deb119db6f463ed1bf4ffc4dc7d7cf6b1c0566c14d25f6e4ca6"
 let sdkUrl = "https://github.com/talkable/ios-sdk/releases/download/\(version)/talkable_ios_sdk_\(version).zip"
 
 let package = Package(

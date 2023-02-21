@@ -956,11 +956,14 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 - (TKBLOfferTarget*)offerTargetFor:(WKWebView*) webView {
     if (!_offerTargets) {
         _offerTargets = [NSMutableArray new];
+    } else {
+        for (NSInteger i = _offerTargets.count - 1; i >= 0; i--) {
+            TKBLOfferTarget *target = _offerTargets[i];
+            if (![target isUsed])
+                [_offerTargets removeObjectAtIndex:i];
+        }
     }
-    for (TKBLOfferTarget* target in _offerTargets) {
-        if (![target isUsed])
-            [_offerTargets removeObject:target];
-    }
+
     TKBLOfferTarget* target = [[TKBLOfferTarget alloc] initWithWebView:webView];
     [_offerTargets addObject:target];
     return target;
