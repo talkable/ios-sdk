@@ -24,6 +24,7 @@
 @property (nonatomic, assign) BOOL                            skipFirstInstallCheck;
 @property (nonatomic, assign) BOOL                            skipReinstallCheck;
 @property (nonatomic, assign) BOOL                            ignoreStoredDeviceIdentity;
+@property (nonatomic, assign) BOOL                            ignoreUrlScheme;
 
 + (Talkable* _Nullable)manager;
 
