@@ -19,7 +19,7 @@ Add Talkable SDK as a dependency to [`Package.swift`](https://www.swift.org/pack
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/talkable/ios-sdk.git", .upToNextMajor(from: "1.4.15"))
+    .package(url: "https://github.com/talkable/ios-sdk.git", .upToNextMajor(from: "1.5.1"))
 ]
 ```
 
@@ -28,7 +28,7 @@ dependencies: [
 To integrate Talkable SDK into your Xcode project using CocoaPods, specify it in your [`Podfile`](https://guides.cocoapods.org/using/the-podfile.html):
 
 ```ruby
-pod 'TalkableSDK', '~> 1.4.15'
+pod 'TalkableSDK', '~> 1.5.1'
 ```
 
 ## Manual building
