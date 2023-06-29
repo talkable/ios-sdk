@@ -8,7 +8,7 @@
 
 #import "TKBLConstants.h"
 
-NSString* TKBLVersion                                   = @"1.4.15";
+NSString* TKBLVersion                                   = @"1.5.1";
 
 NSString* TKBLErrorDomain                               = @"com.talkable.ios-sdk";
 
@@ -23,7 +23,7 @@ NSString* TKBLMessageOfferClose                         = @"offer_close";
 NSString* TKBLMessageCouponIssued                       = @"coupon_issued";
 
 NSString* TKBLDidReceiveCouponCode                      = @"TKBLDidReceiveCouponCodeNotificationName";
-NSString* TKBLDidReceiveReward                          = @"TKBLDidReceiveRewordNotificationName";
+NSString* TKBLDidReceiveReward                          = @"TKBLDidReceiveRewordNotificationName"; // deprecated
 
 NSString* TKBLOriginKey                                 = @"o";
 NSString* TKBLOriginTypeKey                             = @"type";
