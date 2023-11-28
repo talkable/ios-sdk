@@ -713,7 +713,7 @@ NSString*   TKBLFailureReasonOriginInvalidAttributes    = @"ORIGIN_INVALID_ATTRI
 }
 
 - (NSMutableURLRequest*)serverRequest:(NSURL*)url withHttpMethod:(NSString*)httpMethod userAgent:(NSString*)userAgent{
-    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:url cachePolicy: NSURLRequestUseProtocolCachePolicy];
+    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:url cachePolicy: NSURLRequestUseProtocolCachePolicy timeoutInterval:600];
     [request setHTTPMethod:httpMethod];
     [request setValue:userAgent forHTTPHeaderField:@"User-Agent"];
 
